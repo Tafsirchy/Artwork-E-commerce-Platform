@@ -20,11 +20,10 @@ const shards = [
 
 const galleryImages = [
   "https://images.unsplash.com/photo-1705711714839-cf327143c4a0?q=80&w=687&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1598770220477-cec551a23f53?q=80&w=1171&auto=format&fit=crop",
-  "https://plus.unsplash.com/premium_photo-1682125164600-e7493508e496?q=80&w=880&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1170&auto=format&fit=crop",
+  "https://plus.unsplash.com/premium_photo-1682125164600-e7493508e496?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200",
   "https://images.unsplash.com/photo-1557933488-c8daa2a5772c?q=80&w=687&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1170&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=687&auto=format&fit=crop"
 ];
 
@@ -134,187 +133,20 @@ function TripleCluster() {
   );
 }
 
-class FluidInk {
-  constructor(x, y, hue, vx = 0, vy = 0, isEraser = false) {
-    this.x = x; this.y = y; this.hue = hue;
-    this.isEraser = isEraser;
-    this.vx = vx;
-    this.vy = vy;
-    // SMALLER ERASER: Reduced from 60-110 to 25-45
-    this.radius = isEraser ? (Math.random() * 20 + 25) : (Math.random() * 20 + 10);
-    this.maxRadius = Math.random() * 400 + 200;
-    this.alpha = isEraser ? 1.0 : (Math.random() * 0.05 + 0.02);
-    this.decay = isEraser ? 0.015 : (Math.random() * 0.0003 + 0.0002);
-    this.puffyOffsets = Array.from({ length: 7 }, () => ({
-      x: (Math.random() - 0.5) * 1.6,
-      y: (Math.random() - 0.5) * 1.6,
-      size: Math.random() * 0.6 + 0.4
-    }));
-  }
-
-  update(centerX, centerY) {
-    if (!this.isEraser) {
-      const expansionRate = (1 - this.radius / this.maxRadius) * 4.5;
-      this.radius += Math.max(0.5, expansionRate);
-      
-      const dx = centerX - this.x;
-      const dy = centerY - this.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist > 50) {
-        this.vx += (dx / dist) * 0.05;
-        this.vy += (dy / dist) * 0.05;
-      }
-
-      this.vx += Math.sin(this.y * 0.01 + Date.now() * 0.001) * 0.15;
-      this.vy += Math.cos(this.x * 0.01 + Date.now() * 0.001) * 0.15;
-    }
-    
-    this.x += this.vx;
-    this.y += this.vy;
-    this.vx *= 0.985;
-    this.vy *= 0.985;
-    
-    this.alpha -= this.decay;
-    if (this.isEraser) {
-      // SLOWER ERASER GROWTH: Reduced from 2.5 to 1.1
-      this.radius += 1.1;
-      this.vx = 0; this.vy = 0;
-    }
-  }
-
-  draw(ctx) {
-    if (this.alpha <= 0) return;
-    
-    if (this.isEraser) {
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-      ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
-    } else {
-      ctx.globalCompositeOperation = "screen";
-      this.puffyOffsets.forEach(off => {
-        const px = this.x + off.x * this.radius * 0.6;
-        const py = this.y + off.y * this.radius * 0.6;
-        const r = this.radius * off.size;
-        
-        const grad = ctx.createRadialGradient(px, py, 0, px, py, r);
-        grad.addColorStop(0, `hsla(${this.hue}, 95%, 70%, ${this.alpha * 1.2})`); 
-        grad.addColorStop(0.4, `hsla(${this.hue}, 90%, 65%, ${this.alpha * 0.5})`); 
-        grad.addColorStop(1, `hsla(${this.hue}, 85%, 60%, 0)`); 
-        
-        ctx.fillStyle = grad;
-        ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
-      });
-    }
-  }
-}
-
 export default function Hero() {
-  const canvasRef = useRef(null);
-  const containerRef = useRef(null);
-  const inks = useRef([]);
-  const mouse = useRef({ x: -1000, y: -1000 });
-  const [canLeak, setCanLeak] = useState(false);
-
-  useEffect(() => {
-    const leakTimer = setTimeout(() => setCanLeak(true), 2500);
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let animationId;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    const render = () => {
-      const w = canvas.width;
-      const h = canvas.height;
-      const centerX = w / 2;
-      const centerY = h / 2;
-
-      if (!canLeak) {
-        ctx.clearRect(0, 0, w, h);
-      } else {
-        ctx.fillStyle = "rgba(245, 241, 235, 0.05)"; 
-        ctx.fillRect(0, 0, w, h);
-      }
-
-      if (canLeak) {
-        const cornerRate = 0.06;
-        const corners = [
-          { x: 0, y: 0 }, { x: w, y: 0 }, { x: 0, y: h }, { x: w, y: h }
-        ];
-
-        corners.forEach((pos, idx) => {
-          if (Math.random() < cornerRate) {
-            const dx = centerX - pos.x;
-            const dy = centerY - pos.y;
-            const mag = Math.sqrt(dx * dx + dy * dy);
-            const vx = (dx / mag) * 3 + (Math.random() - 0.5) * 1.0;
-            const vy = (dy / mag) * 3 + (Math.random() - 0.5) * 1.0;
-
-            const hue = (Date.now() / 15 + (idx * 90)) % 360;
-            inks.current.push(new FluidInk(pos.x, pos.y, hue, vx, vy));
-          }
-        });
-
-        if (Math.random() < 0.01) {
-          const rx = Math.random() * w;
-          const ry = Math.random() * h;
-          const hue = (Date.now() / 10 + Math.random() * 60) % 360;
-          inks.current.push(new FluidInk(rx, ry, hue, (Math.random() - 0.5) * 1.0, (Math.random() - 0.5) * 1.0));
-        }
-      }
-
-      inks.current = inks.current.filter(ink => ink.alpha > 0.001);
-      inks.current.forEach(ink => { 
-        ink.update(centerX, centerY); 
-        ink.draw(ctx); 
-      });
-      
-      animationId = requestAnimationFrame(render);
-    };
-
-    window.addEventListener("resize", resize);
-    resize(); render();
-    
-    return () => {
-      window.removeEventListener("resize", resize);
-      cancelAnimationFrame(animationId);
-      clearTimeout(leakTimer);
-    };
-  }, [canLeak]);
-
   return (
-    <section
-      ref={containerRef}
-      onPointerMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        mouse.current.x = e.clientX - rect.left;
-        mouse.current.y = e.clientY - rect.top;
-        inks.current.push(new FluidInk(mouse.current.x, mouse.current.y, 0, 0, 0, true));
-      }}
-      className="relative h-[85vh] bg-[#F5F1EB] flex items-center overflow-hidden"
-      style={{
-        backgroundImage: "url('/Hero-bg.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}
-    >
+    <section className="relative h-[85vh] bg-[#F5F1EB] flex items-center overflow-hidden">
       <div className="absolute inset-0 z-0 bg-black/5" />
-      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-screen opacity-95" />
-      
+
       <div className="relative z-20 max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
         <div className="max-w-2xl">
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1.2, ease: "easeOut" }}>
             <div className="mb-4 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
               <Sparkles size={16} className="text-gallery-gold animate-pulse" />
-              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Volumetric Spectrum for Living Art</span>
+              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Sanctuary for Modern Masterpieces</span>
             </div>
             <h1 className="text-5xl md:text-[5.2rem] font-light text-gallery-text leading-[0.9] mb-4">Where Souls <br /><span className="italic text-gallery-accent">Conspire.</span></h1>
-            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Vibrant clouds of gas leak from the corners, billowing into puffy rainbow masses that slowly fill the air with living color.</p>
+            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Discover a curated collection of contemporary art that bridges the gap between traditional craftsmanship and digital innovation.</p>
             <div className="flex flex-col sm:flex-row items-center gap-12">
               <Link href="/products" className="group relative px-14 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1">
                 <span className="relative z-10">Explore Collection</span>
