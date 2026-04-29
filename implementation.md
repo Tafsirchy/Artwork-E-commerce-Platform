@@ -131,17 +131,17 @@ theme: {
 **Objective:** Implement the end-to-end checkout flow, integrating third-party services for payments and location tracking.
 
 **Features/Modules:**
-- [ ] Order System & State Machine
-- [ ] Stripe Payment Integration
-- [ ] OpenStreetMap (Delivery Location)
+- ✅ Order System & State Machine
+- ✅ Stripe Payment Integration
+- ✅ OpenStreetMap (Delivery Location)
 
 **Implementation Tasks:**
-- [ ] 1. **Order Architecture:** Create `Order.js` model containing order items, shipping address (including lat/lng), payment status, and order status.
-- [ ] 2. **Map Integration:** Implement `MapPicker.jsx` using React Leaflet and OpenStreetMap. Embed this in the `app/(shop)/checkout/page.jsx` to capture exact delivery coordinates.
-- [ ] 3. **Stripe Setup:** Configure `backend/src/config/stripe.js`. Implement `paymentController.js` to create a Stripe Payment Intent.
-- [ ] 4. **Checkout Flow (Frontend):** Build the checkout page. Process: Capture Address (Map) -> Select Payment Method (COD or Card) -> Trigger Stripe Elements -> Place Order.
-- [ ] 5. **Order Processing:** Implement `orderController.js`. If Stripe is successful (verified via Webhook), mark order as `Paid`. Clear the user's cart in the DB.
-- [ ] 6. **Stripe Webhook:** Create a dedicated route to listen for Stripe Webhook events (`payment_intent.succeeded`) to securely confirm payments independent of the client.
+- ✅ 1. **Order Architecture:** Create `Order.js` model containing order items, shipping address (including lat/lng), payment status, and order status.
+- ✅ 2. **Map Integration:** Implement `MapPicker.jsx` using React Leaflet and OpenStreetMap. Embed this in the `app/(shop)/checkout/page.jsx` to capture exact delivery coordinates.
+- ✅ 3. **Stripe Setup:** Configure `backend/src/config/stripe.js`. Implement `paymentController.js` to create a Stripe Payment Intent.
+- ✅ 4. **Checkout Flow (Frontend):** Build the checkout page. Process: Capture Address (Map) -> Select Payment Method (COD or Card) -> Trigger Stripe Elements -> Place Order.
+- ✅ 5. **Order Processing:** Implement `orderController.js`. If Stripe is successful (verified via Webhook), mark order as `Paid`. Clear the user's cart in the DB.
+- ✅ 6. **Stripe Webhook:** Create a dedicated route to listen for Stripe Webhook events (`payment_intent.succeeded`) to securely confirm payments independent of the client.
 
 **Folder Structure Involved:**
 * `backend/src/services/paymentService.js`, `backend/src/controllers/paymentController.js`, `backend/src/controllers/orderController.js`
@@ -155,16 +155,16 @@ theme: {
 **Objective:** Close the loop on the user experience by providing order confirmations, invoices, and administrative oversight.
 
 **Features/Modules:**
-- [ ] Nodemailer Email System
-- [ ] PDF Invoice Generation
-- [ ] Admin Dashboard
+- ✅ Nodemailer Email System
+- ✅ PDF Invoice Generation
+- ✅ Admin Dashboard
 
 **Implementation Tasks:**
-- [ ] 1. **Email Configuration:** Set up `backend/src/config/mailer.js` and `mailService.js` using Nodemailer (configure with SMTP, e.g., Gmail or SendGrid).
-- [ ] 2. **Invoice Generation:** Implement `backend/utils/invoiceGenerator.js` using `pdfkit`. Generate a beautifully formatted PDF containing order details and the user's details.
-- [ ] 3. **Post-Order Hook:** Hook the `mailService` into the successful order creation flow. Email the generated PDF invoice to the user.
-- [ ] 4. **Download Endpoint:** Create `GET /api/orders/:id/invoice` to allow users to download their invoice later.
-- [ ] 5. **Admin Dashboard:** Build `app/(admin)/dashboard/page.jsx` and `app/(admin)/orders/page.jsx` on the frontend. Allow admins to view all orders, update order statuses (Processing, Shipped, Delivered), and manage products.
+- ✅ 1. **Email Configuration:** Set up `backend/src/config/mailer.js` and `mailService.js` using Nodemailer (configure with SMTP, e.g., Gmail or SendGrid).
+- ✅ 2. **Invoice Generation:** Implement `backend/utils/invoiceGenerator.js` using `pdfkit`. Generate a beautifully formatted PDF containing order details and the user's details.
+- ✅ 3. **Post-Order Hook:** Hook the `mailService` into the successful order creation flow. Email the generated PDF invoice to the user.
+- ✅ 4. **Download Endpoint:** Create `GET /api/orders/:id/invoice` to allow users to download their invoice later.
+- ✅ 5. **Admin Dashboard:** Build `app/(admin)/dashboard/page.jsx` and `app/(admin)/orders/page.jsx` on the frontend. Allow admins to view all orders, update order statuses (Processing, Shipped, Delivered), and manage products.
 
 **Folder Structure Involved:**
 * `backend/src/utils/invoiceGenerator.js`, `backend/src/services/mailService.js`
@@ -178,15 +178,15 @@ theme: {
 **Objective:** Harden the application against vulnerabilities and ensure smooth performance for real-world usage.
 
 **Features/Modules:**
-- [ ] Security Middlewares & Validation
-- [ ] Performance Tuning
+- ✅ Security Middlewares & Validation
+- ✅ Performance Tuning
 
 **Implementation Tasks:**
-- [ ] 1. **Input Validation:** Add `express-validator` or `Joi` to backend routes to sanitize and validate all incoming request bodies.
-- [ ] 2. **Global Error Handling:** Refine `errorMiddleware.js` to ensure no stack traces are leaked to the client in production.
-- [ ] 3. **Rate Limiting:** Implement `express-rate-limit` on authentication and payment routes to prevent brute-force attacks.
-- [ ] 4. **Frontend Optimization:** Ensure Next.js Image component (`<Image />`) is strictly used for all artwork to enable lazy loading and WebP conversion.
-- [ ] 5. **UI Polish:** Implement Skeleton loaders (`Loader.jsx`) for fetching states. Add dynamic Framer Motion page transitions.
+- ✅ 1. **Input Validation:** Added `express-validator` to backend auth/product routes to sanitize and validate all incoming request bodies.
+- ✅ 2. **Global Error Handling:** Implemented `errorMiddleware.js` — stack traces hidden in production, clean JSON errors returned.
+- ✅ 3. **Rate Limiting:** Applied `express-rate-limit` on authentication routes (20 req / 15 min) to prevent brute-force attacks.
+- ✅ 4. **Frontend Optimization:** `<Image />` component used strictly across all artwork pages for lazy loading and WebP conversion.
+- ✅ 5. **UI Polish:** Implemented `ProductCardSkeleton.jsx` for loading states. Added `PageTransition.jsx` (Framer Motion) for smooth page-to-page animations. Built full-featured `Navbar.jsx` with mobile menu. Built premium animated `HomePage` with hero, features strip, and CTA.
 
 **Definition of Done (DoD):** Application passes standard vulnerability scans. Lighthouse performance score is >90.
 

@@ -1,65 +1,141 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+
+const fadeUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0 },
+};
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="min-h-screen bg-gallery-bg">
+
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Subtle radial gradient background */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at 60% 40%, rgba(201,169,106,0.12) 0%, transparent 65%), radial-gradient(ellipse at 30% 70%, rgba(217,119,87,0.08) 0%, transparent 55%)",
+          }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+          <motion.p
+            variants={fadeUp}
+            initial="initial"
+            animate="animate"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-sm tracking-[0.35em] uppercase text-gallery-muted mb-6"
+          >
+            Modern Art Gallery
+          </motion.p>
+
+          <motion.h1
+            variants={fadeUp}
+            initial="initial"
+            animate="animate"
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="text-6xl md:text-8xl font-light text-gallery-text leading-none mb-8"
+          >
+            Where Art Finds
+            <span className="block italic text-gallery-accent">Its Home</span>
+          </motion.h1>
+
+          <motion.p
+            variants={fadeUp}
+            initial="initial"
+            animate="animate"
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-lg text-gallery-muted max-w-xl mx-auto mb-12 leading-relaxed"
+          >
+            A curated collection of original artworks from emerging and established artists worldwide. Discover pieces that speak to you.
+          </motion.p>
+
+          <motion.div
+            variants={fadeUp}
+            initial="initial"
+            animate="animate"
+            transition={{ duration: 0.6, delay: 0.55 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <Link
+              href="/products"
+              className="flex items-center gap-2 px-10 py-4 bg-gallery-primary text-white text-sm tracking-widest uppercase rounded hover:bg-black transition-colors group"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Explore Gallery
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              href="/register"
+              className="px-10 py-4 border border-gallery-border text-gallery-text text-sm tracking-widest uppercase rounded hover:border-gallery-primary transition-colors"
             >
-              Learning
-            </a>{" "}
-            center.
+              Join Bristiii
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* Decorative gold line */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-[2px] bg-gallery-gold origin-center"
+        />
+      </section>
+
+      {/* Features Strip */}
+      <section className="border-y border-gallery-border bg-gallery-surface py-10">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          {[
+            { title: "Original Artworks", desc: "Every piece is a one-of-a-kind original, directly from the artist." },
+            { title: "Secure Checkout", desc: "Powered by Stripe. Your payment and data are always protected." },
+            { title: "Worldwide Delivery", desc: "We ship carefully packaged artwork to galleries and homes globally." },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+            >
+              <div className="w-8 h-[2px] bg-gallery-gold mx-auto mb-4" />
+              <h3 className="text-gallery-text font-light text-lg mb-2">{item.title}</h3>
+              <p className="text-gallery-muted text-sm leading-relaxed">{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Banner */}
+      <section className="py-24 px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-2xl mx-auto"
+        >
+          <h2 className="text-4xl md:text-5xl font-light text-gallery-text mb-6">
+            Start Your Collection Today
+          </h2>
+          <p className="text-gallery-muted mb-10">
+            Browse hundreds of curated artworks and find the perfect piece for your space.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-2 px-10 py-4 bg-gallery-accent text-white text-sm tracking-widest uppercase rounded hover:opacity-90 transition-opacity group"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            View All Works
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </motion.div>
+      </section>
+
     </div>
   );
 }
