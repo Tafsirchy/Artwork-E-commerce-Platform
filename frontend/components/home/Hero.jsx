@@ -29,13 +29,17 @@ const galleryImages = [
 
 function ShatterGallery() {
   const [index, setIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % galleryImages.length);
     }, 2000); // Super fast cycle for high energy
     return () => clearInterval(timer);
   }, []);
+
+  if (!isMounted) return <div className="relative aspect-[4/5] w-full max-w-[380px] mx-auto rounded-[2.5rem] bg-[#FAF8F5]/50 animate-pulse" />;
 
   return (
     <div className="relative aspect-[4/5] w-full max-w-[380px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.18)] bg-[#FAF8F5] border border-white/60">
