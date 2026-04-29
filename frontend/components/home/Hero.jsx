@@ -29,16 +29,20 @@ const galleryImages = [
 ];
 
 function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
-  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full rounded-3xl bg-gallery-soft/20 animate-pulse`} />;
+  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full rounded-3xl bg-gallery-soft/30 animate-pulse`} />;
 
   return (
-    <div className={`relative ${aspect} w-full rounded-3xl overflow-hidden shadow-xl bg-[#FAF8F5] border border-white/40 group hover:shadow-2xl transition-all duration-500`}>
+    <motion.div 
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className={`relative ${aspect} w-full rounded-3xl overflow-hidden shadow-xl bg-[#FAF8F5] border border-white/40 group transition-all duration-500`}
+    >
       <AnimatePresence mode="wait">
         <motion.div key={imageSrc} className="absolute inset-0">
           {shards.map((shard, i) => (
             <motion.div
               key={i}
-              initial={{ x: (Math.random() - 0.5) * 400, y: (Math.random() - 0.5) * 400, rotate: (Math.random() - 0.5) * 90, opacity: 0, scale: 0.5 }}
+              initial={{ x: (Math.random() - 0.5) * 400, y: (Math.random() - 0.5) * 400, rotate: (Math.random() - 0.5) * 45, opacity: 0, scale: 0.5 }}
               animate={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)", transition: { duration: 0.2 } }}
               transition={{ type: "spring", stiffness: 260, damping: 24, delay: i * 0.008 }}
@@ -51,7 +55,7 @@ function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: [0, 0.3, 0] }} transition={{ delay: 0.4, duration: 0.4 }} className="absolute inset-0 bg-white z-30 pointer-events-none" />
         </motion.div>
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
@@ -72,32 +76,40 @@ function TripleCluster() {
 
   useEffect(() => {
     setIsMounted(true);
-    // Initial Setup
     const shuffled = [...galleryImages].sort(() => Math.random() - 0.5);
     setCurrentImages(shuffled.slice(0, 3));
-
-    // Staggered Timers
     const t1 = setInterval(() => updateSlot(0), 2500);
     const t2 = setInterval(() => updateSlot(1), 3200);
     const t3 = setInterval(() => updateSlot(2), 4000);
-
     return () => { clearInterval(t1); clearInterval(t2); clearInterval(t3); };
   }, [updateSlot]);
 
   return (
-    <div className="relative w-full max-w-[480px] mx-auto h-[450px]">
-      {/* FRAME 1: TOP RIGHT (PORTRAIT) */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="absolute top-0 right-0 w-[55%] z-10">
+    <div className="relative w-full max-w-[420px] mx-auto h-[420px]">
+      {/* FRAME 1: TOP RIGHT (Back Layer) */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="absolute top-0 right-0 w-[55%] z-10"
+      >
         <ShatterFrame imageSrc={currentImages[0]} isMounted={isMounted} aspect="aspect-[3/4]" />
       </motion.div>
 
-      {/* FRAME 2: MIDDLE LEFT (SQUARE) */}
-      <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="absolute top-[18%] left-0 w-[58%] z-30 drop-shadow-[0_20px_40px_rgba(0,0,0,0.12)]">
+      {/* FRAME 2: MIDDLE LEFT (Middle Layer) */}
+      <motion.div 
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="absolute top-[20%] left-0 w-[58%] z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
+      >
         <ShatterFrame imageSrc={currentImages[1]} isMounted={isMounted} aspect="aspect-square" />
       </motion.div>
 
-      {/* FRAME 3: BOTTOM RIGHT (LANDSCAPE) */}
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="absolute bottom-0 right-[2%] w-[62%] z-20 shadow-lg">
+      {/* FRAME 3: BOTTOM RIGHT (Front Layer) */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="absolute bottom-0 right-[-8%] w-[82%] z-30 shadow-2xl"
+      >
         <ShatterFrame imageSrc={currentImages[2]} isMounted={isMounted} aspect="aspect-[3/2]" />
       </motion.div>
     </div>
