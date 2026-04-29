@@ -1,12 +1,107 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Sparkles, MoveUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-// --- THE FLUID MIXING ENGINE ---
+// --- SHARD DATA FOR THE BROKEN IMAGE EFFECT ---
+const shards = [
+  { top: "0%", left: "0%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 0, 85% 100%, 0 100%)" },
+  { top: "0%", left: "33%", width: "34%", height: "34%", clip: "polygon(15% 0, 100% 0, 100% 85%, 0 100%)" },
+  { top: "0%", left: "66%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 0, 100% 100%, 15% 85%)" },
+  { top: "33%", left: "0%", width: "34%", height: "34%", clip: "polygon(0 15%, 85% 0, 100% 100%, 0 100%)" },
+  { top: "33%", left: "33%", width: "34%", height: "34%", clip: "polygon(15% 15%, 85% 15%, 85% 85%, 15% 85%)" },
+  { top: "33%", left: "66%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 15%, 100% 100%, 15% 100%)" },
+  { top: "66%", left: "0%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 15%, 100% 100%, 0 100%)" },
+  { top: "66%", left: "33%", width: "34%", height: "34%", clip: "polygon(15% 0, 85% 0, 100% 100%, 0 100%)" },
+  { top: "66%", left: "66%", width: "34%", height: "34%", clip: "polygon(15% 0, 100% 0, 100% 100%, 0 85%)" },
+];
+
+const galleryImages = [
+  "https://images4.alphacoders.com/131/1314643.jpg", // Spirited Away
+  "https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1501472312651-726afe119ff1?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=1200&q=80"
+];
+
+function ShatterGallery() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % galleryImages.length);
+    }, 3000); // Fast but viewable cycle
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="relative aspect-[4/5] w-full max-w-[480px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.15)] bg-[#FAF8F5] border border-white/60">
+      <AnimatePresence mode="wait">
+        <motion.div key={index} className="absolute inset-0">
+          {shards.map((shard, i) => (
+            <motion.div
+              key={i}
+              initial={{ 
+                x: (Math.random() - 0.5) * 600, 
+                y: (Math.random() - 0.5) * 600, 
+                rotate: (Math.random() - 0.5) * 120,
+                opacity: 0,
+                scale: 0.5
+              }}
+              animate={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
+              exit={{ 
+                x: (Math.random() - 0.5) * 300, 
+                y: (Math.random() - 0.5) * 300, 
+                opacity: 0,
+                scale: 0.8,
+                transition: { duration: 0.5 } 
+              }}
+              transition={{ 
+                duration: 1.2, 
+                ease: [0.16, 1, 0.3, 1],
+                delay: i * 0.03
+              }}
+              className="absolute overflow-hidden"
+              style={{
+                top: shard.top,
+                left: shard.left,
+                width: shard.width,
+                height: shard.height,
+                clipPath: shard.clip,
+                zIndex: 10
+              }}
+            >
+              <div 
+                className="absolute w-[300%] h-[300%]" 
+                style={{ 
+                  left: `-${(i % 3) * 100}%`, 
+                  top: `-${Math.floor(i / 3) * 100}%`,
+                  backgroundImage: `url(${galleryImages[index]})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Glossy Overlay Shimmer */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 z-20 pointer-events-none" />
+
+      {/* Floating Card Content */}
+      <div className="absolute bottom-8 left-8 right-8 z-30 p-8 bg-white/40 backdrop-blur-2xl rounded-[1.8rem] border border-white/40 shadow-xl">
+        <p className="text-[9px] tracking-[0.6em] uppercase text-gallery-muted mb-3 font-medium">Broken to Whole / Continuous</p>
+        <h3 className="text-2xl font-light text-gallery-text tracking-wide italic">The Reassembling Soul</h3>
+      </div>
+    </div>
+  );
+}
+
+// --- FLUID INK SYSTEM FOR BACKGROUND MIXING ---
 class FluidInk {
   constructor(x, y, hue) {
     this.x = x;
@@ -15,7 +110,7 @@ class FluidInk {
     this.vx = (Math.random() - 0.5) * 4;
     this.vy = (Math.random() - 0.5) * 4;
     this.radius = Math.random() * 25 + 15;
-    this.alpha = 0.45;
+    this.alpha = 0.4;
     this.decay = 0.004;
   }
 
@@ -32,7 +127,6 @@ class FluidInk {
     const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
     gradient.addColorStop(0, `hsla(${this.hue}, 90%, 70%, ${this.alpha})`);
     gradient.addColorStop(1, `hsla(${this.hue}, 90%, 70%, 0)`);
-    
     ctx.globalCompositeOperation = "screen";
     ctx.fillStyle = gradient;
     ctx.beginPath();
@@ -40,8 +134,6 @@ class FluidInk {
     ctx.fill();
   }
 }
-
-const HERO_ARTWORK = "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=2400&q=80"; // High-res stable artwork source
 
 export default function Hero() {
   const canvasRef = useRef(null);
@@ -63,19 +155,16 @@ export default function Hero() {
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       if (isHovered && mouse.current.x > 0) {
         if (Math.random() > 0.4) {
           inks.current.push(new FluidInk(mouse.current.x, mouse.current.y, (Date.now() / 20) % 360));
         }
       }
-
       inks.current = inks.current.filter(ink => ink.alpha > 0);
       inks.current.forEach(ink => {
         ink.update();
         ink.draw(ctx);
       });
-
       animationId = requestAnimationFrame(render);
     };
 
@@ -101,25 +190,18 @@ export default function Hero() {
       onMouseLeave={() => setIsHovered(false)}
       className="relative min-h-screen bg-[#F5F1EB] flex items-center overflow-hidden"
     >
-      {/* BACKGROUND: THE REFLECTION WORLD */}
+      {/* BACKGROUND LAYER */}
       <div className="absolute inset-0 z-0">
-        <Image 
-          src={HERO_ARTWORK} 
-          alt="Spirited Reflection" 
-          fill 
-          priority
-          className="object-cover opacity-20 grayscale-[0.5] scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#F5F1EB] via-[#F5F1EB]/90 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,1),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(201,171,110,0.1),transparent_40%)]" />
       </div>
 
       {/* INTERACTIVE FLUID LAYER */}
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-multiply" />
 
       {/* CONTENT GRID */}
-      <div className="relative z-20 max-w-7xl mx-auto px-12 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 md:gap-24">
+      <div className="relative z-20 max-w-7xl mx-auto px-12 grid grid-cols-1 lg:grid-cols-2 items-center gap-24 py-20">
         
-        {/* LEFT: MINIMAL TEXT */}
+        {/* LEFT CONTENT */}
         <div className="max-w-2xl">
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -127,20 +209,20 @@ export default function Hero() {
             transition={{ duration: 1.2, ease: "easeOut" }}
           >
             <div className="mb-8 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
-              <Sparkles size={16} className="text-gallery-gold" />
-              <span className="text-[10px] tracking-[0.4em] uppercase text-gallery-text">Where Souls Mirror Beauty</span>
+              <Sparkles size={16} className="text-gallery-gold animate-pulse" />
+              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Pastel Veil for Living Art</span>
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-light text-gallery-text leading-[1.0] mb-10">
-              A Pastel Veil <br /> 
-              <span className="italic text-gallery-accent">Living Art.</span>
+            <h1 className="text-7xl md:text-[7rem] font-light text-gallery-text leading-[0.9] mb-10">
+              Where Souls <br /> 
+              <span className="italic text-gallery-accent">Conspire.</span>
             </h1>
             
-            <p className="text-gallery-muted text-xl font-light leading-relaxed mb-12 max-w-lg">
+            <p className="text-gallery-muted text-xl font-light leading-relaxed mb-16 max-w-lg">
               A soft painterly field covers the artwork, then opens only where your cursor moves. The reveal feels like brushing light back onto the canvas.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-8">
+            <div className="flex flex-col sm:flex-row items-center gap-10">
               <Link
                 href="/products"
                 className="group relative px-12 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1"
@@ -150,7 +232,7 @@ export default function Hero() {
               </Link>
               <Link
                 href="/about"
-                className="text-[10px] tracking-[0.4em] uppercase text-gallery-text border-b border-gallery-border pb-1 hover:text-gallery-accent hover:border-gallery-accent transition-all"
+                className="text-[10px] tracking-[0.5em] uppercase text-gallery-text border-b border-gallery-border pb-1 hover:text-gallery-accent hover:border-gallery-accent transition-all"
               >
                 The Artist's Story
               </Link>
@@ -158,36 +240,13 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* RIGHT: THE INTERACTIVE CARD */}
+        {/* RIGHT CONTENT: THE SHATTER GALLERY */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95, x: 40 }}
           animate={{ opacity: 1, scale: 1, x: 0 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
-          className="relative group w-full"
         >
-          <div className="relative aspect-[4/5] w-full max-w-[480px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_40px_120px_-20px_rgba(0,0,0,0.12)] border border-white/60 bg-white/20 backdrop-blur-sm">
-            <Image 
-              src={HERO_ARTWORK} 
-              alt="Spirited Away" 
-              fill 
-              className="object-cover transition-transform duration-1000 group-hover:scale-105"
-            />
-            {/* Shimmer Effect on Hover */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-            
-            {/* Reveal Label Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-               <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-full border border-white/40 flex items-center justify-center">
-                  <MoveUpRight size={24} className="text-white" />
-               </div>
-            </div>
-
-            {/* Card Info Box */}
-            <div className="absolute bottom-8 left-8 right-8 p-8 bg-white/40 backdrop-blur-2xl rounded-[1.8rem] border border-white/40 shadow-xl">
-              <p className="text-[9px] tracking-[0.5em] uppercase text-gallery-muted mb-3 font-medium">Revealed only by touch</p>
-              <h3 className="text-2xl font-light text-gallery-text tracking-wide">Spirited Reflection / Hover Gallery</h3>
-            </div>
-          </div>
+          <ShatterGallery />
         </motion.div>
 
       </div>
