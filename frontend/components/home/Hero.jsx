@@ -10,170 +10,146 @@ export default function Hero() {
   const canvasRef = useRef(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const [isMounted, setIsMounted] = useState(false);
 
-  // Parallax Springs
+  // Smooth parallax effect for text
   const springConfig = { damping: 25, stiffness: 150 };
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
   const rotateX = useTransform(smoothY, [-0.5, 0.5], ["5deg", "-5deg"]);
   const rotateY = useTransform(smoothX, [-0.5, 0.5], ["-5deg", "5deg"]);
-  const translateX = useTransform(smoothX, [-0.5, 0.5], ["-20px", "20px"]);
-  const translateY = useTransform(smoothY, [-0.5, 0.5], ["-20px", "20px"]);
+  const translateX = useTransform(smoothX, [-0.5, 0.5], ["-30px", "30px"]);
+  const translateY = useTransform(smoothY, [-0.5, 0.5], ["-30px", "30px"]);
 
-  // --- PARTICLE SYSTEM LOGIC ---
+  // --- GENERATIVE ART LOGIC (The "Human-Surpassing" Artist) ---
   useEffect(() => {
-    setIsMounted(true);
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     let particles = [];
-    let animationFrameId;
+    let animationFrame;
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
+    window.addEventListener("resize", resize);
+    resize();
 
     class Particle {
-      constructor(x, y) {
+      constructor(x, y, color) {
         this.x = x;
         this.y = y;
-        this.size = Math.random() * 15 + 5;
-        this.speedX = Math.random() * 2 - 1;
-        this.speedY = Math.random() * 2 - 1;
-        this.color = `hsla(${Math.random() * 360}, 70%, 60%, 0.8)`;
-        this.alpha = 1;
-        this.decay = Math.random() * 0.01 + 0.005;
+        this.size = Math.random() * 5 + 1;
+        this.speedX = Math.random() * 3 - 1.5;
+        this.speedY = Math.random() * 3 - 1.5;
+        this.color = color;
+        this.opacity = 1;
       }
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
-        this.alpha -= this.decay;
-        this.size *= 0.99;
+        if (this.size > 0.2) this.size -= 0.05;
+        this.opacity -= 0.01;
       }
       draw() {
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
-        ctx.beginPath();
-        // Artistic "brush" shape (irregular circle)
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.opacity;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
-        // Add a soft glow
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = this.color;
-        ctx.restore();
       }
     }
 
-    const animate = () => {
+    const init = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].update();
-        particles[i].draw();
-        if (particles[i].alpha <= 0) {
-          particles.splice(i, 1);
-          i--;
+      // Subtle background fade (trailing effect)
+      ctx.fillStyle = "rgba(245, 241, 235, 0.05)"; 
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((p, i) => {
+        p.update();
+        p.draw();
+        if (p.opacity <= 0) particles.splice(i, 1);
+      });
+
+      // Auto-painting "Ghost" Brush
+      if (Math.random() > 0.9) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const hue = (Date.now() / 50) % 360;
+        for (let i = 0; i < 3; i++) {
+          particles.push(new Particle(x, y, `hsl(${hue}, 70%, 60%)`));
         }
       }
-      animationFrameId = requestAnimationFrame(animate);
+
+      animationFrame = requestAnimationFrame(init);
     };
 
-    const handleMouseMoveInternal = (e) => {
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      mouseX.set((clientX / innerWidth) - 0.5);
-      mouseY.set((clientY / innerHeight) - 0.5);
-      
-      // Spawn artistic particles (paint strokes)
-      for (let i = 0; i < 3; i++) {
-        particles.push(new Particle(clientX, clientY));
+    init();
+
+    const handlePaint = (e) => {
+      const hue = (Date.now() / 10) % 360;
+      for (let i = 0; i < 5; i++) {
+        particles.push(new Particle(e.clientX, e.clientY, `hsl(${hue}, 80%, 60%)`));
       }
+      
+      // Update motion values for parallax
+      const { innerWidth, innerHeight } = window;
+      mouseX.set((e.clientX / innerWidth) - 0.5);
+      mouseY.set((e.clientY / innerHeight) - 0.5);
     };
 
-    window.addEventListener("resize", resize);
-    window.addEventListener("mousemove", handleMouseMoveInternal);
-    resize();
-    animate();
-
+    window.addEventListener("mousemove", handlePaint);
     return () => {
       window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", handleMouseMoveInternal);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("mousemove", handlePaint);
+      cancelAnimationFrame(animationFrame);
     };
   }, []);
 
-  if (!isMounted) return null;
-
   return (
-    <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-gallery-bg">
-      {/* --- LAYER 0: The Artist's Canvas (The Magic!) --- */}
+    <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-gallery-bg cursor-none">
+      
+      {/* --- THE GENERATIVE CANVAS (The "Invisible Artist") --- */}
       <canvas 
         ref={canvasRef}
-        className="absolute inset-0 z-40 pointer-events-none mix-blend-multiply opacity-60"
+        className="absolute inset-0 z-0 pointer-events-none opacity-60 mix-blend-multiply"
       />
 
-      {/* --- LAYER 1: Deep Background --- */}
-      <div className="absolute inset-0 z-0">
-        <motion.div 
-          style={{ x: translateX, y: translateY, scale: 1.05 }}
-          className="absolute inset-0 opacity-30 grayscale-[0.8]"
-        >
-          <Image
-            src="/gallery_hero_bg_1777459017637.png"
-            alt="Deep Canvas"
-            fill
-            className="object-cover"
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-b from-gallery-bg/40 via-transparent to-gallery-bg" />
-      </div>
+      {/* --- STATIC OVERLAYS --- */}
+      <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-transparent via-gallery-bg/10 to-gallery-bg" />
 
-      {/* --- LAYER 2: The "Blooming" Ink (Center) --- */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 2, ease: "easeOut" }}
-        className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
-      >
+      {/* --- MAIN PORTAL CONTENT --- */}
+      <div className="relative z-30 max-w-6xl mx-auto px-6 text-center">
         <motion.div
-          style={{ rotate: rotateY, x: useTransform(smoothX, [-0.5, 0.5], ["80px", "-80px"]) }}
-          className="relative w-[70vw] h-[70vw] opacity-20 mix-blend-multiply blur-3xl"
-        >
-          <Image src="/ink_bloom_gold_1777463235353.png" alt="Ink Bloom" fill className="object-contain" />
-        </motion.div>
-      </motion.div>
-
-      {/* --- LAYER 3: Main Content (The Portal) --- */}
-      <div className="relative z-50 max-w-5xl mx-auto px-6 text-center">
-        <motion.div
-          style={{ rotateX, rotateY }}
+          style={{ rotateX, rotateY, x: translateX, y: translateY }}
           className="relative perspective-1000"
         >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-6 flex justify-center"
           >
-            <div className="px-5 py-1.5 border border-gallery-gold/40 rounded-full flex items-center gap-3 bg-white/5 backdrop-blur-md">
+            <div className="px-6 py-2 border border-gallery-gold/40 rounded-full flex items-center gap-3 bg-white/40 backdrop-blur-xl">
               <Sparkles className="text-gallery-gold animate-spin-slow" size={14} />
-              <span className="text-[10px] tracking-[0.4em] uppercase text-gallery-gold font-medium">The Living Canvas</span>
+              <span className="text-[10px] tracking-[0.6em] uppercase text-gallery-text font-bold">The Living Canvas</span>
             </div>
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, scale: 0.98 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-6xl md:text-8xl font-light text-gallery-text leading-[1.1] mb-8 pointer-events-none select-none"
+            className="text-7xl md:text-9xl font-light text-gallery-text leading-[1.05] mb-8"
           >
-            Unveil Your <br /> 
-            <span className="relative italic text-gallery-accent group">
-              Inner Vision.
-              <motion.span 
-                className="absolute -inset-4 bg-gallery-accent/5 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"
+            Art That <br /> 
+            <span className="relative inline-block italic text-gallery-accent">
+              Self-Creates.
+              <motion.div 
+                className="absolute -inset-4 bg-gallery-gold/10 blur-3xl -z-10 rounded-full"
+                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 4, repeat: Infinity }}
               />
             </span>
           </motion.h1>
@@ -182,34 +158,38 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-lg text-gallery-muted max-w-xl mx-auto mb-12 leading-relaxed font-light pointer-events-none"
+            className="text-lg text-gallery-muted max-w-xl mx-auto mb-12 leading-relaxed font-light tracking-wide"
           >
-            The cursor is your brush, the screen is your sanctuary. <br />
-            Move to paint, hover to bloom, stay to discover.
+            Move your cursor to paint your own soul onto our infinite gallery. <br />
+            Experience generative beauty that "arts like a man never can."
           </motion.p>
 
-          <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-8"
-          >
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-10">
             <Link
               href="/products"
-              className="relative group px-12 py-5 bg-gallery-primary text-white text-[10px] tracking-[0.4em] uppercase overflow-hidden"
+              className="group relative px-16 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden"
             >
               <span className="relative z-10 flex items-center gap-3">
-                Begin Exploring <ArrowRight size={14} />
+                Explore The Void <ArrowRight size={16} />
               </span>
               <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
             </Link>
             
             <Link
               href="/about"
-              className="px-12 py-5 border border-gallery-border text-gallery-text text-[10px] tracking-[0.4em] uppercase hover:bg-gallery-surface transition-all"
+              className="text-[10px] tracking-[0.5em] uppercase text-gallery-text border-b border-gallery-text/20 pb-2 hover:border-gallery-gold transition-colors"
             >
-              Our Philosophy
+              The Artist's Soul
             </Link>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
+
+      {/* --- CUSTOM ARTISTIC CURSOR --- */}
+      <motion.div 
+        style={{ x: useSpring(useTransform(mouseX, [-0.5, 0.5], [0, 2000]), { damping: 20 }), y: useSpring(useTransform(mouseY, [-0.5, 0.5], [0, 1000]), { damping: 20 }) }}
+        className="fixed w-4 h-4 bg-gallery-gold rounded-full pointer-events-none mix-blend-difference z-50 blur-[2px]"
+      />
 
     </section>
   );
