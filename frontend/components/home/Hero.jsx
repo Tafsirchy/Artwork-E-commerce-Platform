@@ -28,7 +28,6 @@ const galleryImages = [
   "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=687&auto=format&fit=crop"
 ];
 
-// COMPLEX 5-SLOT MATRIX
 const layoutSlots = [
   { id: "A", class: "absolute top-0 right-0 w-[50%]", aspect: "aspect-[3/4]", z: "z-10" },
   { id: "B", class: "absolute top-[15%] left-0 w-[55%]", aspect: "aspect-square", z: "z-20" },
@@ -88,7 +87,6 @@ function TripleCluster() {
   }, []);
 
   const shuffleLayout = useCallback(() => {
-    // COMPLEX SHUFFLE: Pick 3 unique random slots from the pool of 5
     const allIndices = [0, 1, 2, 3, 4];
     const picked = allIndices.sort(() => Math.random() - 0.5).slice(0, 3);
     setSlotIndices(picked);
@@ -137,18 +135,48 @@ function TripleCluster() {
 }
 
 class FluidInk {
-  constructor(x, y, hue) {
+  constructor(x, y, hue, vx = 0, vy = 0, isEraser = false) {
     this.x = x; this.y = y; this.hue = hue;
-    this.vx = (Math.random() - 0.5) * 4; this.vy = (Math.random() - 0.5) * 4;
-    this.radius = Math.random() * 25 + 15; this.alpha = 0.4; this.decay = 0.004;
+    this.isEraser = isEraser;
+    // Erasers are static (no drift) for absolute clean
+    this.vx = isEraser ? 0 : (vx !== 0 ? (vx + (Math.random() - 0.5) * 4) : (Math.random() - 0.5) * 12); 
+    this.vy = isEraser ? 0 : (vy !== 0 ? (vy + (Math.random() - 0.5) * 4) : (Math.random() - 0.5) * 12);
+    this.radius = isEraser ? (Math.random() * 20 + 20) : (Math.random() * 80 + 40); 
+    this.alpha = isEraser ? 1.0 : 0.05; 
+    this.decay = isEraser ? 0.01 : 0.001; 
   }
-  update() { this.x += this.vx; this.y += this.vy; this.vx *= 0.99; this.vy *= 0.99; this.alpha -= this.decay; this.radius += 0.3; }
+
+  update(mouseX, mouseY) { 
+    // REPULSION ENGINE: Push colors away from mouse
+    if (!this.isEraser && mouseX > -500) {
+      const dx = this.x - mouseX;
+      const dy = this.y - mouseY;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 180) {
+        const force = (180 - dist) / 180;
+        this.vx += (dx / dist) * force * 1.2;
+        this.vy += (dy / dist) * force * 1.2;
+      }
+    }
+
+    this.x += this.vx; this.y += this.vy; 
+    this.vx *= 0.995; this.vy *= 0.995; 
+    this.alpha -= this.decay; 
+    this.radius += (this.isEraser ? 1.2 : 0.2); 
+  }
+
   draw(ctx) {
-    const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-    gradient.addColorStop(0, `hsla(${this.hue}, 90%, 70%, ${this.alpha})`);
-    gradient.addColorStop(1, `hsla(${this.hue}, 90%, 70%, 0)`);
-    ctx.globalCompositeOperation = "screen"; ctx.fillStyle = gradient;
-    ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
+    if (this.isEraser) {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+    } else {
+      ctx.globalCompositeOperation = "screen";
+      ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.alpha})`;
+    }
+    
+    ctx.beginPath(); 
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
+    ctx.fill();
   }
 }
 
@@ -157,27 +185,49 @@ export default function Hero() {
   const containerRef = useRef(null);
   const inks = useRef([]);
   const mouse = useRef({ x: -1000, y: -1000 });
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     let animationId;
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    
+    const resize = () => { 
+      canvas.width = window.innerWidth; 
+      canvas.height = window.innerHeight; 
+    };
+
     const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (isHovered && mouse.current.x > 0) {
-        if (Math.random() > 0.4) { inks.current.push(new FluidInk(mouse.current.x, mouse.current.y, (Date.now() / 20) % 360)); }
-      }
+      const w = canvas.width;
+      const h = canvas.height;
+      
+      const cornerRate = 0.15;
+      const cornerSources = [
+        {x: 0, y: 0, vx: 5, vy: 5},      
+        {x: w, y: 0, vx: -5, vy: 5},     
+        {x: 0, y: h, vx: 5, vy: -5},     
+        {x: w, y: h, vx: -5, vy: -5}     
+      ];
+
+      cornerSources.forEach((pos, idx) => {
+        if (Math.random() < cornerRate) {
+          const rainbowHue = (Date.now() / 6 + (idx * 90)) % 360;
+          inks.current.push(new FluidInk(pos.x, pos.y, rainbowHue, pos.vx, pos.vy));
+        }
+      });
+
       inks.current = inks.current.filter(ink => ink.alpha > 0);
-      inks.current.forEach(ink => { ink.update(); ink.draw(ctx); });
+      inks.current.forEach(ink => { 
+        ink.update(mouse.current.x, mouse.current.y); 
+        ink.draw(ctx); 
+      });
       animationId = requestAnimationFrame(render);
     };
+
     window.addEventListener("resize", resize);
     resize(); render();
     return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(animationId); };
-  }, [isHovered]);
+  }, []);
 
   return (
     <section 
@@ -186,24 +236,33 @@ export default function Hero() {
         const rect = e.currentTarget.getBoundingClientRect();
         mouse.current.x = e.clientX - rect.left;
         mouse.current.y = e.clientY - rect.top;
+        
+        // ABSOLUTE CLEAN: Static solid eraser brush
+        inks.current.push(new FluidInk(mouse.current.x, mouse.current.y, 0, 0, 0, true));
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onPointerLeave={() => {
+        mouse.current.x = -1000;
+        mouse.current.y = -1000;
+      }}
       className="relative h-[85vh] bg-[#F5F1EB] flex items-center overflow-hidden"
+      style={{ 
+        backgroundImage: "url('/Hero-bg.jpg')", 
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center' 
+      }}
     >
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,1),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(201,171,110,0.1),transparent_40%)]" />
-      </div>
-      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-multiply" />
+      <div className="absolute inset-0 z-0 bg-black/5" />
+      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-screen opacity-95" />
+      
       <div className="relative z-20 max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
         <div className="max-w-2xl">
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1.2, ease: "easeOut" }}>
             <div className="mb-4 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
               <Sparkles size={16} className="text-gallery-gold animate-pulse" />
-              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Pastel Veil for Living Art</span>
+              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Pure Spectrum for Living Art</span>
             </div>
             <h1 className="text-5xl md:text-[5.2rem] font-light text-gallery-text leading-[0.9] mb-4">Where Souls <br /><span className="italic text-gallery-accent">Conspire.</span></h1>
-            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">A soft painterly field covers the artwork, then opens only where your cursor moves. The reveal feels like brushing light back onto the canvas.</p>
+            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Colors erupt and accumulate, only to be pushed aside by your touch. Brush away the veil to reveal the hidden world with absolute clarity.</p>
             <div className="flex flex-col sm:flex-row items-center gap-12">
               <Link href="/products" className="group relative px-14 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1">
                 <span className="relative z-10">Explore Collection</span>
