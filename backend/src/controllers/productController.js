@@ -29,18 +29,36 @@ const getProductById = async (req, res, next) => {
   }
 };
 
+const axios = require("axios");
+
 // @desc    Create a product
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = async (req, res, next) => {
   try {
     const { title, description, price, stock, creator, category } = req.body;
+    
     if (!req.file) {
       res.status(400);
       throw new Error("Please upload an artwork image");
     }
 
-    const imageUrl = `/uploads/${req.file.filename}`;
+    // Upload to ImgBB
+    const imageBase64 = req.file.buffer.toString("base64");
+    const formData = new URLSearchParams();
+    formData.append("image", imageBase64);
+
+    const imgbbRes = await axios.post(
+      `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`,
+      formData
+    );
+
+    if (!imgbbRes.data || !imgbbRes.data.data.url) {
+      res.status(500);
+      throw new Error("ImgBB Upload Failed");
+    }
+
+    const imageUrl = imgbbRes.data.data.url;
 
     const product = new Product({
       title,

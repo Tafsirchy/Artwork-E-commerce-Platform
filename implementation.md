@@ -206,7 +206,7 @@ theme: {
 **Objective:** Launch the application to a live environment.
 
 **Implementation Tasks:**
-- [ ] 1. **Cloud Storage:** Move from local `uploads/` to AWS S3 or Cloudinary for product image hosting.
+- ✅ 1. **Cloud Storage:** Integrated **ImgBB API** for artwork image hosting. Replaced local `uploads/` with a high-speed cloud solution.
 - ✅ 2. **Database:** MongoDB Atlas is configured and connected via `.env` MONGO_URI.
 - [ ] 3. **Frontend Deployment:** Deploy the Next.js application to Vercel.
 - [ ] 4. **Backend Deployment:** Deploy the Express API to a scalable service like Render or Railway.
