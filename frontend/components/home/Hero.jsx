@@ -109,7 +109,7 @@ function TripleCluster() {
         transition={{ duration: 1, delay: 0.2 }}
         className="absolute top-0 right-0 w-[65%] z-10"
       >
-        <ShatterFrame initialIndex={0} cycleDelay={200} />
+        <ShatterFrame initialIndex={0} cycleDelay={0} />
       </motion.div>
 
       {/* FRAME 2: MIDDLE LEFT */}
@@ -119,7 +119,7 @@ function TripleCluster() {
         transition={{ duration: 1, delay: 0.4 }}
         className="absolute top-[15%] left-0 w-[60%] z-30 drop-shadow-[0_35px_35px_rgba(0,0,0,0.2)]"
       >
-        <ShatterFrame initialIndex={1} cycleDelay={500} />
+        <ShatterFrame initialIndex={2} cycleDelay={600} />
       </motion.div>
 
       {/* FRAME 3: BOTTOM RIGHT */}
@@ -129,7 +129,7 @@ function TripleCluster() {
         transition={{ duration: 1, delay: 0.6 }}
         className="absolute bottom-0 right-[5%] w-[55%] z-20 shadow-2xl"
       >
-        <ShatterFrame initialIndex={2} cycleDelay={800} />
+        <ShatterFrame initialIndex={4} cycleDelay={1200} />
       </motion.div>
     </div>
   );
