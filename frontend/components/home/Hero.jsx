@@ -30,41 +30,41 @@ const galleryImages = [
   "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?q=80&w=880&auto=format&fit=crop"
 ];
 
-// PRECISION ALIGNED GRID (Fixed Left Alignment & Spacing)
+// PERFECT REPLICA GRID (Based on reference Image 2)
 const gridLayout = [
-  // COLUMN 1: LEFT SIDEBAR (Locked to 0% to align with Navbar Logo)
-  { id: 1, top: "5%", left: "0%", w: "10%", aspect: "aspect-[16/10]" },
-  { id: 2, top: "27%", left: "0%", w: "10%", aspect: "aspect-[16/10]" },
-  { id: 3, top: "49%", left: "0%", w: "10%", aspect: "aspect-[16/10]" },
-  { id: 4, top: "71%", left: "0%", w: "10%", aspect: "aspect-[16/10]" },
-  { id: 5, top: "93%", left: "0%", w: "10%", aspect: "aspect-[16/10]" },
+  // COLUMN 1: SIDEBAR (5 rows)
+  { id: 1, top: "0%", left: "0%", w: "13%", aspect: "aspect-[16/10]" },
+  { id: 2, top: "21%", left: "0%", w: "13%", aspect: "aspect-[16/10]" },
+  { id: 3, top: "42%", left: "0%", w: "13%", aspect: "aspect-[16/10]" },
+  { id: 4, top: "63%", left: "0%", w: "13%", aspect: "aspect-[16/10]" },
+  { id: 5, top: "84%", left: "0%", w: "13%", aspect: "aspect-[16/10]" },
 
-  // COLUMN 2: CENTRAL LEFT (Balanced offsets)
-  { id: 6, top: "20%", left: "22%", w: "18%", aspect: "aspect-[3/4]" },
-  { id: 7, top: "75%", left: "24%", w: "22%", aspect: "aspect-[3/2]" },
+  // COLUMN 2
+  { id: 6, top: "0%", left: "15%", w: "18%", aspect: "aspect-[3/4]" },
+  { id: 7, top: "53%", left: "15%", w: "28%", aspect: "aspect-[3/2]" },
 
-  // COLUMN 3: CENTRAL RIGHT
-  { id: 8, top: "18%", left: "50%", w: "22%", aspect: "aspect-square" },
-  { id: 9, top: "75%", left: "54%", w: "15%", aspect: "aspect-[3/4]" },
+  // COLUMN 3
+  { id: 8, top: "0%", left: "35%", w: "22%", aspect: "aspect-square" },
+  { id: 9, top: "46%", left: "45%", w: "17%", aspect: "aspect-[3/4]" },
 
-  // COLUMN 4: RIGHT SIDEBAR (Locked to 100% to align with right edge)
-  { id: 10, top: "18%", left: "100%", w: "18%", aspect: "aspect-square" },
-  { id: 11, top: "55%", left: "100%", w: "13%", aspect: "aspect-square" },
-  { id: 12, top: "85%", left: "100%", w: "13%", aspect: "aspect-square" },
+  // COLUMN 4
+  { id: 10, top: "0%", left: "64%", w: "21%", aspect: "aspect-square" },
+  { id: 11, top: "46%", left: "69%", w: "15%", aspect: "aspect-square" },
+  { id: 12, top: "68%", left: "69%", w: "15%", aspect: "aspect-square" },
 
-  // CENTER CIRCLE HUB (The Hub)
-  { id: 13, top: "46%", left: "38.5%", w: "17%", aspect: "aspect-square", isCircle: true, z: 100 },
+  // THE CIRCLE HUB (Top Layer Focus)
+  { id: 13, top: "33%", left: "32%", w: "16%", aspect: "aspect-square", isCircle: true, z: 100 },
 ];
 
 function ShatterFrame({ imageSrc, isMounted, aspect, isCircle }) {
-  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full bg-gray-100 rounded-sm shadow-inner animate-pulse`} />;
+  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full bg-white shadow-lg`} />;
 
   return (
     <motion.div
       layout
       whileHover={{ scale: 1.05, zIndex: 120 }}
       transition={{ layout: { type: "spring", stiffness: 350, damping: 25 } }}
-      className={`relative ${aspect} w-full bg-white shadow-[10px_10px_30px_rgba(0,0,0,0.1),-10px_-10px_30px_rgba(255,255,255,1)] overflow-hidden group transition-all duration-500 ${isCircle ? "rounded-full border-[6px] border-white ring-4 ring-black/5 shadow-[20px_20px_60px_rgba(0,0,0,0.2)]" : "rounded-sm"}`}
+      className={`relative ${aspect} w-full bg-white shadow-[10px_10px_30px_rgba(0,0,0,0.1)] overflow-hidden group transition-all duration-500 ${isCircle ? "rounded-full border-[8px] border-white ring-8 ring-black/5" : "rounded-sm border-[4px] border-white"}`}
     >
       <AnimatePresence mode="wait">
         <motion.div key={imageSrc} className="absolute inset-0">
@@ -90,7 +90,7 @@ function ShatterFrame({ imageSrc, isMounted, aspect, isCircle }) {
   );
 }
 
-function PrecisionGrid({ isOpen }) {
+function GridGallery({ isOpen }) {
   const [currentImages, setCurrentImages] = useState([]);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -105,7 +105,7 @@ function PrecisionGrid({ isOpen }) {
         next[Math.floor(Math.random() * next.length)] = galleryImages[Math.floor(Math.random() * galleryImages.length)];
         return next;
       });
-    }, 3000);
+    }, 2800);
 
     return () => clearInterval(interval);
   }, [isOpen]);
@@ -115,12 +115,12 @@ function PrecisionGrid({ isOpen }) {
       initial={{ scale: 0.98, opacity: 0 }}
       animate={isOpen ? { scale: 1, opacity: 1 } : { scale: 0.98, opacity: 0 }}
       transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-      className="relative w-full h-[80vh] mx-auto"
+      className="relative w-full h-[75vh]"
     >
       {gridLayout.map((slot, index) => (
         <div
           key={slot.id}
-          className={`absolute transform -translate-y-1/2 ${slot.left === "100%" ? "-translate-x-full" : "-translate-x-0"}`}
+          className="absolute"
           style={{ 
             top: slot.top, 
             left: slot.left, 
@@ -209,9 +209,9 @@ export default function Hero() {
         )}
       </AnimatePresence>
 
-      {/* PRECISION GRID GALLERY - Fixed Margin & Sidebar Scaling */}
+      {/* GRID GALLERY - Perfect Replica Mode */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-12 flex flex-col items-center justify-center">
-        <PrecisionGrid isOpen={isOpen} />
+        <GridGallery isOpen={isOpen} />
         
         {/* ACTION CTA */}
         <motion.div 
@@ -232,7 +232,7 @@ export default function Hero() {
         animate={isOpen ? { opacity: 0.6 } : { opacity: 0 }}
         className="absolute bottom-12 left-12 text-[10px] tracking-[1.2em] uppercase text-black/40 rotate-90 origin-left font-black"
       >
-        EXHIBITION 2024-FIXED
+        EXHIBITION 2024-REPLICA
       </motion.div>
     </section>
   );
