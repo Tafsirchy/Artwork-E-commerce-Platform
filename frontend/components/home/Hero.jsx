@@ -38,7 +38,7 @@ function ShatterGallery() {
   }, []);
 
   return (
-    <div className="relative aspect-[4/5] w-full max-w-[460px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.18)] bg-[#FAF8F5] border border-white/60">
+    <div className="relative aspect-[4/5] w-full max-w-[380px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.18)] bg-[#FAF8F5] border border-white/60">
       <AnimatePresence mode="wait">
         <motion.div key={index} className="absolute inset-0">
           {shards.map((shard, i) => (
@@ -205,7 +205,7 @@ export default function Hero() {
       {/* INTERACTIVE FLUID LAYER */}
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-multiply" />
 
-      <div className="relative z-20 max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 items-center gap-12 py-8">
+      <div className="relative z-20 max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
 
         {/* LEFT CONTENT */}
         <div className="max-w-2xl">
@@ -214,24 +214,24 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
           >
-            <div className="mb-8 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
+            <div className="mb-4 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
               <Sparkles size={16} className="text-gallery-gold animate-pulse" />
               <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Pastel Veil for Living Art</span>
             </div>
 
-            <h1 className="text-7xl md:text-[6.5rem] font-light text-gallery-text leading-[0.9] mb-6">
+            <h1 className="text-5xl md:text-[4.8rem] font-light text-gallery-text leading-[0.9] mb-4">
               Where Souls <br />
               <span className="italic text-gallery-accent">Conspire.</span>
             </h1>
 
-            <p className="text-gallery-muted text-xl font-light leading-relaxed mb-10 max-w-lg">
+            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">
               A soft painterly field covers the artwork, then opens only where your cursor moves. The reveal feels like brushing light back onto the canvas.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-10">
+            <div className="flex flex-col sm:flex-row items-center gap-12">
               <Link
                 href="/products"
-                className="group relative px-12 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1"
+                className="group relative px-14 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1"
               >
                 <span className="relative z-10">Explore Collection</span>
                 <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
