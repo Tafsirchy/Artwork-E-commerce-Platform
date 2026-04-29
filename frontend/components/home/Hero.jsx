@@ -38,7 +38,7 @@ function ShatterGallery() {
   }, []);
 
   return (
-    <div className="relative aspect-[4/5] w-full max-w-[420px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.18)] bg-[#FAF8F5] border border-white/60">
+    <div className="relative aspect-[4/5] w-full max-w-[460px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.18)] bg-[#FAF8F5] border border-white/60">
       <AnimatePresence mode="wait">
         <motion.div key={index} className="absolute inset-0">
           {shards.map((shard, i) => (
@@ -195,7 +195,7 @@ export default function Hero() {
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative h-[70vh] bg-[#F5F1EB] flex items-center overflow-hidden"
+      className="relative h-[80vh] bg-[#F5F1EB] flex items-center overflow-hidden"
     >
       {/* BACKGROUND LAYER */}
       <div className="absolute inset-0 z-0">
@@ -219,7 +219,7 @@ export default function Hero() {
               <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Pastel Veil for Living Art</span>
             </div>
 
-            <h1 className="text-6xl md:text-[5.5rem] font-light text-gallery-text leading-[0.9] mb-6">
+            <h1 className="text-7xl md:text-[6.5rem] font-light text-gallery-text leading-[0.9] mb-6">
               Where Souls <br />
               <span className="italic text-gallery-accent">Conspire.</span>
             </h1>
