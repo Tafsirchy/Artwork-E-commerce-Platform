@@ -1,196 +1,230 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import Link from "next/link";
-import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+
+// --- BRUSH STROKE LOGIC ---
+class Stroke {
+  constructor(canvas, x, y, type, color) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
+    this.points = [{ x, y }];
+    this.type = type; // 'masculine' or 'feminine'
+    this.baseColor = color;
+    this.currentColor = color;
+    this.opacity = 0;
+    this.thickness = type === "masculine" ? 1.2 : 0.6;
+    this.maxLength = 40 + Math.random() * 80;
+    this.growthSpeed = 0.5 + Math.random() * 1.5;
+    
+    // Silhouette path offset
+    this.offsetX = (Math.random() - 0.5) * 40;
+    this.offsetY = (Math.random() - 0.5) * 100;
+  }
+
+  update(mouseX, mouseY) {
+    // Growth logic (Auto Painting)
+    if (this.points.length < this.maxLength) {
+      const lastPoint = this.points[this.points.length - 1];
+      let angle;
+      
+      if (this.type === "masculine") {
+        // Structured, bold, angular strokes
+        angle = (Math.floor(Math.random() * 8) * Math.PI) / 4; 
+      } else {
+        // Fluid, expressive, curved strokes
+        angle = Math.sin(this.points.length * 0.08) * 2 + Math.PI / 2;
+      }
+      
+      this.points.push({
+        x: lastPoint.x + Math.cos(angle) * this.growthSpeed,
+        y: lastPoint.y + Math.sin(angle) * this.growthSpeed
+      });
+    }
+
+    // Interaction logic
+    const dist = Math.hypot(mouseX - this.points[0].x, mouseY - this.points[0].y);
+    if (dist < 180) {
+      // User as Artist effect
+      this.currentColor = this.type === "masculine" ? "#D97757" : "#C8A96A"; // Terracotta / Gold
+      this.opacity = Math.min(1, this.opacity + 0.05);
+      // Slight morphing/vibration
+      this.points.forEach(p => {
+        p.x += (Math.random() - 0.5) * 0.5;
+        p.y += (Math.random() - 0.5) * 0.5;
+      });
+    } else {
+      this.currentColor = this.baseColor;
+      this.opacity = Math.max(0.1, this.opacity - 0.01);
+      // Fade in on load
+      if (this.opacity < 0.3) this.opacity += 0.005;
+    }
+  }
+
+  draw() {
+    if (this.points.length < 2) return;
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = this.currentColor;
+    this.ctx.globalAlpha = this.opacity;
+    this.ctx.lineWidth = this.thickness;
+    this.ctx.lineCap = "round";
+    this.ctx.lineJoin = "round";
+    
+    this.ctx.moveTo(this.points[0].x, this.points[0].y);
+    for (let i = 1; i < this.points.length; i++) {
+      this.ctx.lineTo(this.points[i].x, this.points[i].y);
+    }
+    this.ctx.stroke();
+  }
+}
 
 export default function Hero() {
   const canvasRef = useRef(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  const containerRef = useRef(null);
+  const strokes = useRef([]);
+  const mouse = useRef({ x: -1000, y: -1000 });
 
-  // Smooth parallax effect for text
-  const springConfig = { damping: 25, stiffness: 150 };
-  const smoothX = useSpring(mouseX, springConfig);
-  const smoothY = useSpring(mouseY, springConfig);
-
-  const rotateX = useTransform(smoothY, [-0.5, 0.5], ["5deg", "-5deg"]);
-  const rotateY = useTransform(smoothX, [-0.5, 0.5], ["-5deg", "5deg"]);
-  const translateX = useTransform(smoothX, [-0.5, 0.5], ["-30px", "30px"]);
-  const translateY = useTransform(smoothY, [-0.5, 0.5], ["-30px", "30px"]);
-
-  // --- GENERATIVE ART LOGIC (The "Human-Surpassing" Artist) ---
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    let particles = [];
-    let animationFrame;
+    let animationId;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const container = containerRef.current;
+      if (!container) return;
+      canvas.width = container.offsetWidth * 0.7;
+      canvas.height = container.offsetHeight;
+      initStrokes();
     };
+
+    const initStrokes = () => {
+      strokes.current = [];
+      const w = canvas.width;
+      const h = canvas.height;
+      const centerX = w / 2;
+      const centerY = h / 2;
+
+      // Masculine Figure (Structured Lines on Left)
+      for (let i = 0; i < 60; i++) {
+        strokes.current.push(new Stroke(
+          canvas, 
+          w * 0.35 + (Math.random() - 0.5) * 150, 
+          h * 0.2 + Math.random() * (h * 0.6), 
+          "masculine", 
+          "#222222"
+        ));
+      }
+
+      // Feminine Figure (Fluid Lines on Right)
+      for (let i = 0; i < 60; i++) {
+        strokes.current.push(new Stroke(
+          canvas, 
+          w * 0.65 + (Math.random() - 0.5) * 150, 
+          h * 0.2 + Math.random() * (h * 0.6), 
+          "feminine", 
+          "#444444"
+        ));
+      }
+    };
+
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      strokes.current.forEach(s => {
+        s.update(mouse.current.x, mouse.current.y);
+        s.draw();
+      });
+      animationId = requestAnimationFrame(render);
+    };
+
+    const handleMouseMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.current.x = e.clientX - rect.left;
+      mouse.current.y = e.clientY - rect.top;
+    };
+
     window.addEventListener("resize", resize);
     resize();
+    render();
 
-    class Particle {
-      constructor(x, y, color) {
-        this.x = x;
-        this.y = y;
-        this.size = Math.random() * 5 + 1;
-        this.speedX = Math.random() * 3 - 1.5;
-        this.speedY = Math.random() * 3 - 1.5;
-        this.color = color;
-        this.opacity = 1;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.size > 0.2) this.size -= 0.05;
-        this.opacity -= 0.01;
-      }
-      draw() {
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = this.opacity;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    const init = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // Subtle background fade (trailing effect)
-      ctx.fillStyle = "rgba(245, 241, 235, 0.05)"; 
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((p, i) => {
-        p.update();
-        p.draw();
-        if (p.opacity <= 0) particles.splice(i, 1);
-      });
-
-      // Auto-painting "Ghost" Brush
-      if (Math.random() > 0.9) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const hue = (Date.now() / 50) % 360;
-        for (let i = 0; i < 3; i++) {
-          particles.push(new Particle(x, y, `hsl(${hue}, 70%, 60%)`));
-        }
-      }
-
-      animationFrame = requestAnimationFrame(init);
-    };
-
-    init();
-
-    const handlePaint = (e) => {
-      const hue = (Date.now() / 10) % 360;
-      for (let i = 0; i < 5; i++) {
-        particles.push(new Particle(e.clientX, e.clientY, `hsl(${hue}, 80%, 60%)`));
-      }
-      
-      // Update motion values for parallax
-      const { innerWidth, innerHeight } = window;
-      mouseX.set((e.clientX / innerWidth) - 0.5);
-      mouseY.set((e.clientY / innerHeight) - 0.5);
-    };
-
-    window.addEventListener("mousemove", handlePaint);
     return () => {
       window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", handlePaint);
-      cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(animationId);
     };
   }, []);
 
   return (
-    <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-gallery-bg cursor-none">
-      
-      {/* --- THE GENERATIVE CANVAS (The "Invisible Artist") --- */}
-      <canvas 
-        ref={canvasRef}
-        className="absolute inset-0 z-0 pointer-events-none opacity-60 mix-blend-multiply"
-      />
+    <section ref={containerRef} className="relative h-screen bg-white flex overflow-hidden">
+      {/* --- LEFT: LIVING CANVAS AREA (70%) --- */}
+      <div 
+        className="w-[70%] relative bg-white border-r border-gallery-border/30 cursor-crosshair"
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          mouse.current.x = e.clientX - rect.left;
+          mouse.current.y = e.clientY - rect.top;
+        }}
+      >
+        <canvas ref={canvasRef} className="w-full h-full" />
+        
+        {/* Background Texture Overlay */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/canvas-orange.png')" }} />
+        
+        {/* Abstract "A" for ART Watermark */}
+        <div className="absolute bottom-10 left-10 text-[10vw] font-bold text-gallery-soft/40 select-none pointer-events-none">
+          ART
+        </div>
+      </div>
 
-      {/* --- STATIC OVERLAYS --- */}
-      <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-transparent via-gallery-bg/10 to-gallery-bg" />
-
-      {/* --- MAIN PORTAL CONTENT --- */}
-      <div className="relative z-30 max-w-6xl mx-auto px-6 text-center">
+      {/* --- RIGHT: MINIMAL CONTENT (30%) --- */}
+      <div className="w-[30%] flex flex-col justify-center px-16 bg-[#FAF8F5]">
         <motion.div
-          style={{ rotateX, rotateY, x: translateX, y: translateY }}
-          className="relative perspective-1000"
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 flex justify-center"
-          >
-            <div className="px-6 py-2 border border-gallery-gold/40 rounded-full flex items-center gap-3 bg-white/40 backdrop-blur-xl">
-              <Sparkles className="text-gallery-gold animate-spin-slow" size={14} />
-              <span className="text-[10px] tracking-[0.6em] uppercase text-gallery-text font-bold">The Living Canvas</span>
-            </div>
-          </motion.div>
+          <div className="mb-12">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: "40px" }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="h-[2px] bg-gallery-gold mb-8"
+            />
+            
+            <h1 className="text-7xl font-light text-gallery-text leading-[1.1] mb-8">
+              Where Art <br /> 
+              <span className="italic text-gallery-accent">Comes Alive</span>
+            </h1>
+            
+            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-12 max-w-xs">
+              Experience creativity beyond imagination through a living, breathing digital masterpiece.
+            </p>
 
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-7xl md:text-9xl font-light text-gallery-text leading-[1.05] mb-8"
-          >
-            Art That <br /> 
-            <span className="relative inline-block italic text-gallery-accent">
-              Self-Creates.
-              <motion.div 
-                className="absolute -inset-4 bg-gallery-gold/10 blur-3xl -z-10 rounded-full"
-                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-                transition={{ duration: 4, repeat: Infinity }}
-              />
-            </span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-lg text-gallery-muted max-w-xl mx-auto mb-12 leading-relaxed font-light tracking-wide"
-          >
-            Move your cursor to paint your own soul onto our infinite gallery. <br />
-            Experience generative beauty that "arts like a man never can."
-          </motion.p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-10">
             <Link
               href="/products"
-              className="group relative px-16 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden"
+              className="group relative inline-flex items-center gap-6 px-10 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden"
             >
-              <span className="relative z-10 flex items-center gap-3">
-                Explore The Void <ArrowRight size={16} />
+              <span className="relative z-10 flex items-center gap-4">
+                Explore Collection <ArrowRight size={16} />
               </span>
-              <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gallery-gold translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500" />
             </Link>
-            
-            <Link
-              href="/about"
-              className="text-[10px] tracking-[0.5em] uppercase text-gallery-text border-b border-gallery-text/20 pb-2 hover:border-gallery-gold transition-colors"
-            >
-              The Artist's Soul
-            </Link>
+          </div>
+
+          <div className="mt-20 pt-10 border-t border-gallery-border/50">
+            <div className="flex items-center gap-4 text-gallery-muted group cursor-pointer">
+              <div className="w-8 h-8 rounded-full border border-gallery-border flex items-center justify-center group-hover:border-gallery-gold transition-colors">
+                <Sparkles size={12} className="group-hover:text-gallery-gold transition-colors" />
+              </div>
+              <span className="text-[9px] tracking-[0.3em] uppercase">Interactive Experience</span>
+            </div>
           </div>
         </motion.div>
       </div>
-
-      {/* --- CUSTOM ARTISTIC CURSOR --- */}
-      <motion.div 
-        style={{ x: useSpring(useTransform(mouseX, [-0.5, 0.5], [0, 2000]), { damping: 20 }), y: useSpring(useTransform(mouseY, [-0.5, 0.5], [0, 1000]), { damping: 20 }) }}
-        className="fixed w-4 h-4 bg-gallery-gold rounded-full pointer-events-none mix-blend-difference z-50 blur-[2px]"
-      />
-
+      
+      {/* Full Screen Vignette */}
+      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_200px_rgba(0,0,0,0.02)]" />
     </section>
   );
 }

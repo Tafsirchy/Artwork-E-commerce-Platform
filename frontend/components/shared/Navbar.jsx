@@ -30,9 +30,9 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-gallery-surface/95 backdrop-blur-sm border-b border-gallery-border">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-12 h-20 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-light tracking-[0.2em] text-gallery-text hover:text-gallery-accent transition-colors">
+        <Link href="/" className="text-xl font-light tracking-[0.4em] text-gallery-text hover:text-gallery-accent transition-all">
           BRISTIII
         </Link>
 
