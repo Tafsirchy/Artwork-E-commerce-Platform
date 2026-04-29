@@ -32,11 +32,7 @@ function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
   if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full rounded-3xl bg-gallery-soft/30 animate-pulse`} />;
 
   return (
-    <motion.div 
-      whileHover={{ scale: 1.05 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className={`relative ${aspect} w-full rounded-3xl overflow-hidden shadow-xl bg-[#FAF8F5] border border-white/40 group transition-all duration-500`}
-    >
+    <div className={`relative ${aspect} w-full rounded-3xl overflow-hidden shadow-xl bg-[#FAF8F5] border border-white/40 group transition-all duration-500`}>
       <AnimatePresence mode="wait">
         <motion.div key={imageSrc} className="absolute inset-0">
           {shards.map((shard, i) => (
@@ -49,13 +45,21 @@ function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
               className="absolute overflow-hidden"
               style={{ top: shard.top, left: shard.left, width: shard.width, height: shard.height, clipPath: shard.clip, zIndex: 10 }}
             >
-              <div className="absolute w-[300%] h-[300%]" style={{ left: `-${(i % 3) * 100}%`, top: `-${Math.floor(i / 3) * 100}%`, backgroundImage: `url(${imageSrc})`, backgroundSize: '300% 300%', backgroundPosition: 'center' }} />
+              {/* STABLE IMAGE PROJECTION: Using object-fit: cover on a real image to prevent stretching */}
+              <div className="absolute w-[300%] h-[300%]" style={{ left: `-${(i % 3) * 100}%`, top: `-${Math.floor(i / 3) * 100}%` }}>
+                 <img 
+                   src={imageSrc} 
+                   alt="Artwork" 
+                   className="w-full h-full object-cover" 
+                   loading="lazy"
+                 />
+              </div>
             </motion.div>
           ))}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: [0, 0.3, 0] }} transition={{ delay: 0.4, duration: 0.4 }} className="absolute inset-0 bg-white z-30 pointer-events-none" />
         </motion.div>
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }
 
@@ -86,30 +90,15 @@ function TripleCluster() {
 
   return (
     <div className="relative w-full max-w-[420px] mx-auto h-[420px]">
-      {/* FRAME 1: TOP RIGHT (Back Layer) */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="absolute top-0 right-0 w-[55%] z-10"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="absolute top-0 right-0 w-[55%] z-10">
         <ShatterFrame imageSrc={currentImages[0]} isMounted={isMounted} aspect="aspect-[3/4]" />
       </motion.div>
 
-      {/* FRAME 2: MIDDLE LEFT (Middle Layer) */}
-      <motion.div 
-        initial={{ opacity: 0, x: -30 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="absolute top-[20%] left-0 w-[58%] z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
-      >
+      <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="absolute top-[20%] left-0 w-[58%] z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.12)]">
         <ShatterFrame imageSrc={currentImages[1]} isMounted={isMounted} aspect="aspect-square" />
       </motion.div>
 
-      {/* FRAME 3: BOTTOM RIGHT (Front Layer) */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="absolute bottom-0 right-[-8%] w-[82%] z-30 shadow-2xl"
-      >
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="absolute bottom-0 right-[-8%] w-[82%] z-30 shadow-2xl">
         <ShatterFrame imageSrc={currentImages[2]} isMounted={isMounted} aspect="aspect-[3/2]" />
       </motion.div>
     </div>
