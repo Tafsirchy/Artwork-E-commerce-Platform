@@ -28,6 +28,7 @@ const galleryImages = [
   "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=687&auto=format&fit=crop"
 ];
 
+// COMPLEX 5-SLOT MATRIX
 const layoutSlots = [
   { id: "A", class: "absolute top-0 right-0 w-[50%]", aspect: "aspect-[3/4]", z: "z-10" },
   { id: "B", class: "absolute top-[15%] left-0 w-[55%]", aspect: "aspect-square", z: "z-20" },
@@ -135,27 +136,26 @@ function TripleCluster() {
 }
 
 class FluidInk {
-  constructor(x, y, hue, vx = 0, vy = 0, isEraser = false) {
+  constructor(x, y, hue, vx = 0, vy = 0, isEraser = false, isWhite = false) {
     this.x = x; this.y = y; this.hue = hue;
     this.isEraser = isEraser;
-    // Erasers are static (no drift) for absolute clean
+    this.isWhite = isWhite;
     this.vx = isEraser ? 0 : (vx !== 0 ? (vx + (Math.random() - 0.5) * 4) : (Math.random() - 0.5) * 12); 
     this.vy = isEraser ? 0 : (vy !== 0 ? (vy + (Math.random() - 0.5) * 4) : (Math.random() - 0.5) * 12);
     this.radius = isEraser ? (Math.random() * 20 + 20) : (Math.random() * 80 + 40); 
-    this.alpha = isEraser ? 1.0 : 0.05; 
+    this.alpha = isEraser ? 1.0 : (isWhite ? 0.08 : 0.05); 
     this.decay = isEraser ? 0.01 : 0.001; 
   }
 
   update(mouseX, mouseY) { 
-    // REPULSION ENGINE: Push colors away from mouse
     if (!this.isEraser && mouseX > -500) {
       const dx = this.x - mouseX;
       const dy = this.y - mouseY;
       const dist = Math.sqrt(dx*dx + dy*dy);
       if (dist < 180) {
         const force = (180 - dist) / 180;
-        this.vx += (dx / dist) * force * 1.2;
-        this.vy += (dy / dist) * force * 1.2;
+        this.vx += (dx / dist) * force * 1.5;
+        this.vy += (dy / dist) * force * 1.5;
       }
     }
 
@@ -171,7 +171,13 @@ class FluidInk {
       ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
     } else {
       ctx.globalCompositeOperation = "screen";
-      ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.alpha})`;
+      if (this.isWhite) {
+        // PURE WHITE SPARKLE
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+      } else {
+        // RADIANT PASTEL RAINBOW
+        ctx.fillStyle = `hsla(${this.hue}, 100%, 80%, ${this.alpha})`;
+      }
     }
     
     ctx.beginPath(); 
@@ -202,6 +208,7 @@ export default function Hero() {
       const h = canvas.height;
       
       const cornerRate = 0.15;
+      const whiteRate = 0.05; // 5% chance of white highlights
       const cornerSources = [
         {x: 0, y: 0, vx: 5, vy: 5},      
         {x: w, y: 0, vx: -5, vy: 5},     
@@ -213,6 +220,11 @@ export default function Hero() {
         if (Math.random() < cornerRate) {
           const rainbowHue = (Date.now() / 6 + (idx * 90)) % 360;
           inks.current.push(new FluidInk(pos.x, pos.y, rainbowHue, pos.vx, pos.vy));
+          
+          // Occasional White burst from corners
+          if (Math.random() < whiteRate) {
+            inks.current.push(new FluidInk(pos.x, pos.y, 0, pos.vx * 1.2, pos.vy * 1.2, false, true));
+          }
         }
       });
 
@@ -236,8 +248,6 @@ export default function Hero() {
         const rect = e.currentTarget.getBoundingClientRect();
         mouse.current.x = e.clientX - rect.left;
         mouse.current.y = e.clientY - rect.top;
-        
-        // ABSOLUTE CLEAN: Static solid eraser brush
         inks.current.push(new FluidInk(mouse.current.x, mouse.current.y, 0, 0, 0, true));
       }}
       onPointerLeave={() => {
@@ -252,17 +262,17 @@ export default function Hero() {
       }}
     >
       <div className="absolute inset-0 z-0 bg-black/5" />
-      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-screen opacity-95" />
+      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none opacity-95 mix-blend-screen" />
       
       <div className="relative z-20 max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
         <div className="max-w-2xl">
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1.2, ease: "easeOut" }}>
             <div className="mb-4 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
               <Sparkles size={16} className="text-gallery-gold animate-pulse" />
-              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Pure Spectrum for Living Art</span>
+              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Luminous Spectrum for Living Art</span>
             </div>
             <h1 className="text-5xl md:text-[5.2rem] font-light text-gallery-text leading-[0.9] mb-4">Where Souls <br /><span className="italic text-gallery-accent">Conspire.</span></h1>
-            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Colors erupt and accumulate, only to be pushed aside by your touch. Brush away the veil to reveal the hidden world with absolute clarity.</p>
+            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Luminous rainbow flows and brilliant white highlights erupt and accumulate, pushed aside by your touch. Brush away the light-filled veil to reveal the world beneath.</p>
             <div className="flex flex-col sm:flex-row items-center gap-12">
               <Link href="/products" className="group relative px-14 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1">
                 <span className="relative z-10">Explore Collection</span>
