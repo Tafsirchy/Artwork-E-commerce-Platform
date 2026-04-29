@@ -1,6 +1,7 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
 import PageTransition from "@/components/ui/PageTransition";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +27,7 @@ export default function RootLayout({ children }) {
             {children}
           </PageTransition>
         </main>
+        <Footer />
         <ToastContainer 
           position="bottom-right"
           autoClose={3000}
