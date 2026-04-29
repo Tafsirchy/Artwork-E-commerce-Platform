@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Instagram, Twitter, Facebook, ArrowUp } from "lucide-react";
+import { Instagram, Twitter, Linkedin, ArrowUp } from "lucide-react";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -24,7 +24,7 @@ export default function Footer() {
             <div className="flex gap-5 text-gallery-muted">
               <Link href="#" className="hover:text-gallery-accent transition-colors"><Instagram size={20} /></Link>
               <Link href="#" className="hover:text-gallery-accent transition-colors"><Twitter size={20} /></Link>
-              <Link href="#" className="hover:text-gallery-accent transition-colors"><Facebook size={20} /></Link>
+              <Link href="#" className="hover:text-gallery-accent transition-colors"><Linkedin size={20} /></Link>
             </div>
           </div>
 
