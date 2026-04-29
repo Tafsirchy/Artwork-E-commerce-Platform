@@ -28,7 +28,6 @@ const galleryImages = [
   "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=687&auto=format&fit=crop"
 ];
 
-// COMPLEX 5-SLOT MATRIX
 const layoutSlots = [
   { id: "A", class: "absolute top-0 right-0 w-[50%]", aspect: "aspect-[3/4]", z: "z-10" },
   { id: "B", class: "absolute top-[15%] left-0 w-[55%]", aspect: "aspect-square", z: "z-20" },
@@ -41,7 +40,7 @@ function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
   if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full rounded-3xl bg-gallery-soft/30 animate-pulse`} />;
 
   return (
-    <motion.div 
+    <motion.div
       layout
       whileHover={{ scale: 1.05 }}
       transition={{ layout: { type: "spring", stiffness: 400, damping: 25 }, default: { type: "spring", stiffness: 300, damping: 20 } }}
@@ -60,7 +59,7 @@ function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
               style={{ top: shard.top, left: shard.left, width: shard.width, height: shard.height, clipPath: shard.clip, zIndex: 10 }}
             >
               <div className="absolute w-[300%] h-[300%]" style={{ left: `-${(i % 3) * 100}%`, top: `-${Math.floor(i / 3) * 100}%` }}>
-                 <img src={imageSrc} alt="Artwork" className="w-full h-full object-cover" />
+                <img src={imageSrc} alt="Artwork" className="w-full h-full object-cover" />
               </div>
             </motion.div>
           ))}
@@ -97,14 +96,14 @@ function TripleCluster() {
     setIsMounted(true);
     const shuffled = [...galleryImages].sort(() => Math.random() - 0.5);
     setCurrentImages(shuffled.slice(0, 3));
-    
+
     const t1 = setInterval(() => updateSlot(0), 2000);
     const t2 = setInterval(() => updateSlot(1), 2600);
     const t3 = setInterval(() => updateSlot(2), 3200);
     const layoutTimer = setInterval(shuffleLayout, 1500);
 
-    return () => { 
-      clearInterval(t1); clearInterval(t2); clearInterval(t3); 
+    return () => {
+      clearInterval(t1); clearInterval(t2); clearInterval(t3);
       clearInterval(layoutTimer);
     };
   }, [updateSlot, shuffleLayout]);
@@ -123,10 +122,10 @@ function TripleCluster() {
             className={`${slot.class} ${slot.z}`}
             transition={{ layout: { type: "spring", stiffness: 400, damping: 25 } }}
           >
-            <ShatterFrame 
-              imageSrc={currentImages[cardIndex]} 
-              isMounted={isMounted} 
-              aspect={slot.aspect} 
+            <ShatterFrame
+              imageSrc={currentImages[cardIndex]}
+              isMounted={isMounted}
+              aspect={slot.aspect}
             />
           </motion.div>
         );
@@ -139,36 +138,53 @@ class FluidInk {
   constructor(x, y, hue, vx = 0, vy = 0, isEraser = false) {
     this.x = x; this.y = y; this.hue = hue;
     this.isEraser = isEraser;
-    // NO RANDOM: Strict velocity vectors from corners
-    this.vx = vx; 
+    this.vx = vx;
     this.vy = vy;
-    this.radius = isEraser ? (Math.random() * 50 + 60) : (Math.random() * 15 + 5); 
-    this.alpha = isEraser ? 1.0 : 0.04; 
-    this.decay = isEraser ? 0.015 : 0.0006; 
-    this.puffyOffsets = [
-      {x: (Math.random()-0.5)*1.2, y: (Math.random()-0.5)*1.2},
-      {x: (Math.random()-0.5)*1.2, y: (Math.random()-0.5)*1.2},
-      {x: (Math.random()-0.5)*1.2, y: (Math.random()-0.5)*1.2}
-    ];
+    // SMALLER ERASER: Reduced from 60-110 to 25-45
+    this.radius = isEraser ? (Math.random() * 20 + 25) : (Math.random() * 20 + 10);
+    this.maxRadius = Math.random() * 400 + 200;
+    this.alpha = isEraser ? 1.0 : (Math.random() * 0.05 + 0.02);
+    this.decay = isEraser ? 0.015 : (Math.random() * 0.0003 + 0.0002);
+    this.puffyOffsets = Array.from({ length: 7 }, () => ({
+      x: (Math.random() - 0.5) * 1.6,
+      y: (Math.random() - 0.5) * 1.6,
+      size: Math.random() * 0.6 + 0.4
+    }));
   }
-  update() { 
+
+  update(centerX, centerY) {
     if (!this.isEraser) {
-      // REDUCED RANDOMNESS: Gentle swirl only, main trajectory is locked
-      const swirl = Math.sin(this.y * 0.002 + Date.now() * 0.0005) * 0.2;
-      const wave = Math.cos(this.x * 0.002 + Date.now() * 0.0005) * 0.2;
-      this.vx += swirl;
-      this.vy += wave;
-      this.radius += 2.8; 
+      const expansionRate = (1 - this.radius / this.maxRadius) * 4.5;
+      this.radius += Math.max(0.5, expansionRate);
+      
+      const dx = centerX - this.x;
+      const dy = centerY - this.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist > 50) {
+        this.vx += (dx / dist) * 0.05;
+        this.vy += (dy / dist) * 0.05;
+      }
+
+      this.vx += Math.sin(this.y * 0.01 + Date.now() * 0.001) * 0.15;
+      this.vy += Math.cos(this.x * 0.01 + Date.now() * 0.001) * 0.15;
     }
-    this.x += this.vx; this.y += this.vy; 
-    this.vx *= 0.985; this.vy *= 0.985; 
-    this.alpha -= this.decay; 
+    
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vx *= 0.985;
+    this.vy *= 0.985;
+    
+    this.alpha -= this.decay;
     if (this.isEraser) {
-       this.radius += 1.8; 
-       this.vx = 0; this.vy = 0; // Eraser stays put for cleaner reveals
+      // SLOWER ERASER GROWTH: Reduced from 2.5 to 1.1
+      this.radius += 1.1;
+      this.vx = 0; this.vy = 0;
     }
   }
+
   draw(ctx) {
+    if (this.alpha <= 0) return;
+    
     if (this.isEraser) {
       ctx.globalCompositeOperation = "destination-out";
       ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
@@ -176,13 +192,17 @@ class FluidInk {
     } else {
       ctx.globalCompositeOperation = "screen";
       this.puffyOffsets.forEach(off => {
-        const px = this.x + off.x * this.radius * 0.4;
-        const py = this.y + off.y * this.radius * 0.4;
-        const grad = ctx.createRadialGradient(px, py, 0, px, py, this.radius * 0.8);
-        grad.addColorStop(0, `hsla(${this.hue}, 100%, 50%, ${this.alpha})`);
-        grad.addColorStop(1, `hsla(${this.hue}, 100%, 50%, 0)`);
+        const px = this.x + off.x * this.radius * 0.6;
+        const py = this.y + off.y * this.radius * 0.6;
+        const r = this.radius * off.size;
+        
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, r);
+        grad.addColorStop(0, `hsla(${this.hue}, 95%, 70%, ${this.alpha * 1.2})`); 
+        grad.addColorStop(0.4, `hsla(${this.hue}, 90%, 65%, ${this.alpha * 0.5})`); 
+        grad.addColorStop(1, `hsla(${this.hue}, 85%, 60%, 0)`); 
+        
         ctx.fillStyle = grad;
-        ctx.beginPath(); ctx.arc(px, py, this.radius * 0.8, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
       });
     }
   }
@@ -202,10 +222,10 @@ export default function Hero() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     let animationId;
-    
-    const resize = () => { 
-      canvas.width = window.innerWidth; 
-      canvas.height = window.innerHeight; 
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     };
 
     const render = () => {
@@ -213,57 +233,74 @@ export default function Hero() {
       const h = canvas.height;
       const centerX = w / 2;
       const centerY = h / 2;
-      
-      const cornerRate = 0.25;
-      const sources = [
-        {x: 0, y: 0}, {x: w, y: 0}, {x: 0, y: h}, {x: w, y: h}
-      ];
 
-      if (canLeak) {
-        sources.forEach((pos, idx) => {
-          if (Math.random() < cornerRate) {
-            // STRICT DIRECTIONAL VECTOR TO CENTER
-            const dx = centerX - pos.x;
-            const dy = centerY - pos.y;
-            const mag = Math.sqrt(dx*dx + dy*dy);
-            const vx = (dx / mag) * 7.5; // Steady pressure to center
-            const vy = (dy / mag) * 7.5;
-            
-            const rainbowHue = (Date.now() / 6 + (idx * 90)) % 360;
-            inks.current.push(new FluidInk(pos.x, pos.y, rainbowHue, vx, vy));
-          }
-        });
+      if (!canLeak) {
+        ctx.clearRect(0, 0, w, h);
+      } else {
+        ctx.fillStyle = "rgba(245, 241, 235, 0.05)"; 
+        ctx.fillRect(0, 0, w, h);
       }
 
-      inks.current = inks.current.filter(ink => ink.alpha > 0);
-      inks.current.forEach(ink => { ink.update(); ink.draw(ctx); });
+      if (canLeak) {
+        const cornerRate = 0.06;
+        const corners = [
+          { x: 0, y: 0 }, { x: w, y: 0 }, { x: 0, y: h }, { x: w, y: h }
+        ];
+
+        corners.forEach((pos, idx) => {
+          if (Math.random() < cornerRate) {
+            const dx = centerX - pos.x;
+            const dy = centerY - pos.y;
+            const mag = Math.sqrt(dx * dx + dy * dy);
+            const vx = (dx / mag) * 3 + (Math.random() - 0.5) * 1.0;
+            const vy = (dy / mag) * 3 + (Math.random() - 0.5) * 1.0;
+
+            const hue = (Date.now() / 15 + (idx * 90)) % 360;
+            inks.current.push(new FluidInk(pos.x, pos.y, hue, vx, vy));
+          }
+        });
+
+        if (Math.random() < 0.01) {
+          const rx = Math.random() * w;
+          const ry = Math.random() * h;
+          const hue = (Date.now() / 10 + Math.random() * 60) % 360;
+          inks.current.push(new FluidInk(rx, ry, hue, (Math.random() - 0.5) * 1.0, (Math.random() - 0.5) * 1.0));
+        }
+      }
+
+      inks.current = inks.current.filter(ink => ink.alpha > 0.001);
+      inks.current.forEach(ink => { 
+        ink.update(centerX, centerY); 
+        ink.draw(ctx); 
+      });
+      
       animationId = requestAnimationFrame(render);
     };
 
     window.addEventListener("resize", resize);
     resize(); render();
-    return () => { 
-      window.removeEventListener("resize", resize); 
-      cancelAnimationFrame(animationId); 
+    
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animationId);
       clearTimeout(leakTimer);
     };
   }, [canLeak]);
 
   return (
-    <section 
+    <section
       ref={containerRef}
       onPointerMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();
         mouse.current.x = e.clientX - rect.left;
         mouse.current.y = e.clientY - rect.top;
-        // Eraser particles with 0 velocity as default
         inks.current.push(new FluidInk(mouse.current.x, mouse.current.y, 0, 0, 0, true));
       }}
       className="relative h-[85vh] bg-[#F5F1EB] flex items-center overflow-hidden"
-      style={{ 
-        backgroundImage: "url('/Hero-bg.jpg')", 
-        backgroundSize: 'cover', 
-        backgroundPosition: 'center' 
+      style={{
+        backgroundImage: "url('/Hero-bg.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
       }}
     >
       <div className="absolute inset-0 z-0 bg-black/5" />
@@ -274,10 +311,10 @@ export default function Hero() {
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1.2, ease: "easeOut" }}>
             <div className="mb-4 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
               <Sparkles size={16} className="text-gallery-gold animate-pulse" />
-              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Puffy Spectrum for Living Art</span>
+              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Volumetric Spectrum for Living Art</span>
             </div>
             <h1 className="text-5xl md:text-[5.2rem] font-light text-gallery-text leading-[0.9] mb-4">Where Souls <br /><span className="italic text-gallery-accent">Conspire.</span></h1>
-            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Rainbow streams erupt from the four corners and converge precisely toward the center, billowing into a symmetrical masterpiece that you can brush away.</p>
+            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Vibrant clouds of gas leak from the corners, billowing into puffy rainbow masses that slowly fill the air with living color.</p>
             <div className="flex flex-col sm:flex-row items-center gap-12">
               <Link href="/products" className="group relative px-14 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1">
                 <span className="relative z-10">Explore Collection</span>
