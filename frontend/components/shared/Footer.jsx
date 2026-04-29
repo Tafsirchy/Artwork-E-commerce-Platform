@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Instagram, Twitter, Linkedin, ArrowUp } from "lucide-react";
+import { Camera, Mail, Linkedin, ArrowUp } from "lucide-react";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -22,8 +22,8 @@ export default function Footer() {
               A curated digital space connecting visionary artists with global collectors. Experience the soul of contemporary art.
             </p>
             <div className="flex gap-5 text-gallery-muted">
-              <Link href="#" className="hover:text-gallery-accent transition-colors"><Instagram size={20} /></Link>
-              <Link href="#" className="hover:text-gallery-accent transition-colors"><Twitter size={20} /></Link>
+              <Link href="#" className="hover:text-gallery-accent transition-colors"><Camera size={20} /></Link>
+              <Link href="#" className="hover:text-gallery-accent transition-colors"><Mail size={20} /></Link>
               <Link href="#" className="hover:text-gallery-accent transition-colors"><Linkedin size={20} /></Link>
             </div>
           </div>
