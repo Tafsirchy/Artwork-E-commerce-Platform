@@ -33,36 +33,36 @@ function ShatterGallery() {
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % galleryImages.length);
-    }, 3000); // Fast but viewable cycle
+    }, 2000); // Super fast cycle for high energy
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="relative aspect-[4/5] w-full max-w-[480px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.15)] bg-[#FAF8F5] border border-white/60">
+    <div className="relative aspect-[4/5] w-full max-w-[480px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.18)] bg-[#FAF8F5] border border-white/60">
       <AnimatePresence mode="wait">
         <motion.div key={index} className="absolute inset-0">
           {shards.map((shard, i) => (
             <motion.div
               key={i}
               initial={{ 
-                x: (Math.random() - 0.5) * 600, 
-                y: (Math.random() - 0.5) * 600, 
-                rotate: (Math.random() - 0.5) * 120,
+                x: (Math.random() - 0.5) * 800, 
+                y: (Math.random() - 0.5) * 800, 
+                rotate: (Math.random() - 0.5) * 180,
                 opacity: 0,
-                scale: 0.5
+                scale: 0.2
               }}
               animate={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
               exit={{ 
-                x: (Math.random() - 0.5) * 300, 
-                y: (Math.random() - 0.5) * 300, 
                 opacity: 0,
-                scale: 0.8,
-                transition: { duration: 0.5 } 
+                scale: 1.2,
+                filter: "blur(10px)",
+                transition: { duration: 0.3 } 
               }}
               transition={{ 
-                duration: 1.2, 
-                ease: [0.16, 1, 0.3, 1],
-                delay: i * 0.03
+                type: "spring",
+                stiffness: 300,
+                damping: 25,
+                delay: i * 0.012 // Ultra-fast stagger
               }}
               className="absolute overflow-hidden"
               style={{
@@ -86,6 +86,13 @@ function ShatterGallery() {
               />
             </motion.div>
           ))}
+          {/* Flash Effect on Completion */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.4, 0] }}
+            transition={{ delay: 0.4, duration: 0.4 }}
+            className="absolute inset-0 bg-white z-30 pointer-events-none"
+          />
         </motion.div>
       </AnimatePresence>
 
