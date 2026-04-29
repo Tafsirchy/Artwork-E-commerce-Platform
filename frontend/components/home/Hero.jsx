@@ -20,53 +20,49 @@ const shards = [
 ];
 
 const galleryImages = [
-  "https://images.unsplash.com/photo-1705711714839-cf327143c4a0?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1598770220477-cec551a23f53?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://plus.unsplash.com/premium_photo-1682125164600-e7493508e496?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1557933488-c8daa2a5772c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  "https://images.unsplash.com/photo-1705711714839-cf327143c4a0?q=80&w=687&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1598770220477-cec551a23f53?q=80&w=1171&auto=format&fit=crop",
+  "https://plus.unsplash.com/premium_photo-1682125164600-e7493508e496?q=80&w=880&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200",
+  "https://images.unsplash.com/photo-1557933488-c8daa2a5772c?q=80&w=687&auto=format&fit=crop"
 ];
 
-function ShatterGallery() {
-  const [index, setIndex] = useState(0);
+// --- INDIVIDUAL SHATTER FRAME COMPONENT ---
+function ShatterFrame({ initialIndex, cycleDelay = 0 }) {
+  const [index, setIndex] = useState(initialIndex);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % galleryImages.length);
-    }, 2000); // Super fast cycle for high energy
+    }, 3000 + cycleDelay); // Slightly different speeds for variety
     return () => clearInterval(timer);
-  }, []);
+  }, [cycleDelay]);
 
-  if (!isMounted) return <div className="relative aspect-[4/5] w-full max-w-[380px] mx-auto rounded-[2.5rem] bg-[#FAF8F5]/50 animate-pulse" />;
+  if (!isMounted) return <div className="aspect-[4/5] w-full rounded-3xl bg-gallery-soft/30 animate-pulse" />;
 
   return (
-    <div className="relative aspect-[4/5] w-full max-w-[380px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.18)] bg-[#FAF8F5] border border-white/60">
+    <div className="relative aspect-[4/5] w-full rounded-3xl overflow-hidden shadow-2xl bg-[#FAF8F5] border border-white/40">
       <AnimatePresence mode="wait">
         <motion.div key={index} className="absolute inset-0">
           {shards.map((shard, i) => (
             <motion.div
               key={i}
-              initial={{
-                x: (Math.random() - 0.5) * 800,
-                y: (Math.random() - 0.5) * 800,
-                rotate: (Math.random() - 0.5) * 180,
+              initial={{ 
+                x: (Math.random() - 0.5) * 400, 
+                y: (Math.random() - 0.5) * 400, 
+                rotate: (Math.random() - 0.5) * 90,
                 opacity: 0,
-                scale: 0.2
+                scale: 0.5
               }}
               animate={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
-              exit={{
-                opacity: 0,
-                scale: 1.2,
-                filter: "blur(10px)",
-                transition: { duration: 0.3 }
-              }}
-              transition={{
+              exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)", transition: { duration: 0.4 } }}
+              transition={{ 
                 type: "spring",
-                stiffness: 300,
-                damping: 25,
-                delay: i * 0.012 // Ultra-fast stagger
+                stiffness: 200,
+                damping: 20,
+                delay: i * 0.01
               }}
               className="absolute overflow-hidden"
               style={{
@@ -84,35 +80,62 @@ function ShatterGallery() {
                   left: `-${(i % 3) * 100}%`, 
                   top: `-${Math.floor(i / 3) * 100}%`,
                   backgroundImage: `url(${galleryImages[index]})`,
-                  backgroundSize: '300% 300%', // Crucial for perfect alignment
+                  backgroundSize: '300% 300%',
                   backgroundPosition: 'center'
                 }}
               />
             </motion.div>
           ))}
-          {/* Flash Effect on Completion */}
-          <motion.div
+          <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.4, 0] }}
+            animate={{ opacity: [0, 0.3, 0] }}
             transition={{ delay: 0.4, duration: 0.4 }}
             className="absolute inset-0 bg-white z-30 pointer-events-none"
           />
         </motion.div>
       </AnimatePresence>
-
-      {/* Glossy Overlay Shimmer */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 z-20 pointer-events-none" />
-
-      {/* Floating Card Content */}
-      <div className="absolute bottom-8 left-8 right-8 z-30 p-8 bg-white/40 backdrop-blur-2xl rounded-[1.8rem] border border-white/40 shadow-xl">
-        <p className="text-[9px] tracking-[0.6em] uppercase text-gallery-muted mb-3 font-medium">Broken to Whole / Continuous</p>
-        <h3 className="text-2xl font-light text-gallery-text tracking-wide italic">The Reassembling Soul</h3>
-      </div>
     </div>
   );
 }
 
-// --- FLUID INK SYSTEM FOR BACKGROUND MIXING ---
+// --- TRIPLE OVERLAPPING GALLERY ---
+function TripleCluster() {
+  return (
+    <div className="relative w-full aspect-square max-w-[500px] mx-auto">
+      {/* FRAME 1: TOP RIGHT */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.2 }}
+        className="absolute top-0 right-0 w-[65%] z-10"
+      >
+        <ShatterFrame initialIndex={0} cycleDelay={200} />
+      </motion.div>
+
+      {/* FRAME 2: MIDDLE LEFT */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1, delay: 0.4 }}
+        className="absolute top-[15%] left-0 w-[60%] z-30 drop-shadow-[0_35px_35px_rgba(0,0,0,0.2)]"
+      >
+        <ShatterFrame initialIndex={1} cycleDelay={500} />
+      </motion.div>
+
+      {/* FRAME 3: BOTTOM RIGHT */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.6 }}
+        className="absolute bottom-0 right-[5%] w-[55%] z-20 shadow-2xl"
+      >
+        <ShatterFrame initialIndex={2} cycleDelay={800} />
+      </motion.div>
+    </div>
+  );
+}
+
+// --- FLUID INK SYSTEM ---
 class FluidInk {
   constructor(x, y, hue) {
     this.x = x;
@@ -124,7 +147,6 @@ class FluidInk {
     this.alpha = 0.4;
     this.decay = 0.004;
   }
-
   update() {
     this.x += this.vx;
     this.y += this.vy;
@@ -133,7 +155,6 @@ class FluidInk {
     this.alpha -= this.decay;
     this.radius += 0.3;
   }
-
   draw(ctx) {
     const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
     gradient.addColorStop(0, `hsla(${this.hue}, 90%, 70%, ${this.alpha})`);
@@ -158,12 +179,10 @@ export default function Hero() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     let animationId;
-
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (isHovered && mouse.current.x > 0) {
@@ -178,11 +197,9 @@ export default function Hero() {
       });
       animationId = requestAnimationFrame(render);
     };
-
     window.addEventListener("resize", resize);
     resize();
     render();
-
     return () => {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationId);
@@ -190,7 +207,7 @@ export default function Hero() {
   }, [isHovered]);
 
   return (
-    <section
+    <section 
       ref={containerRef}
       onPointerMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -201,16 +218,14 @@ export default function Hero() {
       onMouseLeave={() => setIsHovered(false)}
       className="relative h-[80vh] bg-[#F5F1EB] flex items-center overflow-hidden"
     >
-      {/* BACKGROUND LAYER */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,1),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(201,171,110,0.1),transparent_40%)]" />
       </div>
 
-      {/* INTERACTIVE FLUID LAYER */}
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-multiply" />
 
       <div className="relative z-20 max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
-
+        
         {/* LEFT CONTENT */}
         <div className="max-w-2xl">
           <motion.div
@@ -227,7 +242,7 @@ export default function Hero() {
               Where Souls <br />
               <span className="italic text-gallery-accent">Conspire.</span>
             </h1>
-
+            
             <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">
               A soft painterly field covers the artwork, then opens only where your cursor moves. The reveal feels like brushing light back onto the canvas.
             </p>
@@ -242,7 +257,7 @@ export default function Hero() {
               </Link>
               <Link
                 href="/about"
-                className="text-[10px] tracking-[0.5em] uppercase text-gallery-text border-b border-gallery-border pb-1 hover:text-gallery-accent hover:border-gallery-accent transition-all"
+                className="text-[10px] tracking-[0.4em] uppercase text-gallery-text border-b border-gallery-border pb-1 hover:text-gallery-accent hover:border-gallery-accent transition-all font-medium"
               >
                 The Artist's Story
               </Link>
@@ -250,18 +265,13 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* RIGHT CONTENT: THE SHATTER GALLERY */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, x: 40 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
-          <ShatterGallery />
-        </motion.div>
+        {/* RIGHT CONTENT: THE TRIPLE CLUSTER */}
+        <div className="relative">
+          <TripleCluster />
+        </div>
 
       </div>
 
-      {/* TEXTURE OVERLAY */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-overlay" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/brushed-alum.png')" }} />
     </section>
   );
