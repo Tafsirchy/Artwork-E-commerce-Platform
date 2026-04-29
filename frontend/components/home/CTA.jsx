@@ -17,7 +17,7 @@ export default function CTA() {
         className="absolute inset-0 bg-radial-gradient from-gallery-gold/30 via-transparent to-transparent pointer-events-none"
       />
 
-      <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
+      <div className="max-w-7xl mx-auto px-12 text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}

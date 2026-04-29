@@ -54,7 +54,7 @@ export default function MainGallery() {
 
   return (
     <section className="py-32 bg-gallery-bg">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-12">
         
         <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-10">
           <motion.div

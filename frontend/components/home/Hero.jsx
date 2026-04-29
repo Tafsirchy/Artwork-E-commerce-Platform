@@ -264,7 +264,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0 bg-black/5" />
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none opacity-95 mix-blend-screen" />
       
-      <div className="relative z-20 max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
+      <div className="relative z-20 max-w-7xl mx-auto px-12 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
         <div className="max-w-2xl">
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1.2, ease: "easeOut" }}>
             <div className="mb-4 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
