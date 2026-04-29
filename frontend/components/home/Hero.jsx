@@ -49,16 +49,16 @@ function ShatterFrame({ initialIndex, cycleDelay = 0 }) {
           {shards.map((shard, i) => (
             <motion.div
               key={i}
-              initial={{ 
-                x: (Math.random() - 0.5) * 400, 
-                y: (Math.random() - 0.5) * 400, 
+              initial={{
+                x: (Math.random() - 0.5) * 400,
+                y: (Math.random() - 0.5) * 400,
                 rotate: (Math.random() - 0.5) * 90,
                 opacity: 0,
                 scale: 0.5
               }}
               animate={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)", transition: { duration: 0.4 } }}
-              transition={{ 
+              transition={{
                 type: "spring",
                 stiffness: 200,
                 damping: 20,
@@ -74,10 +74,10 @@ function ShatterFrame({ initialIndex, cycleDelay = 0 }) {
                 zIndex: 10
               }}
             >
-              <div 
-                className="absolute w-[300%] h-[300%]" 
-                style={{ 
-                  left: `-${(i % 3) * 100}%`, 
+              <div
+                className="absolute w-[300%] h-[300%]"
+                style={{
+                  left: `-${(i % 3) * 100}%`,
                   top: `-${Math.floor(i / 3) * 100}%`,
                   backgroundImage: `url(${galleryImages[index]})`,
                   backgroundSize: '300% 300%',
@@ -86,7 +86,7 @@ function ShatterFrame({ initialIndex, cycleDelay = 0 }) {
               />
             </motion.div>
           ))}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 0.3, 0] }}
             transition={{ delay: 0.4, duration: 0.4 }}
@@ -103,7 +103,7 @@ function TripleCluster() {
   return (
     <div className="relative w-full aspect-square max-w-[500px] mx-auto">
       {/* FRAME 1: TOP RIGHT */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2 }}
@@ -113,7 +113,7 @@ function TripleCluster() {
       </motion.div>
 
       {/* FRAME 2: MIDDLE LEFT */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1, delay: 0.4 }}
@@ -123,7 +123,7 @@ function TripleCluster() {
       </motion.div>
 
       {/* FRAME 3: BOTTOM RIGHT */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.6 }}
@@ -207,7 +207,7 @@ export default function Hero() {
   }, [isHovered]);
 
   return (
-    <section 
+    <section
       ref={containerRef}
       onPointerMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -225,7 +225,7 @@ export default function Hero() {
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-multiply" />
 
       <div className="relative z-20 max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
-        
+
         {/* LEFT CONTENT */}
         <div className="max-w-2xl">
           <motion.div
@@ -242,7 +242,7 @@ export default function Hero() {
               Where Souls <br />
               <span className="italic text-gallery-accent">Conspire.</span>
             </h1>
-            
+
             <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">
               A soft painterly field covers the artwork, then opens only where your cursor moves. The reveal feels like brushing light back onto the canvas.
             </p>
