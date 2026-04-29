@@ -30,40 +30,41 @@ const galleryImages = [
   "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?q=80&w=880&auto=format&fit=crop"
 ];
 
+// PRECISION SALON PLACEMENT (Optimized for max-w-7xl)
 const gridLayout = [
-  // COLUMN 1 (Sidebar - Left Aligned)
-  { id: 1, top: "10%", left: "6%", w: "12%", aspect: "aspect-[16/10]" },
-  { id: 2, top: "28%", left: "6%", w: "12%", aspect: "aspect-[16/10]" },
-  { id: 3, top: "46%", left: "6%", w: "12%", aspect: "aspect-[16/10]" },
-  { id: 4, top: "64%", left: "6%", w: "12%", aspect: "aspect-[16/10]" },
-  { id: 5, top: "82%", left: "6%", w: "12%", aspect: "aspect-[16/10]" },
+  // COLUMN 1: LEFT SIDEBAR (Balanced verticality)
+  { id: 1, top: "8%", left: "5%", w: "12%", aspect: "aspect-[16/10]" },
+  { id: 2, top: "28%", left: "5%", w: "12%", aspect: "aspect-[16/10]" },
+  { id: 3, top: "48%", left: "5%", w: "12%", aspect: "aspect-[16/10]" },
+  { id: 4, top: "68%", left: "5%", w: "12%", aspect: "aspect-[16/10]" },
+  { id: 5, top: "88%", left: "5%", w: "12%", aspect: "aspect-[16/10]" },
 
-  // COLUMN 2 (Main Grid Left)
-  { id: 6, top: "25%", left: "26%", w: "17%", aspect: "aspect-[3/4]" },
-  { id: 7, top: "72%", left: "26%", w: "22%", aspect: "aspect-[3/2]" },
+  // COLUMN 2: CENTRAL LEFT (Tighter integration)
+  { id: 6, top: "22%", left: "25%", w: "18%", aspect: "aspect-[3/4]" },
+  { id: 7, top: "75%", left: "28%", w: "22%", aspect: "aspect-[3/2]" },
 
-  // COLUMN 3 (Main Grid Right)
-  { id: 8, top: "25%", left: "51%", w: "21%", aspect: "aspect-square" },
-  { id: 9, top: "72%", left: "52%", w: "17%", aspect: "aspect-[3/4]" },
+  // COLUMN 3: CENTRAL RIGHT (Symmetric balance)
+  { id: 8, top: "20%", left: "52%", w: "22%", aspect: "aspect-square" },
+  { id: 9, top: "75%", left: "55%", w: "16%", aspect: "aspect-[3/4]" },
 
-  // COLUMN 4 (Sidebar - Right Aligned)
-  { id: 10, top: "25%", left: "77%", w: "19%", aspect: "aspect-square" },
-  { id: 11, top: "58%", left: "77%", w: "14%", aspect: "aspect-square" },
-  { id: 12, top: "82%", left: "77%", w: "14%", aspect: "aspect-square" },
+  // COLUMN 4: RIGHT SIDEBAR (Offset dynamics)
+  { id: 10, top: "20%", left: "82%", w: "18%", aspect: "aspect-square" },
+  { id: 11, top: "55%", left: "82%", w: "13%", aspect: "aspect-square" },
+  { id: 12, top: "80%", left: "82%", w: "13%", aspect: "aspect-square" },
 
-  // CENTER CIRCLE (The Hub)
-  { id: 13, top: "50%", left: "40.5%", w: "17%", aspect: "aspect-square", isCircle: true, z: 100 },
+  // CENTER CIRCLE HUB (Absolute Focal Anchor)
+  { id: 13, top: "48%", left: "41%", w: "18%", aspect: "aspect-square", isCircle: true, z: 100 },
 ];
 
 function ShatterFrame({ imageSrc, isMounted, aspect, isCircle }) {
-  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full bg-gray-200 rounded-sm shadow-inner`} />;
+  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full bg-gray-100 rounded-sm shadow-inner animate-pulse`} />;
 
   return (
     <motion.div
       layout
       whileHover={{ scale: 1.05, zIndex: 120 }}
       transition={{ layout: { type: "spring", stiffness: 350, damping: 25 } }}
-      className={`relative ${aspect} w-full bg-gray-200 shadow-[10px_10px_30px_rgba(0,0,0,0.1),-10px_-10px_30px_rgba(255,255,255,1)] overflow-hidden group transition-all duration-500 ${isCircle ? "rounded-full border-[6px] border-white ring-4 ring-black/5" : "rounded-sm"}`}
+      className={`relative ${aspect} w-full bg-white shadow-[10px_10px_30px_rgba(0,0,0,0.1),-10px_-10px_30px_rgba(255,255,255,1)] overflow-hidden group transition-all duration-500 ${isCircle ? "rounded-full border-[6px] border-white ring-4 ring-black/5 shadow-[20px_20px_60px_rgba(0,0,0,0.2)]" : "rounded-sm"}`}
     >
       <AnimatePresence mode="wait">
         <motion.div key={imageSrc} className="absolute inset-0">
@@ -114,7 +115,7 @@ function PrecisionGrid({ isOpen }) {
       initial={{ scale: 0.98, opacity: 0 }}
       animate={isOpen ? { scale: 1, opacity: 1 } : { scale: 0.98, opacity: 0 }}
       transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-      className="relative w-full h-[75vh]"
+      className="relative w-full h-[85vh] mx-auto"
     >
       {gridLayout.map((slot, index) => (
         <div
@@ -180,7 +181,7 @@ export default function Hero() {
               <span className="text-[11px] tracking-[0.7em] uppercase text-gray-800 font-bold">Curated Grid Exhibition</span>
             </motion.div>
             
-            <h1 className="text-7xl md:text-[9rem] font-light text-gray-900 leading-[0.8] mb-10 tracking-tighter">
+            <h1 className="text-7xl md:text-[9.5rem] font-light text-gray-900 leading-[0.8] mb-10 tracking-tighter">
               Where Souls <br />
               <span className="italic text-gallery-accent block mt-6">Conspire.</span>
             </h1>
@@ -208,7 +209,7 @@ export default function Hero() {
         )}
       </AnimatePresence>
 
-      {/* PRECISION GRID GALLERY - Aligned to Navbar */}
+      {/* PRECISION GRID GALLERY - Re-Engineered Placement */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-12 flex flex-col items-center justify-center">
         <PrecisionGrid isOpen={isOpen} />
         
@@ -231,7 +232,7 @@ export default function Hero() {
         animate={isOpen ? { opacity: 0.6 } : { opacity: 0 }}
         className="absolute bottom-12 left-12 text-[10px] tracking-[1.2em] uppercase text-black/40 rotate-90 origin-left font-black"
       >
-        EXHIBITION 2024-E
+        EXHIBITION 2024-F
       </motion.div>
     </section>
   );
