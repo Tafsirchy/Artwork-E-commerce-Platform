@@ -1,68 +1,82 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Sparkles, MoveUpRight } from "lucide-react";
-import Image from "next/image";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
-// --- SHARD DATA FOR THE BROKEN IMAGE EFFECT ---
+// --- SHARD DATA (Organic Shatter Pattern) ---
 const shards = [
-  { top: "0%", left: "0%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 0, 85% 100%, 0 100%)" },
-  { top: "0%", left: "33%", width: "34%", height: "34%", clip: "polygon(15% 0, 100% 0, 100% 85%, 0 100%)" },
-  { top: "0%", left: "66%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 0, 100% 100%, 15% 85%)" },
-  { top: "33%", left: "0%", width: "34%", height: "34%", clip: "polygon(0 15%, 85% 0, 100% 100%, 0 100%)" },
-  { top: "33%", left: "33%", width: "34%", height: "34%", clip: "polygon(15% 15%, 85% 15%, 85% 85%, 15% 85%)" },
-  { top: "33%", left: "66%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 15%, 100% 100%, 15% 100%)" },
-  { top: "66%", left: "0%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 15%, 100% 100%, 0 100%)" },
-  { top: "66%", left: "33%", width: "34%", height: "34%", clip: "polygon(15% 0, 85% 0, 100% 100%, 0 100%)" },
-  { top: "66%", left: "66%", width: "34%", height: "34%", clip: "polygon(15% 0, 100% 0, 100% 100%, 0 85%)" },
+  { top: "0%", left: "0%", width: "40%", height: "40%", clip: "polygon(0 0, 100% 0, 70% 100%, 0 80%)" },
+  { top: "0%", left: "30%", width: "50%", height: "40%", clip: "polygon(20% 0, 100% 0, 80% 100%, 0 90%)" },
+  { top: "0%", left: "70%", width: "30%", height: "50%", clip: "polygon(10% 0, 100% 0, 100% 100%, 0 70%)" },
+  { top: "30%", left: "0%", width: "40%", height: "50%", clip: "polygon(0 20%, 90% 0, 100% 100%, 0 100%)" },
+  { top: "35%", left: "35%", width: "40%", height: "40%", clip: "polygon(10% 10%, 90% 0, 100% 90%, 0 100%)" },
+  { top: "40%", left: "70%", width: "30%", height: "60%", clip: "polygon(0 10%, 100% 0, 100% 100%, 10% 90%)" },
+  { top: "70%", left: "0%", width: "40%", height: "30%", clip: "polygon(0 0, 100% 10%, 100% 100%, 0 100%)" },
+  { top: "70%", left: "35%", width: "45%", height: "30%", clip: "polygon(10% 10%, 90% 0, 100% 100%, 0 100%)" },
+  { top: "80%", left: "75%", width: "25%", height: "20%", clip: "polygon(0 20%, 100% 0, 100% 100%, 10% 100%)" },
 ];
 
 const galleryImages = [
-  "https://images4.alphacoders.com/131/1314643.jpg", // Spirited Away
+  "https://images4.alphacoders.com/131/1314643.jpg",
   "https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=1200&q=80",
   "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80",
   "https://images.unsplash.com/photo-1501472312651-726afe119ff1?auto=format&fit=crop&w=1200&q=80",
   "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=1200&q=80"
 ];
 
-function ShatterGallery() {
+function ShatterGallery({ mousePos }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % galleryImages.length);
-    }, 2000); // Super fast cycle for high energy
+    }, 2800);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="relative aspect-[4/5] w-full max-w-[480px] mx-auto rounded-[2.5rem] overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.18)] bg-[#FAF8F5] border border-white/60">
+    <div className="relative aspect-[4/5] w-full max-w-[500px] mx-auto rounded-[3rem] overflow-hidden shadow-[0_60px_150px_-30px_rgba(0,0,0,0.2)] bg-[#FAF8F5] border border-white/60 perspective-1000">
       <AnimatePresence mode="wait">
-        <motion.div key={index} className="absolute inset-0">
+        <motion.div 
+          key={index} 
+          className="absolute inset-0"
+          style={{
+            rotateY: mousePos.x * 10,
+            rotateX: -mousePos.y * 10,
+          }}
+        >
           {shards.map((shard, i) => (
             <motion.div
               key={i}
               initial={{ 
-                x: (Math.random() - 0.5) * 800, 
-                y: (Math.random() - 0.5) * 800, 
-                rotate: (Math.random() - 0.5) * 180,
+                x: (Math.random() - 0.5) * 1000, 
+                y: (Math.random() - 0.5) * 1000, 
+                rotate: (Math.random() - 0.5) * 200,
                 opacity: 0,
-                scale: 0.2
+                scale: 0.1,
+                filter: "blur(20px)"
               }}
-              animate={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
+              animate={{ 
+                x: mousePos.x * 30, // Shards react to mouse even when joined
+                y: mousePos.y * 30, 
+                rotate: 0, 
+                opacity: 1, 
+                scale: 1,
+                filter: "blur(0px)"
+              }}
               exit={{ 
                 opacity: 0,
-                scale: 1.2,
-                filter: "blur(10px)",
-                transition: { duration: 0.3 } 
+                scale: 1.5,
+                filter: "blur(30px)",
+                transition: { duration: 0.4 } 
               }}
               transition={{ 
                 type: "spring",
-                stiffness: 300,
-                damping: 25,
-                delay: i * 0.012 // Ultra-fast stagger
+                stiffness: 280,
+                damping: 22,
+                delay: i * 0.01
               }}
               className="absolute overflow-hidden"
               style={{
@@ -75,10 +89,10 @@ function ShatterGallery() {
               }}
             >
               <div 
-                className="absolute w-[300%] h-[300%]" 
+                className="absolute w-[300%] h-[300%] grayscale-[0.2] hover:grayscale-0 transition-all duration-700" 
                 style={{ 
-                  left: `-${(i % 3) * 100}%`, 
-                  top: `-${Math.floor(i / 3) * 100}%`,
+                  left: `-${parseFloat(shard.left) * 2.5}%`, 
+                  top: `-${parseFloat(shard.top) * 2.5}%`,
                   backgroundImage: `url(${galleryImages[index]})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center'
@@ -86,59 +100,49 @@ function ShatterGallery() {
               />
             </motion.div>
           ))}
-          {/* Flash Effect on Completion */}
+          
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.4, 0] }}
-            transition={{ delay: 0.4, duration: 0.4 }}
-            className="absolute inset-0 bg-white z-30 pointer-events-none"
+            animate={{ opacity: [0, 0.5, 0] }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="absolute inset-0 bg-white z-30 pointer-events-none mix-blend-overlay"
           />
         </motion.div>
       </AnimatePresence>
 
-      {/* Glossy Overlay Shimmer */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 z-20 pointer-events-none" />
-
-      {/* Floating Card Content */}
-      <div className="absolute bottom-8 left-8 right-8 z-30 p-8 bg-white/40 backdrop-blur-2xl rounded-[1.8rem] border border-white/40 shadow-xl">
-        <p className="text-[9px] tracking-[0.6em] uppercase text-gallery-muted mb-3 font-medium">Broken to Whole / Continuous</p>
-        <h3 className="text-2xl font-light text-gallery-text tracking-wide italic">The Reassembling Soul</h3>
+      <div className="absolute bottom-10 left-10 right-10 z-30 p-8 bg-white/30 backdrop-blur-3xl rounded-[2rem] border border-white/40 shadow-2xl overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-r from-gallery-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <p className="text-[10px] tracking-[0.6em] uppercase text-gallery-text/60 mb-3 font-semibold">Symbiotic Masterpiece</p>
+        <h3 className="text-3xl font-light text-gallery-text tracking-wide italic">Kinetic Resonance</h3>
       </div>
     </div>
   );
 }
 
-// --- FLUID INK SYSTEM FOR BACKGROUND MIXING ---
 class FluidInk {
   constructor(x, y, hue) {
     this.x = x;
     this.y = y;
     this.hue = hue;
-    this.vx = (Math.random() - 0.5) * 4;
-    this.vy = (Math.random() - 0.5) * 4;
-    this.radius = Math.random() * 25 + 15;
-    this.alpha = 0.4;
-    this.decay = 0.004;
+    this.vx = (Math.random() - 0.5) * 5;
+    this.vy = (Math.random() - 0.5) * 5;
+    this.radius = Math.random() * 30 + 15;
+    this.alpha = 0.45;
+    this.decay = 0.0035;
   }
-
   update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.vx *= 0.99;
-    this.vy *= 0.99;
+    this.x += this.vx; this.y += this.vy;
+    this.vx *= 0.99; this.vy *= 0.99;
     this.alpha -= this.decay;
-    this.radius += 0.3;
+    this.radius += 0.4;
   }
-
   draw(ctx) {
     const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-    gradient.addColorStop(0, `hsla(${this.hue}, 90%, 70%, ${this.alpha})`);
-    gradient.addColorStop(1, `hsla(${this.hue}, 90%, 70%, 0)`);
-    ctx.globalCompositeOperation = "screen";
+    gradient.addColorStop(0, `hsla(${this.hue}, 90%, 65%, ${this.alpha})`);
+    gradient.addColorStop(1, `hsla(${this.hue}, 90%, 65%, 0)`);
+    ctx.globalCompositeOperation = "multiply";
     ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
   }
 }
 
@@ -146,120 +150,123 @@ export default function Hero() {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const inks = useRef([]);
-  const mouse = useRef({ x: -1000, y: -1000 });
   const [isHovered, setIsHovered] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     let animationId;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (isHovered && mouse.current.x > 0) {
-        if (Math.random() > 0.4) {
-          inks.current.push(new FluidInk(mouse.current.x, mouse.current.y, (Date.now() / 20) % 360));
-        }
-      }
+      ctx.fillStyle = "rgba(245, 241, 235, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
       inks.current = inks.current.filter(ink => ink.alpha > 0);
-      inks.current.forEach(ink => {
-        ink.update();
-        ink.draw(ctx);
-      });
+      inks.current.forEach(ink => { ink.update(); ink.draw(ctx); });
       animationId = requestAnimationFrame(render);
     };
-
     window.addEventListener("resize", resize);
-    resize();
-    render();
+    resize(); render();
+    return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(animationId); };
+  }, []);
 
-    return () => {
-      window.removeEventListener("resize", resize);
-      cancelAnimationFrame(animationId);
-    };
-  }, [isHovered]);
+  const handlePointerMove = (e) => {
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    setMousePos({ x: x - 0.5, y: y - 0.5 });
+    if (isHovered && Math.random() > 0.4) {
+      inks.current.push(new FluidInk(e.clientX - rect.left, e.clientY - rect.top, (Date.now() / 20) % 360));
+    }
+  };
 
   return (
     <section 
       ref={containerRef}
-      onPointerMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        mouse.current.x = e.clientX - rect.left;
-        mouse.current.y = e.clientY - rect.top;
-      }}
+      onPointerMove={handlePointerMove}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative min-h-screen bg-[#F5F1EB] flex items-center overflow-hidden"
+      onMouseLeave={() => { setIsHovered(false); setMousePos({ x: 0, y: 0 }); }}
+      className="relative min-h-screen bg-[#F5F1EB] flex items-center overflow-hidden selection:bg-gallery-accent selection:text-white"
     >
-      {/* BACKGROUND LAYER */}
+      {/* BACKGROUND DEPTH LAYER */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,1),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(201,171,110,0.1),transparent_40%)]" />
+        <motion.div 
+          animate={{ 
+            opacity: [0.3, 0.5, 0.3],
+            scale: [1, 1.1, 1] 
+          }}
+          transition={{ duration: 15, repeat: Infinity }}
+          className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(214,177,142,0.15)_0%,transparent_70%)]" 
+        />
       </div>
 
-      {/* INTERACTIVE FLUID LAYER */}
-      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-multiply" />
+      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none opacity-60" />
 
-      {/* CONTENT GRID */}
-      <div className="relative z-20 max-w-7xl mx-auto px-12 grid grid-cols-1 lg:grid-cols-2 items-center gap-24 py-20">
+      <div className="relative z-20 max-w-7xl mx-auto px-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] items-center gap-32 py-20">
         
-        {/* LEFT CONTENT */}
         <div className="max-w-2xl">
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="mb-8 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
-              <Sparkles size={16} className="text-gallery-gold animate-pulse" />
-              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Pastel Veil for Living Art</span>
+            <div className="mb-10 inline-flex items-center gap-5 px-6 py-2.5 border border-gallery-gold/20 rounded-full bg-white/30 backdrop-blur-xl shadow-lg">
+              <Sparkles size={18} className="text-gallery-gold animate-spin-slow" />
+              <span className="text-[10px] tracking-[0.7em] uppercase text-gallery-text font-bold">Resonating Art Space</span>
             </div>
 
-            <h1 className="text-7xl md:text-[7rem] font-light text-gallery-text leading-[0.9] mb-10">
-              Where Souls <br /> 
-              <span className="italic text-gallery-accent">Conspire.</span>
+            <h1 className="text-8xl md:text-[8.5rem] font-light text-gallery-text leading-[0.85] mb-12 tracking-tight">
+              Beyond the <br /> 
+              <span className="italic text-gallery-accent relative inline-block">
+                Senses.
+                <motion.div 
+                  animate={{ scaleX: [0, 1, 0] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="absolute bottom-4 left-0 w-full h-[1px] bg-gallery-accent origin-left"
+                />
+              </span>
             </h1>
             
-            <p className="text-gallery-muted text-xl font-light leading-relaxed mb-16 max-w-lg">
-              A soft painterly field covers the artwork, then opens only where your cursor moves. The reveal feels like brushing light back onto the canvas.
+            <p className="text-gallery-muted text-2xl font-light leading-relaxed mb-20 max-w-lg">
+              Step into a kinetic sanctuary where every movement weaves a new masterpiece. You are the catalyst in this symphony of light.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-10">
+            <div className="flex flex-col sm:flex-row items-center gap-14">
               <Link
                 href="/products"
-                className="group relative px-12 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1"
+                className="group relative px-20 py-8 bg-gallery-primary text-white text-[11px] tracking-[0.8em] uppercase overflow-hidden rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all hover:scale-105 hover:shadow-[0_30px_70px_rgba(0,0,0,0.2)]"
               >
-                <span className="relative z-10">Explore Collection</span>
-                <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                <span className="relative z-10 flex items-center gap-6">Explore <ArrowRight size={18} /></span>
+                <div className="absolute inset-0 bg-gallery-accent translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
               </Link>
               <Link
                 href="/about"
-                className="text-[10px] tracking-[0.5em] uppercase text-gallery-text border-b border-gallery-border pb-1 hover:text-gallery-accent hover:border-gallery-accent transition-all"
+                className="text-[11px] tracking-[0.6em] uppercase text-gallery-text border-b-2 border-gallery-border/30 pb-2 hover:text-gallery-accent hover:border-gallery-accent transition-all duration-500 font-bold"
               >
-                The Artist's Story
+                The Manifesto
               </Link>
             </div>
           </motion.div>
         </div>
 
-        {/* RIGHT CONTENT: THE SHATTER GALLERY */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, x: 40 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          initial={{ opacity: 0, scale: 0.9, rotateY: 30 }}
+          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+          transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+          className="relative z-30"
         >
-          <ShatterGallery />
+          <ShatterGallery mousePos={mousePos} />
         </motion.div>
 
       </div>
 
       {/* TEXTURE OVERLAY */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-overlay" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/brushed-alum.png')" }} />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.1] mix-blend-overlay" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/handmade-paper.png')" }} />
+      <style jsx global>{`
+        .perspective-1000 { perspective: 1000px; }
+        .animate-spin-slow { animation: spin 8s linear infinite; }
+        @keyframes spin { from { rotate: 0deg; } to { rotate: 360deg; } }
+      `}</style>
     </section>
   );
 }
