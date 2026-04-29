@@ -40,8 +40,8 @@ function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
               key={i}
               initial={{ x: (Math.random() - 0.5) * 400, y: (Math.random() - 0.5) * 400, rotate: (Math.random() - 0.5) * 90, opacity: 0, scale: 0.5 }}
               animate={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)", transition: { duration: 0.3 } }}
-              transition={{ type: "spring", stiffness: 220, damping: 22, delay: i * 0.01 }}
+              exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)", transition: { duration: 0.2 } }}
+              transition={{ type: "spring", stiffness: 260, damping: 24, delay: i * 0.008 }}
               className="absolute overflow-hidden"
               style={{ top: shard.top, left: shard.left, width: shard.width, height: shard.height, clipPath: shard.clip, zIndex: 10 }}
             >
@@ -77,9 +77,9 @@ function TripleCluster() {
     setCurrentImages(shuffled.slice(0, 3));
 
     // Staggered Timers
-    const t1 = setInterval(() => updateSlot(0), 4000);
-    const t2 = setInterval(() => updateSlot(1), 5200);
-    const t3 = setInterval(() => updateSlot(2), 6500);
+    const t1 = setInterval(() => updateSlot(0), 2500);
+    const t2 = setInterval(() => updateSlot(1), 3200);
+    const t3 = setInterval(() => updateSlot(2), 4000);
 
     return () => { clearInterval(t1); clearInterval(t2); clearInterval(t3); };
   }, [updateSlot]);
