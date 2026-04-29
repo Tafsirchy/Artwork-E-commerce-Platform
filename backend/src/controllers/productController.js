@@ -35,11 +35,12 @@ const getProductById = async (req, res, next) => {
 const createProduct = async (req, res, next) => {
   try {
     const { title, description, price, stock, creator, category } = req.body;
-    let imageUrl = "/images/sample.jpg"; // fallback
-
-    if (req.file) {
-      imageUrl = `/uploads/${req.file.filename}`;
+    if (!req.file) {
+      res.status(400);
+      throw new Error("Please upload an artwork image");
     }
+
+    const imageUrl = `/uploads/${req.file.filename}`;
 
     const product = new Product({
       title,
