@@ -5,6 +5,7 @@ import Image from "next/image";
 import useCartStore from "@/store/cartStore";
 import { toast } from "react-toastify";
 import { ShoppingCart } from "lucide-react";
+import { getValidImageSrc } from "@/lib/utils";
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCartStore();
@@ -17,9 +18,7 @@ export default function ProductCard({ product }) {
     });
   };
 
-  const imageSrc = product.imageUrl.startsWith("http") 
-    ? product.imageUrl 
-    : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:5000"}${product.imageUrl}`;
+  const imageSrc = getValidImageSrc(product.imageUrl);
 
   return (
     <Link href={`/products/${product._id}`} className="group block">

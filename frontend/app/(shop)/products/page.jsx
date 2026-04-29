@@ -14,7 +14,7 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       try {
         const { data } = await api.get("/products");
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : data?.products ?? []);
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {
@@ -38,7 +38,7 @@ export default function ProductsPage() {
             ? Array.from({ length: 8 }).map((_, i) => (
                 <ProductCardSkeleton key={i} />
               ))
-            : products.map((product, i) => (
+            : (Array.isArray(products) ? products : []).map((product, i) => (
                 <motion.div
                   key={product._id}
                   initial={{ opacity: 0, y: 20 }}
@@ -50,7 +50,7 @@ export default function ProductsPage() {
               ))}
         </div>
 
-        {!loading && products.length === 0 && (
+        {!loading && (Array.isArray(products) ? products : []).length === 0 && (
           <div className="text-center mt-20">
             <p className="text-gallery-muted text-lg">No artworks currently available.</p>
           </div>

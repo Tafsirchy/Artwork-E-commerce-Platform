@@ -47,6 +47,13 @@ const useAuthStore = create(
     }),
     {
       name: "auth-storage",
+      version: 1,
+      migrate: (persistedState) => ({
+        user: persistedState?.user ?? null,
+        token: persistedState?.token ?? null,
+        isLoading: false,
+        error: null,
+      }),
       onRehydrateStorage: () => (state) => {
         if (state?.token) {
           setAuthToken(state.token);

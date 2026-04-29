@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useCartStore from "@/store/cartStore";
+import { getValidImageSrc } from "@/lib/utils";
 import { Trash2, Plus, Minus } from "lucide-react";
 
 export default function CartPage() {
@@ -22,12 +23,6 @@ export default function CartPage() {
     );
   }
 
-  const getImageSrc = (imageUrl) => {
-    return imageUrl.startsWith("http") 
-      ? imageUrl 
-      : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:5000"}${imageUrl}`;
-  };
-
   return (
     <div className="min-h-screen bg-gallery-bg py-16 px-6 md:px-12">
       <div className="max-w-5xl mx-auto">
@@ -41,7 +36,7 @@ export default function CartPage() {
                 <div key={item.product._id} className="flex gap-6 bg-gallery-surface border border-gallery-border p-4 shadow-sm">
                   <div className="relative w-24 h-32 md:w-32 md:h-40 flex-shrink-0 bg-gallery-soft">
                     <Image
-                      src={getImageSrc(item.product.imageUrl)}
+                      src={getValidImageSrc(item.product.imageUrl)}
                       alt={item.product.title}
                       fill
                       className="object-cover"

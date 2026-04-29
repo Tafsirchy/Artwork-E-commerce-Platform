@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import Image from "next/image";
 import api from "@/lib/api";
 import useCartStore from "@/store/cartStore";
+import { getValidImageSrc } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { ShoppingBag } from "lucide-react";
 
@@ -54,9 +55,7 @@ export default function ProductDetailsPage({ params }) {
     );
   }
 
-  const imageSrc = product.imageUrl.startsWith("http") 
-    ? product.imageUrl 
-    : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:5000"}${product.imageUrl}`;
+  const imageSrc = getValidImageSrc(product.imageUrl);
 
   return (
     <div className="min-h-screen bg-gallery-bg py-16 px-6 md:px-12">

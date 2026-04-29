@@ -87,6 +87,11 @@ const useCartStore = create(
     }),
     {
       name: "cart-storage",
+      version: 1,
+      migrate: (persistedState) => ({
+        items: Array.isArray(persistedState?.items) ? persistedState.items : [],
+        isLoading: false,
+      }),
     }
   )
 );
