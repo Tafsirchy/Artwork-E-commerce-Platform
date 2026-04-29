@@ -210,7 +210,7 @@ theme: {
 - ✅ 2. **Database:** MongoDB Atlas is configured and connected via `.env` MONGO_URI.
 - [ ] 3. **Frontend Deployment:** Deploy the Next.js application to Vercel.
 - [ ] 4. **Backend Deployment:** Deploy the Express API to a scalable service like Render or Railway.
-- [ ] 5. **CORS & Domains:** Update CORS configuration in Express to strictly allow requests only from the production Vercel domain.
+- ✅ 5. **CORS & Domains:** Updated CORS configuration in Express to dynamically allow the local environment and the production `FRONTEND_URL`.
 
 **Definition of Done (DoD):** The platform is publicly accessible via HTTPS, payments are processed, and emails are delivered.
 
