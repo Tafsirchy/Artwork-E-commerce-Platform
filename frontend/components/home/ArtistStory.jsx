@@ -23,7 +23,7 @@ export default function ArtistStory() {
         className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-gallery-gold/5 rounded-full blur-[120px] -mr-[20vw] -mt-[10vw]"
       />
 
-      <div className="max-w-7xl mx-auto px-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-32">
           
           {/* Image Column with Artistic Reveal */}

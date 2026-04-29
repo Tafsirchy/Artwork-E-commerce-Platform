@@ -29,7 +29,7 @@ const values = [
 export default function ValueSection() {
   return (
     <section className="py-32 bg-gallery-soft">
-      <div className="max-w-7xl mx-auto px-12">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <p className="text-gallery-accent text-sm tracking-[0.4em] uppercase mb-4">
             💎 The Bristiii Standard

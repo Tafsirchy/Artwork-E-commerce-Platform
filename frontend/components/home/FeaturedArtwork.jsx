@@ -25,7 +25,7 @@ const featuredItems = [
 export default function FeaturedArtwork() {
   return (
     <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-12">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-10">
           <motion.div
             initial={{ opacity: 0, x: -50 }}

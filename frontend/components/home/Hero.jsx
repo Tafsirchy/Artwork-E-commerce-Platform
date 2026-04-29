@@ -136,53 +136,55 @@ function TripleCluster() {
 }
 
 class FluidInk {
-  constructor(x, y, hue, vx = 0, vy = 0, isEraser = false, isWhite = false) {
+  constructor(x, y, hue, vx = 0, vy = 0, isEraser = false) {
     this.x = x; this.y = y; this.hue = hue;
     this.isEraser = isEraser;
-    this.isWhite = isWhite;
-    this.vx = isEraser ? 0 : (vx !== 0 ? (vx + (Math.random() - 0.5) * 4) : (Math.random() - 0.5) * 12); 
-    this.vy = isEraser ? 0 : (vy !== 0 ? (vy + (Math.random() - 0.5) * 4) : (Math.random() - 0.5) * 12);
-    this.radius = isEraser ? (Math.random() * 5 + 10) : (Math.random() * 80 + 40); 
-    this.alpha = isEraser ? 1.0 : (isWhite ? 0.08 : 0.05); 
-    this.decay = isEraser ? 0.005 : 0.001; 
+    // NO RANDOM: Strict velocity vectors from corners
+    this.vx = vx; 
+    this.vy = vy;
+    this.radius = isEraser ? (Math.random() * 50 + 60) : (Math.random() * 15 + 5); 
+    this.alpha = isEraser ? 1.0 : 0.04; 
+    this.decay = isEraser ? 0.015 : 0.0006; 
+    this.puffyOffsets = [
+      {x: (Math.random()-0.5)*1.2, y: (Math.random()-0.5)*1.2},
+      {x: (Math.random()-0.5)*1.2, y: (Math.random()-0.5)*1.2},
+      {x: (Math.random()-0.5)*1.2, y: (Math.random()-0.5)*1.2}
+    ];
   }
-
-  update(mouseX, mouseY) { 
-    if (!this.isEraser && mouseX > -500) {
-      const dx = this.x - mouseX;
-      const dy = this.y - mouseY;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 180) {
-        const force = (180 - dist) / 180;
-        this.vx += (dx / dist) * force * 1.5;
-        this.vy += (dy / dist) * force * 1.5;
-      }
+  update() { 
+    if (!this.isEraser) {
+      // REDUCED RANDOMNESS: Gentle swirl only, main trajectory is locked
+      const swirl = Math.sin(this.y * 0.002 + Date.now() * 0.0005) * 0.2;
+      const wave = Math.cos(this.x * 0.002 + Date.now() * 0.0005) * 0.2;
+      this.vx += swirl;
+      this.vy += wave;
+      this.radius += 2.8; 
     }
-
     this.x += this.vx; this.y += this.vy; 
-    this.vx *= 0.995; this.vy *= 0.995; 
+    this.vx *= 0.985; this.vy *= 0.985; 
     this.alpha -= this.decay; 
-    this.radius += (this.isEraser ? 1.2 : 0.2); 
+    if (this.isEraser) {
+       this.radius += 1.8; 
+       this.vx = 0; this.vy = 0; // Eraser stays put for cleaner reveals
+    }
   }
-
   draw(ctx) {
     if (this.isEraser) {
       ctx.globalCompositeOperation = "destination-out";
       ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
     } else {
       ctx.globalCompositeOperation = "screen";
-      if (this.isWhite) {
-        // PURE WHITE SPARKLE
-        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-      } else {
-        // RADIANT PASTEL RAINBOW
-        ctx.fillStyle = `hsla(${this.hue}, 100%, 80%, ${this.alpha})`;
-      }
+      this.puffyOffsets.forEach(off => {
+        const px = this.x + off.x * this.radius * 0.4;
+        const py = this.y + off.y * this.radius * 0.4;
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, this.radius * 0.8);
+        grad.addColorStop(0, `hsla(${this.hue}, 100%, 50%, ${this.alpha})`);
+        grad.addColorStop(1, `hsla(${this.hue}, 100%, 50%, 0)`);
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(px, py, this.radius * 0.8, 0, Math.PI * 2); ctx.fill();
+      });
     }
-    
-    ctx.beginPath(); 
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
-    ctx.fill();
   }
 }
 
@@ -191,8 +193,11 @@ export default function Hero() {
   const containerRef = useRef(null);
   const inks = useRef([]);
   const mouse = useRef({ x: -1000, y: -1000 });
+  const [canLeak, setCanLeak] = useState(false);
 
   useEffect(() => {
+    const leakTimer = setTimeout(() => setCanLeak(true), 2500);
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -206,40 +211,43 @@ export default function Hero() {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
+      const centerX = w / 2;
+      const centerY = h / 2;
       
-      const cornerRate = 0.15;
-      const whiteRate = 0.05; // 5% chance of white highlights
-      const cornerSources = [
-        {x: 0, y: 0, vx: 5, vy: 5},      
-        {x: w, y: 0, vx: -5, vy: 5},     
-        {x: 0, y: h, vx: 5, vy: -5},     
-        {x: w, y: h, vx: -5, vy: -5}     
+      const cornerRate = 0.25;
+      const sources = [
+        {x: 0, y: 0}, {x: w, y: 0}, {x: 0, y: h}, {x: w, y: h}
       ];
 
-      cornerSources.forEach((pos, idx) => {
-        if (Math.random() < cornerRate) {
-          const rainbowHue = (Date.now() / 6 + (idx * 90)) % 360;
-          inks.current.push(new FluidInk(pos.x, pos.y, rainbowHue, pos.vx, pos.vy));
-          
-          // Occasional White burst from corners
-          if (Math.random() < whiteRate) {
-            inks.current.push(new FluidInk(pos.x, pos.y, 0, pos.vx * 1.2, pos.vy * 1.2, false, true));
+      if (canLeak) {
+        sources.forEach((pos, idx) => {
+          if (Math.random() < cornerRate) {
+            // STRICT DIRECTIONAL VECTOR TO CENTER
+            const dx = centerX - pos.x;
+            const dy = centerY - pos.y;
+            const mag = Math.sqrt(dx*dx + dy*dy);
+            const vx = (dx / mag) * 7.5; // Steady pressure to center
+            const vy = (dy / mag) * 7.5;
+            
+            const rainbowHue = (Date.now() / 6 + (idx * 90)) % 360;
+            inks.current.push(new FluidInk(pos.x, pos.y, rainbowHue, vx, vy));
           }
-        }
-      });
+        });
+      }
 
       inks.current = inks.current.filter(ink => ink.alpha > 0);
-      inks.current.forEach(ink => { 
-        ink.update(mouse.current.x, mouse.current.y); 
-        ink.draw(ctx); 
-      });
+      inks.current.forEach(ink => { ink.update(); ink.draw(ctx); });
       animationId = requestAnimationFrame(render);
     };
 
     window.addEventListener("resize", resize);
     resize(); render();
-    return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(animationId); };
-  }, []);
+    return () => { 
+      window.removeEventListener("resize", resize); 
+      cancelAnimationFrame(animationId); 
+      clearTimeout(leakTimer);
+    };
+  }, [canLeak]);
 
   return (
     <section 
@@ -248,11 +256,8 @@ export default function Hero() {
         const rect = e.currentTarget.getBoundingClientRect();
         mouse.current.x = e.clientX - rect.left;
         mouse.current.y = e.clientY - rect.top;
+        // Eraser particles with 0 velocity as default
         inks.current.push(new FluidInk(mouse.current.x, mouse.current.y, 0, 0, 0, true));
-      }}
-      onPointerLeave={() => {
-        mouse.current.x = -1000;
-        mouse.current.y = -1000;
       }}
       className="relative h-[85vh] bg-[#F5F1EB] flex items-center overflow-hidden"
       style={{ 
@@ -262,17 +267,17 @@ export default function Hero() {
       }}
     >
       <div className="absolute inset-0 z-0 bg-black/5" />
-      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none opacity-95 mix-blend-screen" />
+      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none mix-blend-screen opacity-95" />
       
-      <div className="relative z-20 max-w-7xl mx-auto px-12 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
+      <div className="relative z-20 max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
         <div className="max-w-2xl">
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1.2, ease: "easeOut" }}>
             <div className="mb-4 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
               <Sparkles size={16} className="text-gallery-gold animate-pulse" />
-              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Luminous Spectrum for Living Art</span>
+              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Puffy Spectrum for Living Art</span>
             </div>
             <h1 className="text-5xl md:text-[5.2rem] font-light text-gallery-text leading-[0.9] mb-4">Where Souls <br /><span className="italic text-gallery-accent">Conspire.</span></h1>
-            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Luminous rainbow flows and brilliant white highlights erupt and accumulate, pushed aside by your touch. Brush away the light-filled veil to reveal the world beneath.</p>
+            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Rainbow streams erupt from the four corners and converge precisely toward the center, billowing into a symmetrical masterpiece that you can brush away.</p>
             <div className="flex flex-col sm:flex-row items-center gap-12">
               <Link href="/products" className="group relative px-14 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1">
                 <span className="relative z-10">Explore Collection</span>
