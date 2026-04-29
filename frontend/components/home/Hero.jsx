@@ -101,7 +101,7 @@ function ShatterFrame({ initialIndex, cycleDelay = 0 }) {
 // --- TRIPLE OVERLAPPING GALLERY ---
 function TripleCluster() {
   return (
-    <div className="relative w-full aspect-square max-w-[500px] mx-auto">
+    <div className="relative w-full aspect-square max-w-[460px] mx-auto">
       {/* FRAME 1: TOP RIGHT */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -112,22 +112,21 @@ function TripleCluster() {
         <ShatterFrame initialIndex={0} cycleDelay={0} />
       </motion.div>
 
-      {/* FRAME 2: MIDDLE LEFT */}
       <motion.div
-        initial={{ opacity: 0, x: -20 }}
+        initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1, delay: 0.4 }}
-        className="absolute top-[15%] left-0 w-[60%] z-30 drop-shadow-[0_35px_35px_rgba(0,0,0,0.2)]"
+        transition={{ duration: 1.2, delay: 0.2 }}
+        className="absolute top-[20%] left-0 w-[60%] z-30 drop-shadow-[0_25px_50px_rgba(0,0,0,0.15)]"
       >
         <ShatterFrame initialIndex={2} cycleDelay={600} />
       </motion.div>
 
-      {/* FRAME 3: BOTTOM RIGHT */}
+      {/* FRAME 3: BOTTOM RIGHT (Middle Layer) */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.6 }}
-        className="absolute bottom-0 right-[5%] w-[55%] z-20 shadow-2xl"
+        transition={{ duration: 1.2, delay: 0.4 }}
+        className="absolute bottom-[8%] right-[5%] w-[55%] z-20 shadow-xl"
       >
         <ShatterFrame initialIndex={4} cycleDelay={1200} />
       </motion.div>
@@ -216,7 +215,7 @@ export default function Hero() {
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative h-[80vh] bg-[#F5F1EB] flex items-center overflow-hidden"
+      className="relative h-[85vh] bg-[#F5F1EB] flex items-center overflow-hidden"
     >
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,1),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(201,171,110,0.1),transparent_40%)]" />
@@ -238,7 +237,7 @@ export default function Hero() {
               <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Pastel Veil for Living Art</span>
             </div>
 
-            <h1 className="text-5xl md:text-[4.8rem] font-light text-gallery-text leading-[0.9] mb-4">
+            <h1 className="text-5xl md:text-[5.2rem] font-light text-gallery-text leading-[0.9] mb-4">
               Where Souls <br />
               <span className="italic text-gallery-accent">Conspire.</span>
             </h1>
