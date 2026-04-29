@@ -30,41 +30,41 @@ const galleryImages = [
   "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?q=80&w=880&auto=format&fit=crop"
 ];
 
-// PERFECT REFERENCE GRID LAYOUT
+// REFINED REFERENCE GRID (Zero Overlap, Mathematical Precision)
 const gridLayout = [
-  // COLUMN 1 (Far Left Stack - 5 pieces)
-  { id: 1, top: "0%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
-  { id: 2, top: "21%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
-  { id: 3, top: "42%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
-  { id: 4, top: "63%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
-  { id: 5, top: "84%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
+  // COLUMN 1 (Sidebar - 5 units)
+  { id: 1, top: "10%", left: "8%", w: "13%", aspect: "aspect-[16/10]" },
+  { id: 2, top: "28%", left: "8%", w: "13%", aspect: "aspect-[16/10]" },
+  { id: 3, top: "46%", left: "8%", w: "13%", aspect: "aspect-[16/10]" },
+  { id: 4, top: "64%", left: "8%", w: "13%", aspect: "aspect-[16/10]" },
+  { id: 5, top: "82%", left: "8%", w: "13%", aspect: "aspect-[16/10]" },
 
-  // COLUMN 2
-  { id: 6, top: "0%", left: "18%", w: "17%", aspect: "aspect-[3/4]" },
-  { id: 7, top: "54%", left: "18%", w: "27%", aspect: "aspect-[3/2]" },
+  // COLUMN 2 (Main Left)
+  { id: 6, top: "25%", left: "27%", w: "18%", aspect: "aspect-[3/4]" },
+  { id: 7, top: "72%", left: "27%", w: "24%", aspect: "aspect-[3/2]" },
 
-  // COLUMN 3
-  { id: 8, top: "0%", left: "37%", w: "22%", aspect: "aspect-square" },
-  { id: 9, top: "48%", left: "47%", w: "17%", aspect: "aspect-[3/4]" },
+  // COLUMN 3 (Main Right)
+  { id: 8, top: "25%", left: "52%", w: "22%", aspect: "aspect-square" },
+  { id: 9, top: "72%", left: "53%", w: "18%", aspect: "aspect-[3/4]" },
 
   // COLUMN 4 (Far Right)
-  { id: 10, top: "0%", left: "61%", w: "21%", aspect: "aspect-square" },
-  { id: 11, top: "48%", left: "66%", w: "16%", aspect: "aspect-square" },
-  { id: 12, top: "71%", left: "66%", w: "16%", aspect: "aspect-square" },
+  { id: 10, top: "25%", left: "78%", w: "20%", aspect: "aspect-square" },
+  { id: 11, top: "58%", left: "78%", w: "15%", aspect: "aspect-square" },
+  { id: 12, top: "82%", left: "78%", w: "15%", aspect: "aspect-square" },
 
-  // THE CIRCLE HUB (Center Anchor)
-  { id: 13, top: "35%", left: "33%", w: "16%", aspect: "aspect-square", isCircle: true, z: 100 },
+  // CENTER CIRCLE (The Hub)
+  { id: 13, top: "50%", left: "41.5%", w: "18%", aspect: "aspect-square", isCircle: true, z: 100 },
 ];
 
 function ShatterFrame({ imageSrc, isMounted, aspect, isCircle }) {
-  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full bg-white shadow-lg`} />;
+  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full bg-gray-100 rounded-sm shadow-inner animate-pulse`} />;
 
   return (
     <motion.div
       layout
-      whileHover={{ scale: 1.04, zIndex: 120 }}
+      whileHover={{ scale: 1.05, zIndex: 120 }}
       transition={{ layout: { type: "spring", stiffness: 350, damping: 25 } }}
-      className={`relative ${aspect} w-full bg-white shadow-[8px_8px_20px_rgba(0,0,0,0.1)] overflow-hidden group transition-all duration-500 ${isCircle ? "rounded-full border-[8px] border-white" : "rounded-sm"}`}
+      className={`relative ${aspect} w-full bg-white shadow-[10px_10px_30px_rgba(0,0,0,0.1),-10px_-10px_30px_rgba(255,255,255,1)] overflow-hidden group transition-all duration-500 ${isCircle ? "rounded-full border-[6px] border-white ring-4 ring-black/5" : "rounded-sm"}`}
     >
       <AnimatePresence mode="wait">
         <motion.div key={imageSrc} className="absolute inset-0">
@@ -90,7 +90,7 @@ function ShatterFrame({ imageSrc, isMounted, aspect, isCircle }) {
   );
 }
 
-function GridGallery({ isOpen }) {
+function PrecisionGrid({ isOpen }) {
   const [currentImages, setCurrentImages] = useState([]);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -105,7 +105,7 @@ function GridGallery({ isOpen }) {
         next[Math.floor(Math.random() * next.length)] = galleryImages[Math.floor(Math.random() * galleryImages.length)];
         return next;
       });
-    }, 2800);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [isOpen]);
@@ -114,13 +114,13 @@ function GridGallery({ isOpen }) {
     <motion.div 
       initial={{ scale: 0.98, opacity: 0 }}
       animate={isOpen ? { scale: 1, opacity: 1 } : { scale: 0.98, opacity: 0 }}
-      transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-      className="relative w-full h-[75vh] max-w-[1500px] mx-auto"
+      transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+      className="relative w-full h-[85vh] max-w-[1550px] mx-auto"
     >
       {gridLayout.map((slot, index) => (
         <div
           key={slot.id}
-          className="absolute"
+          className="absolute transform -translate-x-1/2 -translate-y-1/2"
           style={{ 
             top: slot.top, 
             left: slot.left, 
@@ -144,23 +144,23 @@ export default function Hero() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <section className="relative h-screen min-h-[900px] bg-[#F3F4F6] flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen min-h-[900px] bg-gray-200 flex items-center justify-center overflow-hidden">
       {/* THE TRIPTYCH DOOR (Curtain) */}
       <div className="absolute inset-0 z-50 flex pointer-events-none">
         <motion.div 
           animate={isOpen ? { x: "-100%", opacity: 0 } : { x: 0, opacity: 1 }}
           transition={{ duration: 2.2, ease: [0.85, 0, 0.15, 1] }}
-          className="relative w-1/3 h-full bg-[#F3F4F6] border-r border-gray-200"
+          className="relative w-1/3 h-full bg-gray-200 border-r border-black/5"
         />
         <motion.div 
           animate={isOpen ? { opacity: 0, scale: 1.1, filter: "blur(20px)" } : { opacity: 1, scale: 1, filter: "blur(0px)" }}
           transition={{ duration: 1.8, ease: "easeInOut" }}
-          className="relative w-1/3 h-full bg-[#F3F4F6]"
+          className="relative w-1/3 h-full bg-gray-200"
         />
         <motion.div 
           animate={isOpen ? { x: "100%", opacity: 0 } : { x: 0, opacity: 1 }}
           transition={{ duration: 2.2, ease: [0.85, 0, 0.15, 1] }}
-          className="relative w-1/3 h-full bg-[#F3F4F6] border-l border-gray-200"
+          className="relative w-1/3 h-full bg-gray-200 border-l border-black/5"
         />
       </div>
 
@@ -175,7 +175,7 @@ export default function Hero() {
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-10 inline-flex items-center gap-4 px-8 py-3 border border-black/5 rounded-full bg-white/60 backdrop-blur-xl"
+              className="mb-10 inline-flex items-center gap-4 px-8 py-3 border border-black/5 rounded-full bg-white/40 backdrop-blur-xl"
             >
               <Sparkles size={16} className="text-gallery-gold animate-pulse" />
               <span className="text-[11px] tracking-[0.7em] uppercase text-gray-800 font-bold">Curated Grid Exhibition</span>
@@ -188,7 +188,7 @@ export default function Hero() {
 
             <p className="text-gray-600 text-2xl font-light leading-relaxed max-w-3xl mb-24 opacity-80">
               Immerse yourself in a mathematically precise sanctuary. <br className="hidden md:block" />
-              Unlock the grid to discover the heart of modern art.
+              Unlock the vault to explore a collection where traditional art meets digital innovation.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-16 pointer-events-auto">
@@ -197,11 +197,11 @@ export default function Hero() {
                 className="group relative px-24 py-9 bg-black text-white text-[11px] tracking-[0.7em] uppercase overflow-hidden rounded-full transition-all hover:-translate-y-2 shadow-2xl"
               >
                 <span className="relative z-10 flex items-center gap-4 font-black">
-                  Explore Grid <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                  Enter The Grid <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-[0.16, 1, 0.3, 1]" />
               </button>
-              <Link href="/about" className="text-[11px] tracking-[0.6em] uppercase text-gray-500 border-b-2 border-gray-200 pb-2 hover:text-black hover:border-black transition-all font-bold">
+              <Link href="/about" className="text-[11px] tracking-[0.6em] uppercase text-gray-500 border-b-2 border-gray-400 pb-2 hover:text-black hover:border-black transition-all font-bold">
                 The Architect
               </Link>
             </div>
@@ -209,9 +209,9 @@ export default function Hero() {
         )}
       </AnimatePresence>
 
-      {/* PERFECT GRID GALLERY */}
+      {/* PRECISION GRID GALLERY */}
       <div className="relative z-20 w-full max-w-[1600px] mx-auto px-10 flex flex-col items-center justify-center">
-        <GridGallery isOpen={isOpen} />
+        <PrecisionGrid isOpen={isOpen} />
         
         {/* ACTION CTA */}
         <motion.div 
@@ -222,10 +222,18 @@ export default function Hero() {
         >
           <Link href="/products" className="group inline-flex items-center gap-8 text-[11px] tracking-[0.9em] uppercase text-gray-800 hover:text-black transition-all font-black border-b-2 border-black/5 pb-4">
             <Layers size={16} className="text-gray-400" />
-            Browse Full Collection
+            Discover Full Collection
           </Link>
         </motion.div>
       </div>
+
+      {/* BRANDING ACCENTS */}
+      <motion.div 
+        animate={isOpen ? { opacity: 0.6 } : { opacity: 0 }}
+        className="absolute bottom-12 left-12 text-[10px] tracking-[1.2em] uppercase text-black/40 rotate-90 origin-left font-black"
+      >
+        EXHIBITION 2024-D
+      </motion.div>
     </section>
   );
 }
