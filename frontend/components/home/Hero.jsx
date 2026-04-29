@@ -142,9 +142,9 @@ class FluidInk {
     this.isWhite = isWhite;
     this.vx = isEraser ? 0 : (vx !== 0 ? (vx + (Math.random() - 0.5) * 4) : (Math.random() - 0.5) * 12); 
     this.vy = isEraser ? 0 : (vy !== 0 ? (vy + (Math.random() - 0.5) * 4) : (Math.random() - 0.5) * 12);
-    this.radius = isEraser ? (Math.random() * 20 + 20) : (Math.random() * 80 + 40); 
+    this.radius = isEraser ? (Math.random() * 5 + 10) : (Math.random() * 80 + 40); 
     this.alpha = isEraser ? 1.0 : (isWhite ? 0.08 : 0.05); 
-    this.decay = isEraser ? 0.01 : 0.001; 
+    this.decay = isEraser ? 0.005 : 0.001; 
   }
 
   update(mouseX, mouseY) { 
