@@ -28,11 +28,25 @@ const galleryImages = [
   "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=687&auto=format&fit=crop"
 ];
 
+// COMPLEX 5-SLOT MATRIX
+const layoutSlots = [
+  { id: "A", class: "absolute top-0 right-0 w-[50%]", aspect: "aspect-[3/4]", z: "z-10" },
+  { id: "B", class: "absolute top-[15%] left-0 w-[55%]", aspect: "aspect-square", z: "z-20" },
+  { id: "C", class: "absolute bottom-0 right-[-10%] w-[75%]", aspect: "aspect-[3/2]", z: "z-30" },
+  { id: "D", class: "absolute top-[10%] right-[15%] w-[45%]", aspect: "aspect-[4/5]", z: "z-15" },
+  { id: "E", class: "absolute bottom-[10%] left-[5%] w-[60%]", aspect: "aspect-square", z: "z-25" },
+];
+
 function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
   if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full rounded-3xl bg-gallery-soft/30 animate-pulse`} />;
 
   return (
-    <div className={`relative ${aspect} w-full rounded-3xl overflow-hidden shadow-xl bg-[#FAF8F5] border border-white/40 group transition-all duration-500`}>
+    <motion.div 
+      layout
+      whileHover={{ scale: 1.05 }}
+      transition={{ layout: { type: "spring", stiffness: 400, damping: 25 }, default: { type: "spring", stiffness: 300, damping: 20 } }}
+      className={`relative ${aspect} w-full rounded-3xl overflow-hidden shadow-xl bg-[#FAF8F5] border border-white/40 group transition-all duration-500`}
+    >
       <AnimatePresence mode="wait">
         <motion.div key={imageSrc} className="absolute inset-0">
           {shards.map((shard, i) => (
@@ -45,26 +59,21 @@ function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
               className="absolute overflow-hidden"
               style={{ top: shard.top, left: shard.left, width: shard.width, height: shard.height, clipPath: shard.clip, zIndex: 10 }}
             >
-              {/* STABLE IMAGE PROJECTION: Using object-fit: cover on a real image to prevent stretching */}
               <div className="absolute w-[300%] h-[300%]" style={{ left: `-${(i % 3) * 100}%`, top: `-${Math.floor(i / 3) * 100}%` }}>
-                 <img 
-                   src={imageSrc} 
-                   alt="Artwork" 
-                   className="w-full h-full object-cover" 
-                   loading="lazy"
-                 />
+                 <img src={imageSrc} alt="Artwork" className="w-full h-full object-cover" />
               </div>
             </motion.div>
           ))}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: [0, 0.3, 0] }} transition={{ delay: 0.4, duration: 0.4 }} className="absolute inset-0 bg-white z-30 pointer-events-none" />
         </motion.div>
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
 function TripleCluster() {
   const [currentImages, setCurrentImages] = useState([]);
+  const [slotIndices, setSlotIndices] = useState([0, 1, 2]);
   const [isMounted, setIsMounted] = useState(false);
 
   const updateSlot = useCallback((slotIndex) => {
@@ -78,29 +87,51 @@ function TripleCluster() {
     });
   }, []);
 
+  const shuffleLayout = useCallback(() => {
+    // COMPLEX SHUFFLE: Pick 3 unique random slots from the pool of 5
+    const allIndices = [0, 1, 2, 3, 4];
+    const picked = allIndices.sort(() => Math.random() - 0.5).slice(0, 3);
+    setSlotIndices(picked);
+  }, []);
+
   useEffect(() => {
     setIsMounted(true);
     const shuffled = [...galleryImages].sort(() => Math.random() - 0.5);
     setCurrentImages(shuffled.slice(0, 3));
-    const t1 = setInterval(() => updateSlot(0), 2500);
-    const t2 = setInterval(() => updateSlot(1), 3200);
-    const t3 = setInterval(() => updateSlot(2), 4000);
-    return () => { clearInterval(t1); clearInterval(t2); clearInterval(t3); };
-  }, [updateSlot]);
+    
+    const t1 = setInterval(() => updateSlot(0), 2000);
+    const t2 = setInterval(() => updateSlot(1), 2600);
+    const t3 = setInterval(() => updateSlot(2), 3200);
+    const layoutTimer = setInterval(shuffleLayout, 1500);
+
+    return () => { 
+      clearInterval(t1); clearInterval(t2); clearInterval(t3); 
+      clearInterval(layoutTimer);
+    };
+  }, [updateSlot, shuffleLayout]);
 
   return (
     <div className="relative w-full max-w-[420px] mx-auto h-[420px]">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="absolute top-0 right-0 w-[55%] z-10">
-        <ShatterFrame imageSrc={currentImages[0]} isMounted={isMounted} aspect="aspect-[3/4]" />
-      </motion.div>
-
-      <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="absolute top-[20%] left-0 w-[58%] z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.12)]">
-        <ShatterFrame imageSrc={currentImages[1]} isMounted={isMounted} aspect="aspect-square" />
-      </motion.div>
-
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="absolute bottom-0 right-[-8%] w-[82%] z-30 shadow-2xl">
-        <ShatterFrame imageSrc={currentImages[2]} isMounted={isMounted} aspect="aspect-[3/2]" />
-      </motion.div>
+      {[0, 1, 2].map((cardIndex) => {
+        const currentSlotIndex = slotIndices[cardIndex];
+        const slot = layoutSlots[currentSlotIndex];
+        return (
+          <motion.div
+            key={cardIndex}
+            layout
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className={`${slot.class} ${slot.z}`}
+            transition={{ layout: { type: "spring", stiffness: 400, damping: 25 } }}
+          >
+            <ShatterFrame 
+              imageSrc={currentImages[cardIndex]} 
+              isMounted={isMounted} 
+              aspect={slot.aspect} 
+            />
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
