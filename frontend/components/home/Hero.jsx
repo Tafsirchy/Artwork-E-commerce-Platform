@@ -4,7 +4,13 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { useEffect, useState } from "react";
+
+const decorativeParticles = Array.from({ length: 15 }, (_, index) => ({
+  x: `${(index * 17 + 11) % 100}%`,
+  y: `${(index * 29 + 7) % 100}%`,
+  duration: 5 + (index % 5),
+  delay: (index * 0.4) % 5,
+}));
 
 export default function Hero() {
   const mouseX = useMotionValue(0);
@@ -19,6 +25,11 @@ export default function Hero() {
   const rotateY = useTransform(smoothX, [-0.5, 0.5], ["-5deg", "5deg"]);
   const translateX = useTransform(smoothX, [-0.5, 0.5], ["-30px", "30px"]);
   const translateY = useTransform(smoothY, [-0.5, 0.5], ["-30px", "30px"]);
+  const bloomX = useTransform(smoothX, [-0.5, 0.5], ["100px", "-100px"]);
+  const detailOneX = useTransform(smoothX, [-0.5, 0.5], ["-50px", "50px"]);
+  const detailOneY = useTransform(smoothY, [-0.5, 0.5], ["-50px", "50px"]);
+  const detailTwoX = useTransform(smoothX, [-0.5, 0.5], ["50px", "-50px"]);
+  const detailTwoY = useTransform(smoothY, [-0.5, 0.5], ["50px", "-50px"]);
 
   const handleMouseMove = (e) => {
     const { clientX, clientY } = e;
@@ -27,15 +38,10 @@ export default function Hero() {
     mouseY.set((clientY / innerHeight) - 0.5);
   };
 
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => setIsMounted(true), []);
-
-  if (!isMounted) return null;
-
   return (
     <section 
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gallery-bg cursor-crosshair"
+      className="relative h-[85vh] flex items-center justify-center overflow-hidden bg-gallery-bg cursor-crosshair"
     >
       {/* --- LAYER 1: Deep Background --- */}
       <div className="absolute inset-0 z-0">
@@ -44,7 +50,7 @@ export default function Hero() {
           className="absolute inset-0 opacity-40 grayscale-[0.5]"
         >
           <Image
-            src="/gallery_hero_bg_1777459017637.png"
+            src="https://images.unsplash.com/photo-1515405295579-ba7b45403062?auto=format&fit=crop&w=2400&q=80"
             alt="Deep Canvas"
             fill
             className="object-cover"
@@ -61,10 +67,10 @@ export default function Hero() {
         className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
       >
         <motion.div
-          style={{ rotate: rotateY, x: useTransform(smoothX, [-0.5, 0.5], ["100px", "-100px"]) }}
+          style={{ rotate: rotateY, x: bloomX }}
           className="relative w-[80vw] h-[80vw] opacity-30 mix-blend-multiply blur-3xl"
         >
-          <Image src="/ink_bloom_gold_1777463235353.png" alt="Ink Bloom" fill className="object-contain animate-pulse" />
+          <Image src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1600&q=80" alt="Ink Bloom" fill className="object-cover animate-pulse" />
         </motion.div>
       </motion.div>
 
@@ -72,19 +78,19 @@ export default function Hero() {
       <div className="absolute inset-0 z-20 pointer-events-none">
         {/* Floating Detail 1 */}
         <motion.div
-          style={{ x: useTransform(smoothX, [-0.5, 0.5], ["-50px", "50px"]), y: useTransform(smoothY, [-0.5, 0.5], ["-50px", "50px"]) }}
+          style={{ x: detailOneX, y: detailOneY }}
           className="absolute top-[15%] left-[10%] w-48 h-64 shadow-2xl rounded-sm overflow-hidden border border-white/20 pointer-events-auto group"
         >
-          <Image src="/masterpiece_detail_1_1777463256458.png" alt="Detail 1" fill className="object-cover transition-transform duration-700 group-hover:scale-125" />
+          <Image src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80" alt="Detail 1" fill className="object-cover transition-transform duration-700 group-hover:scale-125" />
           <div className="absolute inset-0 bg-gallery-gold/0 group-hover:bg-gallery-gold/20 transition-colors" />
         </motion.div>
 
         {/* Floating Detail 2 */}
         <motion.div
-          style={{ x: useTransform(smoothX, [-0.5, 0.5], ["50px", "-50px"]), y: useTransform(smoothY, [-0.5, 0.5], ["50px", "-50px"]) }}
+          style={{ x: detailTwoX, y: detailTwoY }}
           className="absolute bottom-[20%] right-[10%] w-64 h-48 shadow-2xl rounded-sm overflow-hidden border border-white/20 pointer-events-auto group"
         >
-          <Image src="/translucent_art_layer_1777463625840.png" alt="Detail 2" fill className="object-cover transition-transform duration-700 group-hover:scale-125" />
+          <Image src="https://images.unsplash.com/photo-1500622944204-b135684e99fd?auto=format&fit=crop&w=1200&q=80" alt="Detail 2" fill className="object-cover transition-transform duration-700 group-hover:scale-125" />
           <div className="absolute inset-0 bg-gallery-accent/0 group-hover:bg-gallery-accent/20 transition-colors" />
         </motion.div>
       </div>
@@ -96,10 +102,10 @@ export default function Hero() {
           className="relative perspective-1000"
         >
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="mb-8 flex justify-center"
+            className="mb-4 flex justify-center"
           >
             <div className="px-6 py-2 border border-gallery-gold/30 rounded-full flex items-center gap-3 bg-white/5 backdrop-blur-md">
               <Sparkles className="text-gallery-gold animate-spin-slow" size={14} />
@@ -108,10 +114,10 @@ export default function Hero() {
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="text-7xl md:text-9xl font-light text-gallery-text leading-tight mb-8"
+            transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="text-6xl md:text-8xl font-light text-gallery-text leading-[1.1] mb-6"
           >
             Where Art <br /> 
             <span className="relative inline-block italic text-gallery-accent group">
@@ -126,8 +132,8 @@ export default function Hero() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.2 }}
-            className="text-xl text-gallery-muted max-w-2xl mx-auto mb-16 leading-relaxed font-light"
+            transition={{ duration: 1, delay: 1 }}
+            className="text-lg text-gallery-muted max-w-xl mx-auto mb-10 leading-relaxed font-light"
           >
             A metaphysical journey through digital and physical masterpieces. <br />
             Every hover unveils a layer of beauty, every glance a door to inspiration.
@@ -163,12 +169,12 @@ export default function Hero() {
 
       {/* --- DECORATIVE: Floating Particles --- */}
       <div className="absolute inset-0 pointer-events-none opacity-20 z-40">
-        {[...Array(15)].map((_, i) => (
+        {decorativeParticles.map((particle, i) => (
           <motion.div
             key={i}
             initial={{ 
-              x: Math.random() * 100 + "%", 
-              y: Math.random() * 100 + "%",
+              x: particle.x, 
+              y: particle.y,
               opacity: 0
             }}
             animate={{ 
@@ -176,9 +182,9 @@ export default function Hero() {
               opacity: [0, 1, 0]
             }}
             transition={{ 
-              duration: Math.random() * 5 + 5, 
+              duration: particle.duration, 
               repeat: Infinity,
-              delay: Math.random() * 5
+              delay: particle.delay
             }}
             className="w-1 h-1 bg-gallery-gold rounded-full"
           />

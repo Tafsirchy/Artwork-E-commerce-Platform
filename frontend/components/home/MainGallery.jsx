@@ -9,20 +9,22 @@ import Link from "next/link";
 import { ShoppingCart, Expand } from "lucide-react";
 import useCartStore from "@/store/cartStore";
 import { toast } from "react-toastify";
+import { getValidImageSrc } from "@/lib/utils";
 
 export default function MainGallery() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [loading, setLoading] = useState(true);
-  const { addItem } = useCartStore();
+  const { addToCart } = useCartStore();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const { data } = await api.get("/products");
-        setProducts(data);
-        setFilteredProducts(data);
+        const safeProducts = Array.isArray(data) ? data : data?.products ?? [];
+        setProducts(safeProducts);
+        setFilteredProducts(safeProducts);
       } catch (err) {
         console.error("Failed to fetch products:", err);
       } finally {
@@ -34,12 +36,15 @@ export default function MainGallery() {
 
   const handleFilter = (category) => {
     setActiveCategory(category);
+    const safeProducts = Array.isArray(products) ? products : [];
     if (category === "All") {
-      setFilteredProducts(products);
+      setFilteredProducts(safeProducts);
     } else {
-      setFilteredProducts(products.filter(p => p.category === category));
+      setFilteredProducts(safeProducts.filter((product) => product.category === category));
     }
   };
+
+  const visibleProducts = Array.isArray(filteredProducts) ? filteredProducts : [];
 
   if (loading) return (
     <div className="h-96 flex items-center justify-center">
@@ -74,7 +79,7 @@ export default function MainGallery() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProducts.map((product, i) => (
+            {visibleProducts.map((product, i) => (
               <motion.div
                 key={product._id}
                 layout
@@ -96,8 +101,8 @@ export default function MainGallery() {
                     className="relative w-full h-full shadow-lg group-hover:shadow-2xl transition-shadow duration-500"
                   >
                     <Image
-                      src={product.images[0]?.url || "/placeholder.png"}
-                      alt={product.name}
+                      src={getValidImageSrc(product.imageUrl)}
+                      alt={product.title}
                       fill
                       className="object-cover"
                     />
@@ -106,8 +111,8 @@ export default function MainGallery() {
                     <div className="absolute inset-0 bg-gallery-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center gap-4">
                       <button 
                         onClick={() => {
-                          addItem(product);
-                          toast.success(`${product.name} added to cart`);
+                          addToCart(product);
+                          toast.success(`${product.title} added to cart`);
                         }}
                         className="w-14 h-14 bg-white text-gallery-primary rounded-full flex items-center justify-center hover:bg-gallery-gold hover:text-white transition-all transform translate-y-10 group-hover:translate-y-0 duration-500 delay-100"
                       >
@@ -126,15 +131,16 @@ export default function MainGallery() {
                 {/* Product Info with Elegant Typography */}
                 <div className="text-center px-4">
                   <p className="text-[10px] tracking-[0.3em] uppercase text-gallery-accent mb-2">{product.category}</p>
-                  <h3 className="text-xl font-light text-gallery-text tracking-wider uppercase mb-1">{product.name}</h3>
-                  <p className="text-gallery-gold font-light tracking-widest">${product.price}</p>
+                  <h3 className="text-xl font-light text-gallery-text tracking-wider uppercase mb-1">{product.title}</h3>
+                  <p className="text-gallery-muted text-sm mb-1">by {product.creator}</p>
+                  <p className="text-gallery-gold font-light tracking-widest">${Number(product.price).toFixed(2)}</p>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
         </motion.div>
 
-        {filteredProducts.length === 0 && (
+        {visibleProducts.length === 0 && (
           <div className="py-40 text-center">
             <p className="text-gallery-muted tracking-[0.2em] uppercase">No artworks found in this category.</p>
           </div>

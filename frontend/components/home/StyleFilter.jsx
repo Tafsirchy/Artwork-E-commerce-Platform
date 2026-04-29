@@ -2,49 +2,53 @@
 
 import { motion } from "framer-motion";
 
-const styles = [
-  "All Styles",
-  "Abstract",
-  "Minimalism",
-  "Impressionism",
-  "Modernism",
-  "Digital Art",
-  "Photography"
-];
+const categories = ["All", "Abstract", "Minimalism", "Modern", "Digital Art", "Oil Painting"];
 
-export default function StyleFilter({ activeStyle, setActiveStyle }) {
+export default function StyleFilter({ activeCategory, onFilter }) {
   return (
-    <div className="py-12 border-b border-gallery-border">
-      <div className="max-w-7xl mx-auto px-6">
-        <p className="text-[10px] tracking-[0.4em] uppercase text-gallery-muted mb-6">
-          🎭 Filter by Essence
-        </p>
-        <div className="flex flex-wrap gap-x-12 gap-y-6">
-          {styles.map((style, i) => (
-            <motion.button
-              key={style}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              onClick={() => setActiveStyle(style)}
-              className={`text-xs tracking-[0.2em] uppercase transition-all relative pb-2 ${
-                activeStyle === style 
-                  ? "text-gallery-text font-medium" 
-                  : "text-gallery-muted hover:text-gallery-text"
-              }`}
-            >
-              {style}
-              {activeStyle === style && (
-                <motion.div 
-                  layoutId="activeFilter"
-                  className="absolute bottom-0 left-0 w-full h-[1px] bg-gallery-gold"
-                />
-              )}
-            </motion.button>
-          ))}
-        </div>
-      </div>
+    <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+      {categories.map((category) => {
+        const isActive = activeCategory === category;
+        return (
+          <button
+            key={category}
+            onClick={() => onFilter(category)}
+            className="relative px-6 py-2 group overflow-hidden"
+          >
+            {/* Animated Background Pill */}
+            <AnimatePill isActive={isActive} />
+            
+            {/* Category Text */}
+            <span className={`relative z-10 text-[10px] tracking-[0.4em] uppercase transition-colors duration-500 ${
+              isActive ? "text-white" : "text-gallery-muted group-hover:text-gallery-text"
+            }`}>
+              {category}
+            </span>
+
+            {/* Hover Dot */}
+            {!isActive && (
+              <motion.div 
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-gallery-gold rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                layoutId={`dot-${category}`}
+              />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function AnimatePill({ isActive }) {
+  return (
+    <div className="absolute inset-0 z-0">
+      {isActive && (
+        <motion.div
+          layoutId="activeCategoryPill"
+          className="absolute inset-0 bg-gallery-primary rounded-full shadow-lg"
+          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+        />
+      )}
     </div>
   );
 }
