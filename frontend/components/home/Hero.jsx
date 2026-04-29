@@ -8,15 +8,15 @@ import Link from "next/link";
 
 // --- SHARD DATA FOR THE BROKEN IMAGE EFFECT ---
 const shards = [
-  { top: "0%", left: "0%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 0, 85% 100%, 0 100%)" },
-  { top: "0%", left: "33%", width: "34%", height: "34%", clip: "polygon(15% 0, 100% 0, 100% 85%, 0 100%)" },
-  { top: "0%", left: "66%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 0, 100% 100%, 15% 85%)" },
-  { top: "33%", left: "0%", width: "34%", height: "34%", clip: "polygon(0 15%, 85% 0, 100% 100%, 0 100%)" },
-  { top: "33%", left: "33%", width: "34%", height: "34%", clip: "polygon(15% 15%, 85% 15%, 85% 85%, 15% 85%)" },
-  { top: "33%", left: "66%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 15%, 100% 100%, 15% 100%)" },
-  { top: "66%", left: "0%", width: "34%", height: "34%", clip: "polygon(0 0, 100% 15%, 100% 100%, 0 100%)" },
-  { top: "66%", left: "33%", width: "34%", height: "34%", clip: "polygon(15% 0, 85% 0, 100% 100%, 0 100%)" },
-  { top: "66%", left: "66%", width: "34%", height: "34%", clip: "polygon(15% 0, 100% 0, 100% 100%, 0 85%)" },
+  { top: "0%", left: "0%", width: "33.333%", height: "33.333%", clip: "polygon(0 0, 101% 0, 101% 101%, 0 101%)" },
+  { top: "0%", left: "33.333%", width: "33.333%", height: "33.333%", clip: "polygon(-1% 0, 101% 0, 101% 101%, -1% 101%)" },
+  { top: "0%", left: "66.666%", width: "33.333%", height: "33.333%", clip: "polygon(-1% 0, 100% 0, 100% 101%, -1% 101%)" },
+  { top: "33.333%", left: "0%", width: "33.333%", height: "33.333%", clip: "polygon(0 -1%, 101% -1%, 101% 101%, 0 101%)" },
+  { top: "33.333%", left: "33.333%", width: "33.333%", height: "33.333%", clip: "polygon(-1% -1%, 101% -1%, 101% 101%, -1% 101%)" },
+  { top: "33.333%", left: "66.666%", width: "33.333%", height: "33.333%", clip: "polygon(-1% -1%, 100% -1%, 100% 101%, -1% 101%)" },
+  { top: "66.666%", left: "0%", width: "33.333%", height: "33.333%", clip: "polygon(0 -1%, 101% -1%, 101% 100%, 0 100%)" },
+  { top: "66.666%", left: "33.333%", width: "33.333%", height: "33.333%", clip: "polygon(-1% -1%, 101% -1%, 101% 100%, -1% 100%)" },
+  { top: "66.666%", left: "66.666%", width: "33.333%", height: "33.333%", clip: "polygon(-1% -1%, 100% -1%, 100% 100%, -1% 100%)" },
 ];
 
 const galleryImages = [
@@ -74,13 +74,13 @@ function ShatterGallery() {
                 zIndex: 10
               }}
             >
-              <div
-                className="absolute w-[300%] h-[300%]"
-                style={{
-                  left: `-${(i % 3) * 100}%`,
+              <div 
+                className="absolute w-[300%] h-[300%]" 
+                style={{ 
+                  left: `-${(i % 3) * 100}%`, 
                   top: `-${Math.floor(i / 3) * 100}%`,
                   backgroundImage: `url(${galleryImages[index]})`,
-                  backgroundSize: 'cover',
+                  backgroundSize: '300% 300%', // Crucial for perfect alignment
                   backgroundPosition: 'center'
                 }}
               />
