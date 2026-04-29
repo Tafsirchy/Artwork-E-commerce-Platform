@@ -5,60 +5,51 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
-// --- BRUSH STROKE LOGIC ---
+// --- SVG PATH STRINGS FOR SILHOUETTES ---
+const MAN_PATH = "M100,50 C120,50 140,70 140,100 C140,130 130,150 120,180 C110,210 130,240 140,280 C150,320 150,380 130,420 C110,460 90,460 70,420 C50,380 50,320 60,280 C70,240 90,210 80,180 C70,150 60,130 60,100 C60,70 80,50 100,50";
+const WOMAN_PATH = "M100,50 C115,50 125,65 125,85 C125,105 115,120 110,140 C105,160 125,185 135,215 C145,245 140,285 125,325 C110,365 90,365 75,325 C60,285 55,245 65,215 C75,185 95,160 90,140 C85,120 75,105 75,85 C75,65 85,50 100,50";
+
 class Stroke {
-  constructor(canvas, x, y, type, color) {
+  constructor(canvas, pathPoints, type, color, xOffset, yOffset) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
-    this.points = [{ x, y }];
-    this.type = type; // 'masculine' or 'feminine'
+    this.pathPoints = pathPoints;
+    this.xOffset = xOffset;
+    this.yOffset = yOffset;
+    
+    const startIdx = Math.floor(Math.random() * pathPoints.length);
+    this.currentIdx = startIdx;
+    this.points = [{
+      x: pathPoints[startIdx].x + xOffset,
+      y: pathPoints[startIdx].y + yOffset
+    }];
+    
+    this.type = type;
     this.baseColor = color;
     this.currentColor = color;
     this.opacity = 0;
-    this.thickness = type === "masculine" ? 1.2 : 0.6;
-    this.maxLength = 40 + Math.random() * 80;
-    this.growthSpeed = 0.5 + Math.random() * 1.5;
-    
-    // Silhouette path offset
-    this.offsetX = (Math.random() - 0.5) * 40;
-    this.offsetY = (Math.random() - 0.5) * 100;
+    this.thickness = type === "masculine" ? 1.4 : 0.7;
+    this.maxLength = 20 + Math.random() * 40;
+    this.growthSpeed = 1;
   }
 
   update(mouseX, mouseY) {
-    // Growth logic (Auto Painting)
     if (this.points.length < this.maxLength) {
-      const lastPoint = this.points[this.points.length - 1];
-      let angle;
-      
-      if (this.type === "masculine") {
-        // Structured, bold, angular strokes
-        angle = (Math.floor(Math.random() * 8) * Math.PI) / 4; 
-      } else {
-        // Fluid, expressive, curved strokes
-        angle = Math.sin(this.points.length * 0.08) * 2 + Math.PI / 2;
-      }
-      
+      this.currentIdx = (this.currentIdx + 1) % this.pathPoints.length;
+      const p = this.pathPoints[this.currentIdx];
       this.points.push({
-        x: lastPoint.x + Math.cos(angle) * this.growthSpeed,
-        y: lastPoint.y + Math.sin(angle) * this.growthSpeed
+        x: p.x + this.xOffset + (Math.random() - 0.5) * 15,
+        y: p.y + this.yOffset + (Math.random() - 0.5) * 15
       });
     }
 
-    // Interaction logic
     const dist = Math.hypot(mouseX - this.points[0].x, mouseY - this.points[0].y);
     if (dist < 180) {
-      // User as Artist effect
-      this.currentColor = this.type === "masculine" ? "#D97757" : "#C8A96A"; // Terracotta / Gold
+      this.currentColor = this.type === "masculine" ? "#D97757" : "#C8A96A";
       this.opacity = Math.min(1, this.opacity + 0.05);
-      // Slight morphing/vibration
-      this.points.forEach(p => {
-        p.x += (Math.random() - 0.5) * 0.5;
-        p.y += (Math.random() - 0.5) * 0.5;
-      });
     } else {
       this.currentColor = this.baseColor;
       this.opacity = Math.max(0.1, this.opacity - 0.01);
-      // Fade in on load
       if (this.opacity < 0.3) this.opacity += 0.005;
     }
   }
@@ -70,7 +61,6 @@ class Stroke {
     this.ctx.globalAlpha = this.opacity;
     this.ctx.lineWidth = this.thickness;
     this.ctx.lineCap = "round";
-    this.ctx.lineJoin = "round";
     
     this.ctx.moveTo(this.points[0].x, this.points[0].y);
     for (let i = 1; i < this.points.length; i++) {
@@ -86,11 +76,27 @@ export default function Hero() {
   const strokes = useRef([]);
   const mouse = useRef({ x: -1000, y: -1000 });
 
+  const getPathPoints = (pathString, samples = 100) => {
+    if (typeof document === "undefined") return [];
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", pathString);
+    const length = path.getTotalLength();
+    const points = [];
+    for (let i = 0; i < samples; i++) {
+      const p = path.getPointAtLength((i / samples) * length);
+      points.push({ x: p.x, y: p.y });
+    }
+    return points;
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     let animationId;
+
+    const manPoints = getPathPoints(MAN_PATH, 200);
+    const womanPoints = getPathPoints(WOMAN_PATH, 200);
 
     const resize = () => {
       const container = containerRef.current;
@@ -104,45 +110,42 @@ export default function Hero() {
       strokes.current = [];
       const w = canvas.width;
       const h = canvas.height;
-      const centerX = w / 2;
-      const centerY = h / 2;
 
-      // Masculine Figure (Structured Lines on Left)
-      for (let i = 0; i < 60; i++) {
+      // Create strokes that follow the man path
+      for (let i = 0; i < 100; i++) {
         strokes.current.push(new Stroke(
-          canvas, 
-          w * 0.35 + (Math.random() - 0.5) * 150, 
-          h * 0.2 + Math.random() * (h * 0.6), 
-          "masculine", 
-          "#222222"
+          canvas, manPoints, "masculine", "#222", w * 0.15, h * 0.2
         ));
       }
-
-      // Feminine Figure (Fluid Lines on Right)
-      for (let i = 0; i < 60; i++) {
+      // Create strokes that follow the woman path
+      for (let i = 0; i < 100; i++) {
         strokes.current.push(new Stroke(
-          canvas, 
-          w * 0.65 + (Math.random() - 0.5) * 150, 
-          h * 0.2 + Math.random() * (h * 0.6), 
-          "feminine", 
-          "#444444"
+          canvas, womanPoints, "feminine", "#444", w * 0.45, h * 0.2
         ));
       }
     };
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Periodically add new strokes to keep it evolving
+      if (Math.random() > 0.98 && strokes.current.length < 300) {
+        const isMasculine = Math.random() > 0.5;
+        strokes.current.push(new Stroke(
+          canvas, 
+          isMasculine ? manPoints : womanPoints, 
+          isMasculine ? "masculine" : "feminine", 
+          isMasculine ? "#222" : "#444", 
+          canvas.width * (isMasculine ? 0.15 : 0.45), 
+          canvas.height * 0.2
+        ));
+      }
+
       strokes.current.forEach(s => {
         s.update(mouse.current.x, mouse.current.y);
         s.draw();
       });
       animationId = requestAnimationFrame(render);
-    };
-
-    const handleMouseMove = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.current.x = e.clientX - rect.left;
-      mouse.current.y = e.clientY - rect.top;
     };
 
     window.addEventListener("resize", resize);
@@ -157,7 +160,7 @@ export default function Hero() {
 
   return (
     <section ref={containerRef} className="relative h-screen bg-white flex overflow-hidden">
-      {/* --- LEFT: LIVING CANVAS AREA (70%) --- */}
+      {/* --- CANVAS AREA (70%) --- */}
       <div 
         className="w-[70%] relative bg-white border-r border-gallery-border/30 cursor-crosshair"
         onMouseMove={(e) => {
@@ -168,16 +171,14 @@ export default function Hero() {
       >
         <canvas ref={canvasRef} className="w-full h-full" />
         
-        {/* Background Texture Overlay */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/canvas-orange.png')" }} />
         
-        {/* Abstract "A" for ART Watermark */}
         <div className="absolute bottom-10 left-10 text-[10vw] font-bold text-gallery-soft/40 select-none pointer-events-none">
           ART
         </div>
       </div>
 
-      {/* --- RIGHT: MINIMAL CONTENT (30%) --- */}
+      {/* --- CONTENT AREA (30%) --- */}
       <div className="w-[30%] flex flex-col justify-center px-16 bg-[#FAF8F5]">
         <motion.div
           initial={{ opacity: 0, x: 40 }}
@@ -198,7 +199,7 @@ export default function Hero() {
             </h1>
             
             <p className="text-gallery-muted text-lg font-light leading-relaxed mb-12 max-w-xs">
-              Experience creativity beyond imagination through a living, breathing digital masterpiece.
+              Experience the convergence of technology and soul through our Living Canvas.
             </p>
 
             <Link
@@ -217,14 +218,11 @@ export default function Hero() {
               <div className="w-8 h-8 rounded-full border border-gallery-border flex items-center justify-center group-hover:border-gallery-gold transition-colors">
                 <Sparkles size={12} className="group-hover:text-gallery-gold transition-colors" />
               </div>
-              <span className="text-[9px] tracking-[0.3em] uppercase">Interactive Experience</span>
+              <span className="text-[9px] tracking-[0.3em] uppercase">Interactive Portrait</span>
             </div>
           </div>
         </motion.div>
       </div>
-      
-      {/* Full Screen Vignette */}
-      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_200px_rgba(0,0,0,0.02)]" />
     </section>
   );
 }
