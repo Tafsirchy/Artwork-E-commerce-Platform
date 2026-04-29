@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles } from "lucide-react";
-import Image from "next/image";
+import { Sparkles, ArrowRight, Layers } from "lucide-react";
 import Link from "next/link";
 
 const shards = [
@@ -21,29 +20,51 @@ const shards = [
 const galleryImages = [
   "https://images.unsplash.com/photo-1705711714839-cf327143c4a0?q=80&w=687&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1170&auto=format&fit=crop",
-  "https://plus.unsplash.com/premium_photo-1682125164600-e7493508e496?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1590005354167-6da97870c91d?q=80&w=1200&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200",
   "https://images.unsplash.com/photo-1557933488-c8daa2a5772c?q=80&w=687&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=687&auto=format&fit=crop"
+  "https://images.unsplash.com/photo-1688672407398-69ba645c2aff?q=80&w=918&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=687&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1598770220477-cec551a23f53?q=80&w=1171&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1557008075-7f2c5efa4cfd?q=80&w=1190&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?q=80&w=880&auto=format&fit=crop"
 ];
 
-const layoutSlots = [
-  { id: "A", class: "absolute top-0 right-0 w-[50%]", aspect: "aspect-[3/4]", z: "z-10" },
-  { id: "B", class: "absolute top-[15%] left-0 w-[55%]", aspect: "aspect-square", z: "z-20" },
-  { id: "C", class: "absolute bottom-0 right-[-10%] w-[75%]", aspect: "aspect-[3/2]", z: "z-30" },
-  { id: "D", class: "absolute top-[10%] right-[15%] w-[45%]", aspect: "aspect-[4/5]", z: "z-15" },
-  { id: "E", class: "absolute bottom-[10%] left-[5%] w-[60%]", aspect: "aspect-square", z: "z-25" },
+// PERFECT REFERENCE GRID LAYOUT
+const gridLayout = [
+  // COLUMN 1 (Far Left Stack - 5 pieces)
+  { id: 1, top: "0%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
+  { id: 2, top: "21%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
+  { id: 3, top: "42%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
+  { id: 4, top: "63%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
+  { id: 5, top: "84%", left: "0%", w: "16%", aspect: "aspect-[16/10]" },
+
+  // COLUMN 2
+  { id: 6, top: "0%", left: "18%", w: "17%", aspect: "aspect-[3/4]" },
+  { id: 7, top: "54%", left: "18%", w: "27%", aspect: "aspect-[3/2]" },
+
+  // COLUMN 3
+  { id: 8, top: "0%", left: "37%", w: "22%", aspect: "aspect-square" },
+  { id: 9, top: "48%", left: "47%", w: "17%", aspect: "aspect-[3/4]" },
+
+  // COLUMN 4 (Far Right)
+  { id: 10, top: "0%", left: "61%", w: "21%", aspect: "aspect-square" },
+  { id: 11, top: "48%", left: "66%", w: "16%", aspect: "aspect-square" },
+  { id: 12, top: "71%", left: "66%", w: "16%", aspect: "aspect-square" },
+
+  // THE CIRCLE HUB (Center Anchor)
+  { id: 13, top: "35%", left: "33%", w: "16%", aspect: "aspect-square", isCircle: true, z: 100 },
 ];
 
-function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
-  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full rounded-3xl bg-gallery-soft/30 animate-pulse`} />;
+function ShatterFrame({ imageSrc, isMounted, aspect, isCircle }) {
+  if (!isMounted || !imageSrc) return <div className={`relative ${aspect} w-full bg-white shadow-lg`} />;
 
   return (
     <motion.div
       layout
-      whileHover={{ scale: 1.05 }}
-      transition={{ layout: { type: "spring", stiffness: 400, damping: 25 }, default: { type: "spring", stiffness: 300, damping: 20 } }}
-      className={`relative ${aspect} w-full rounded-3xl overflow-hidden shadow-xl bg-[#FAF8F5] border border-white/40 group transition-all duration-500`}
+      whileHover={{ scale: 1.04, zIndex: 120 }}
+      transition={{ layout: { type: "spring", stiffness: 350, damping: 25 } }}
+      className={`relative ${aspect} w-full bg-white shadow-[8px_8px_20px_rgba(0,0,0,0.1)] overflow-hidden group transition-all duration-500 ${isCircle ? "rounded-full border-[8px] border-white" : "rounded-sm"}`}
     >
       <AnimatePresence mode="wait">
         <motion.div key={imageSrc} className="absolute inset-0">
@@ -62,103 +83,149 @@ function ShatterFrame({ imageSrc, isMounted, aspect = "aspect-[4/5]" }) {
               </div>
             </motion.div>
           ))}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: [0, 0.3, 0] }} transition={{ delay: 0.4, duration: 0.4 }} className="absolute inset-0 bg-white z-30 pointer-events-none" />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: [0, 0.2, 0] }} transition={{ delay: 0.4, duration: 0.4 }} className="absolute inset-0 bg-white z-30 pointer-events-none" />
         </motion.div>
       </AnimatePresence>
     </motion.div>
   );
 }
 
-function TripleCluster() {
+function GridGallery({ isOpen }) {
   const [currentImages, setCurrentImages] = useState([]);
-  const [slotIndices, setSlotIndices] = useState([0, 1, 2]);
   const [isMounted, setIsMounted] = useState(false);
-
-  const updateSlot = useCallback((slotIndex) => {
-    setCurrentImages((prev) => {
-      const nextImages = [...prev];
-      const usedUrls = prev.filter((_, i) => i !== slotIndex);
-      const available = galleryImages.filter(url => !usedUrls.includes(url));
-      const nextUrl = available[Math.floor(Math.random() * available.length)];
-      nextImages[slotIndex] = nextUrl;
-      return nextImages;
-    });
-  }, []);
-
-  const shuffleLayout = useCallback(() => {
-    const allIndices = [0, 1, 2, 3, 4];
-    const picked = allIndices.sort(() => Math.random() - 0.5).slice(0, 3);
-    setSlotIndices(picked);
-  }, []);
 
   useEffect(() => {
     setIsMounted(true);
-    const shuffled = [...galleryImages].sort(() => Math.random() - 0.5);
-    setCurrentImages(shuffled.slice(0, 3));
+    setCurrentImages([...galleryImages, ...galleryImages].sort(() => Math.random() - 0.5).slice(0, 13));
 
-    const t1 = setInterval(() => updateSlot(0), 2000);
-    const t2 = setInterval(() => updateSlot(1), 2600);
-    const t3 = setInterval(() => updateSlot(2), 3200);
-    const layoutTimer = setInterval(shuffleLayout, 1500);
+    const interval = setInterval(() => {
+      if (!isOpen) return;
+      setCurrentImages(prev => {
+        const next = [...prev];
+        next[Math.floor(Math.random() * next.length)] = galleryImages[Math.floor(Math.random() * galleryImages.length)];
+        return next;
+      });
+    }, 2800);
 
-    return () => {
-      clearInterval(t1); clearInterval(t2); clearInterval(t3);
-      clearInterval(layoutTimer);
-    };
-  }, [updateSlot, shuffleLayout]);
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   return (
-    <div className="relative w-full max-w-[420px] mx-auto h-[420px]">
-      {[0, 1, 2].map((cardIndex) => {
-        const currentSlotIndex = slotIndices[cardIndex];
-        const slot = layoutSlots[currentSlotIndex];
-        return (
-          <motion.div
-            key={cardIndex}
-            layout
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className={`${slot.class} ${slot.z}`}
-            transition={{ layout: { type: "spring", stiffness: 400, damping: 25 } }}
-          >
-            <ShatterFrame
-              imageSrc={currentImages[cardIndex]}
-              isMounted={isMounted}
-              aspect={slot.aspect}
-            />
-          </motion.div>
-        );
-      })}
-    </div>
+    <motion.div 
+      initial={{ scale: 0.98, opacity: 0 }}
+      animate={isOpen ? { scale: 1, opacity: 1 } : { scale: 0.98, opacity: 0 }}
+      transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+      className="relative w-full h-[75vh] max-w-[1500px] mx-auto"
+    >
+      {gridLayout.map((slot, index) => (
+        <div
+          key={slot.id}
+          className="absolute"
+          style={{ 
+            top: slot.top, 
+            left: slot.left, 
+            width: slot.w,
+            zIndex: slot.z || 10
+          }}
+        >
+          <ShatterFrame
+            imageSrc={currentImages[index]}
+            isMounted={isMounted}
+            aspect={slot.aspect}
+            isCircle={slot.isCircle}
+          />
+        </div>
+      ))}
+    </motion.div>
   );
 }
 
 export default function Hero() {
-  return (
-    <section className="relative h-[85vh] bg-[#F5F1EB] flex items-center overflow-hidden">
-      <div className="absolute inset-0 z-0 bg-black/5" />
+  const [isOpen, setIsOpen] = useState(false);
 
-      <div className="relative z-20 max-w-7xl mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-4">
-        <div className="max-w-2xl">
-          <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1.2, ease: "easeOut" }}>
-            <div className="mb-4 inline-flex items-center gap-4 px-5 py-2 border border-gallery-gold/30 rounded-full bg-white/40 backdrop-blur-md">
+  return (
+    <section className="relative h-screen min-h-[900px] bg-[#F3F4F6] flex items-center justify-center overflow-hidden">
+      {/* THE TRIPTYCH DOOR (Curtain) */}
+      <div className="absolute inset-0 z-50 flex pointer-events-none">
+        <motion.div 
+          animate={isOpen ? { x: "-100%", opacity: 0 } : { x: 0, opacity: 1 }}
+          transition={{ duration: 2.2, ease: [0.85, 0, 0.15, 1] }}
+          className="relative w-1/3 h-full bg-[#F3F4F6] border-r border-gray-200"
+        />
+        <motion.div 
+          animate={isOpen ? { opacity: 0, scale: 1.1, filter: "blur(20px)" } : { opacity: 1, scale: 1, filter: "blur(0px)" }}
+          transition={{ duration: 1.8, ease: "easeInOut" }}
+          className="relative w-1/3 h-full bg-[#F3F4F6]"
+        />
+        <motion.div 
+          animate={isOpen ? { x: "100%", opacity: 0 } : { x: 0, opacity: 1 }}
+          transition={{ duration: 2.2, ease: [0.85, 0, 0.15, 1] }}
+          className="relative w-1/3 h-full bg-[#F3F4F6] border-l border-gray-200"
+        />
+      </div>
+
+      {/* TEXT CONTENT & TRIGGER */}
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.div 
+            exit={{ opacity: 0, scale: 0.98, filter: "blur(20px)" }}
+            transition={{ duration: 1.5, ease: "easeIn" }}
+            className="absolute inset-0 z-[60] flex flex-col items-center justify-center px-10 text-center"
+          >
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-10 inline-flex items-center gap-4 px-8 py-3 border border-black/5 rounded-full bg-white/60 backdrop-blur-xl"
+            >
               <Sparkles size={16} className="text-gallery-gold animate-pulse" />
-              <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-text">A Sanctuary for Modern Masterpieces</span>
-            </div>
-            <h1 className="text-5xl md:text-[5.2rem] font-light text-gallery-text leading-[0.9] mb-4">Where Souls <br /><span className="italic text-gallery-accent">Conspire.</span></h1>
-            <p className="text-gallery-muted text-lg font-light leading-relaxed mb-8 max-w-lg">Discover a curated collection of contemporary art that bridges the gap between traditional craftsmanship and digital innovation.</p>
-            <div className="flex flex-col sm:flex-row items-center gap-12">
-              <Link href="/products" className="group relative px-14 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full transition-transform hover:-translate-y-1">
-                <span className="relative z-10">Explore Collection</span>
-                <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              <span className="text-[11px] tracking-[0.7em] uppercase text-gray-800 font-bold">Curated Grid Exhibition</span>
+            </motion.div>
+            
+            <h1 className="text-7xl md:text-[9rem] font-light text-gray-900 leading-[0.8] mb-10 tracking-tighter">
+              Where Souls <br />
+              <span className="italic text-gallery-accent block mt-6">Conspire.</span>
+            </h1>
+
+            <p className="text-gray-600 text-2xl font-light leading-relaxed max-w-3xl mb-24 opacity-80">
+              Immerse yourself in a mathematically precise sanctuary. <br className="hidden md:block" />
+              Unlock the grid to discover the heart of modern art.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center gap-16 pointer-events-auto">
+              <button 
+                onClick={() => setIsOpen(true)}
+                className="group relative px-24 py-9 bg-black text-white text-[11px] tracking-[0.7em] uppercase overflow-hidden rounded-full transition-all hover:-translate-y-2 shadow-2xl"
+              >
+                <span className="relative z-10 flex items-center gap-4 font-black">
+                  Explore Grid <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
+              </button>
+              <Link href="/about" className="text-[11px] tracking-[0.6em] uppercase text-gray-500 border-b-2 border-gray-200 pb-2 hover:text-black hover:border-black transition-all font-bold">
+                The Architect
               </Link>
-              <Link href="/about" className="text-[10px] tracking-[0.4em] uppercase text-gallery-text border-b border-gallery-border pb-1 hover:text-gallery-accent hover:border-gallery-accent transition-all font-medium">The Artist's Story</Link>
             </div>
           </motion.div>
-        </div>
-        <div className="relative"><TripleCluster /></div>
+        )}
+      </AnimatePresence>
+
+      {/* PERFECT GRID GALLERY */}
+      <div className="relative z-20 w-full max-w-[1600px] mx-auto px-10 flex flex-col items-center justify-center">
+        <GridGallery isOpen={isOpen} />
+        
+        {/* ACTION CTA */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={isOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ delay: 2.8, duration: 1.5 }}
+          className="mt-12 text-center"
+        >
+          <Link href="/products" className="group inline-flex items-center gap-8 text-[11px] tracking-[0.9em] uppercase text-gray-800 hover:text-black transition-all font-black border-b-2 border-black/5 pb-4">
+            <Layers size={16} className="text-gray-400" />
+            Browse Full Collection
+          </Link>
+        </motion.div>
       </div>
-      <div className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-overlay" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/brushed-alum.png')" }} />
     </section>
   );
 }
