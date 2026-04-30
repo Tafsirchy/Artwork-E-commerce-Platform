@@ -126,7 +126,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-12 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12">
+      <div className="w-11/12 mx-auto flex flex-col lg:flex-row gap-12">
         
         {/* Left Col - Details */}
         <div className="w-full lg:w-2/3 space-y-8">

@@ -25,7 +25,7 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-16 px-6 md:px-12">
-      <div className="max-w-5xl mx-auto">
+      <div className="w-11/12 mx-auto">
         <h1 className="text-4xl font-light text-gallery-text mb-12">Your Collection</h1>
         
         <div className="flex flex-col lg:flex-row gap-12">

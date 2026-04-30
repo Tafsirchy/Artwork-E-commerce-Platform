@@ -59,7 +59,7 @@ export default function ProductDetailsPage({ params }) {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-16 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto bg-gallery-surface border border-gallery-border shadow-sm flex flex-col md:flex-row">
+      <div className="w-11/12 mx-auto bg-gallery-surface border border-gallery-border shadow-sm flex flex-col md:flex-row">
         {/* Image Section */}
         <div className="w-full md:w-1/2 relative min-h-[500px] bg-gallery-soft">
           <Image

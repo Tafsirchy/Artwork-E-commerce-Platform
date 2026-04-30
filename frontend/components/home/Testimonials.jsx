@@ -27,7 +27,7 @@ const testimonials = [
 export default function Testimonials() {
   return (
     <section className="py-32 bg-gallery-bg border-t border-gallery-border">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="w-11/12 mx-auto">
         <div className="text-center mb-20">
           <p className="text-gallery-accent text-sm tracking-[0.4em] uppercase mb-4">
             ⭐ Voices of Collectors

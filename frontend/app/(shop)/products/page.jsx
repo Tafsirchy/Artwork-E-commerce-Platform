@@ -26,7 +26,7 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-16 px-6 md:px-12">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-11/12 mx-auto">
         <div className="text-center mb-14">
           <p className="text-sm tracking-[0.3em] uppercase text-gallery-muted mb-3">Bristiii</p>
           <h1 className="text-5xl font-light text-gallery-text">Curated Gallery</h1>
