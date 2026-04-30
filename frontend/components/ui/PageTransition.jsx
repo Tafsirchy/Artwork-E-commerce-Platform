@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 const variants = {
   initial: { opacity: 0, y: 16 },
@@ -11,6 +12,10 @@ const variants = {
 
 export default function PageTransition({ children }) {
   const pathname = usePathname();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <AnimatePresence mode="wait">

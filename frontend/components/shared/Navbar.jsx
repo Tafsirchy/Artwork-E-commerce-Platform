@@ -2,20 +2,24 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ShoppingCart, User, Menu, X } from "lucide-react";
+import { ShoppingCart, User, Menu, X, Heart } from "lucide-react";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import useAuthStore from "@/store/authStore";
 import useCartStore from "@/store/cartStore";
+import useWishlistStore from "@/store/wishlistStore";
 import { toast } from "react-toastify";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, logout } = useAuthStore();
-  const { items } = useCartStore();
+  const { items: cartItems } = useCartStore();
+  const { items: wishlistItems } = useWishlistStore();
   const pathname = usePathname();
   const router = useRouter();
 
-  const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const wishlistCount = wishlistItems.length;
 
   const handleLogout = () => {
     logout();
@@ -53,7 +57,17 @@ export default function Navbar() {
         </nav>
 
         {/* Right Icons */}
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-6">
+          {/* Wishlist */}
+          <Link href="/wishlist" className="relative text-gallery-muted hover:text-red-400 transition-colors">
+            <Heart size={21} className={wishlistCount > 0 ? "fill-red-400 stroke-red-400" : ""} />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-4 h-4 bg-gallery-text text-white text-[9px] rounded-full flex items-center justify-center font-bold">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+
           {/* Cart */}
           <Link href="/cart" className="relative text-gallery-muted hover:text-gallery-text transition-colors">
             <ShoppingCart size={22} />
@@ -66,7 +80,7 @@ export default function Navbar() {
 
           {/* User / Auth */}
           {user ? (
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4 border-l border-gallery-border pl-6 ml-2">
               {user.role === "admin" && (
                 <Link href="/admin/dashboard" className="text-sm text-gallery-muted hover:text-gallery-text tracking-wider uppercase transition-colors">
                   Admin
@@ -80,11 +94,11 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4 border-l border-gallery-border pl-6 ml-2">
               <Link href="/login" className="text-sm text-gallery-muted hover:text-gallery-text tracking-wider uppercase transition-colors">
                 Login
               </Link>
-              <Link href="/register" className="text-sm px-4 py-2 bg-gallery-primary text-white rounded hover:bg-black transition-colors tracking-wider uppercase">
+              <Link href="/register" className="text-sm px-4 py-2 bg-gallery-primary text-white rounded-full hover:bg-black transition-colors tracking-wider uppercase">
                 Join
               </Link>
             </div>
@@ -92,7 +106,7 @@ export default function Navbar() {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden text-gallery-muted hover:text-gallery-text"
+            className="md:hidden text-gallery-muted hover:text-gallery-text ml-2"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
@@ -102,37 +116,51 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="md:hidden bg-gallery-surface border-t border-gallery-border px-6 py-4 flex flex-col gap-4">
-          {navLinks.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-gallery-muted text-sm tracking-widest uppercase hover:text-gallery-text transition-colors"
-              onClick={() => setMobileOpen(false)}
-            >
-              {link.label}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden bg-gallery-surface border-t border-gallery-border px-6 py-8 flex flex-col gap-6 overflow-hidden"
+          >
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-gallery-muted text-sm tracking-[0.3em] uppercase hover:text-gallery-text transition-colors"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="h-px bg-gallery-border w-12" />
+            <Link href="/wishlist" className="text-gallery-muted text-sm tracking-[0.3em] uppercase hover:text-red-400 transition-colors" onClick={() => setMobileOpen(false)}>
+              Wishlist ({wishlistCount})
             </Link>
-          ))}
-          {user ? (
-            <>
-              {user.role === "admin" && (
-                <Link href="/admin/dashboard" className="text-gallery-muted text-sm tracking-widest uppercase hover:text-gallery-text" onClick={() => setMobileOpen(false)}>
-                  Admin
-                </Link>
-              )}
-              <button onClick={handleLogout} className="text-left text-gallery-muted text-sm tracking-widest uppercase hover:text-gallery-text">
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="text-gallery-muted text-sm tracking-widest uppercase hover:text-gallery-text" onClick={() => setMobileOpen(false)}>Login</Link>
-              <Link href="/register" className="text-gallery-muted text-sm tracking-widest uppercase hover:text-gallery-text" onClick={() => setMobileOpen(false)}>Join</Link>
-            </>
-          )}
-        </div>
-      )}
+            <Link href="/cart" className="text-gallery-muted text-sm tracking-[0.3em] uppercase hover:text-gallery-text transition-colors" onClick={() => setMobileOpen(false)}>
+              Cart ({cartCount})
+            </Link>
+            {user ? (
+              <>
+                {user.role === "admin" && (
+                  <Link href="/admin/dashboard" className="text-gallery-muted text-sm tracking-[0.3em] uppercase hover:text-gallery-text" onClick={() => setMobileOpen(false)}>
+                    Admin Panel
+                  </Link>
+                )}
+                <button onClick={handleLogout} className="text-left text-gallery-muted text-sm tracking-[0.3em] uppercase hover:text-gallery-text">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <div className="flex gap-6 mt-4">
+                <Link href="/login" className="text-gallery-muted text-sm tracking-[0.3em] uppercase hover:text-gallery-text" onClick={() => setMobileOpen(false)}>Login</Link>
+                <Link href="/register" className="text-gallery-accent text-sm tracking-[0.3em] uppercase font-bold" onClick={() => setMobileOpen(false)}>Join Now</Link>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -1,13 +1,8 @@
 "use client";
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { X, Eye } from "lucide-react";
-import ArtworkModal from "./ArtworkModal";
-
-export default function CategoryModal({ category, onClose }) {
-  const [selectedArtwork, setSelectedArtwork] = useState(null);
-
+export default function CategoryModal({ category, onClose, onMouseEnter, onMouseLeave, onSelectArtwork }) {
   if (!category) return null;
 
   return (
@@ -25,12 +20,14 @@ export default function CategoryModal({ category, onClose }) {
 
         <motion.div
           key="category-modal-panel"
-          initial={{ opacity: 0, scale: 0.94, x: category.direction === "left" ? -40 : 40 }}
+          initial={{ opacity: 0, scale: 0.96, x: category.direction === "left" ? -20 : 20 }}
           animate={{ opacity: 1, scale: 1, x: 0 }}
-          exit={{ opacity: 0, scale: 0.94, x: category.direction === "left" ? -40 : 40 }}
-          transition={{ type: "spring", damping: 24, stiffness: 260 }}
+          exit={{ opacity: 0, scale: 0.96, x: category.direction === "left" ? -20 : 20 }}
+          transition={{ type: "spring", damping: 25, stiffness: 350 }}
           className="relative z-10 w-full max-w-5xl max-h-[90vh] bg-[#faf9f7] overflow-hidden flex flex-col shadow-2xl"
           onClick={(e) => e.stopPropagation()}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
           style={{ borderTop: `4px solid ${category.color}` }}
         >
           {/* Header */}
@@ -66,7 +63,7 @@ export default function CategoryModal({ category, onClose }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08, duration: 0.5 }}
                   className="group cursor-pointer"
-                  onClick={() => setSelectedArtwork(artwork)}
+                  onClick={() => onSelectArtwork(artwork)}
                 >
                   {/* Image Frame */}
                   <div className="relative aspect-[4/3] overflow-hidden bg-[#f0ede8] mb-3 shadow-sm">
@@ -85,8 +82,8 @@ export default function CategoryModal({ category, onClose }) {
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-center justify-center">
                       <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
-                        <span className="px-6 py-2.5 rounded-full bg-white/20 backdrop-blur-md border border-white/40 text-white text-[10px] tracking-[0.2em] uppercase font-medium flex items-center gap-2 hover:bg-white/30 transition-colors">
-                          <Eye size={14} /> See the Art
+                        <span className="px-8 py-3 rounded-full bg-[#5c4a3d]/80 backdrop-blur-md border border-white/20 text-white text-[11px] tracking-[0.3em] uppercase font-bold flex items-center gap-3 hover:bg-[#5c4a3d] transition-all duration-300 shadow-xl">
+                          <Eye size={16} strokeWidth={2.5} /> SEE THE ART
                         </span>
                       </div>
                     </div>
@@ -108,14 +105,6 @@ export default function CategoryModal({ category, onClose }) {
           </div>
         </motion.div>
       </motion.div>
-
-      {/* Level 3 — Artwork Lightbox */}
-      {selectedArtwork && (
-        <ArtworkModal
-          artwork={selectedArtwork}
-          onClose={() => setSelectedArtwork(null)}
-        />
-      )}
     </AnimatePresence>
   );
 }

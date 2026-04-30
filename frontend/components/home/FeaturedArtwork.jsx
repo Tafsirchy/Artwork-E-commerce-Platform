@@ -40,15 +40,31 @@ const featuredItems = [
 
 const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => (
   <motion.div
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.8, delay: index * 0.15 }}
-    className={`relative group cursor-none bg-white p-5 pb-8 shadow-2xl ${className || ''}`}
+    initial={{ opacity: 0, scale: 0.8, y: 100, rotateX: 15, rotateY: index % 2 === 0 ? -10 : 10 }}
+    whileInView={{ opacity: 1, scale: 1, y: 0, rotateX: 0, rotateY: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{
+      duration: 1.2,
+      delay: 0.6 + index * 0.2,
+      ease: [0.16, 1, 0.3, 1]
+    }}
+    className={`relative group cursor-none bg-white p-5 pb-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2)] hover:shadow-[0_45px_90px_-20px_rgba(0,0,0,0.3)] transition-shadow duration-700 ${className || ''}`}
   >
     {/* Masking Tape */}
-    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-28 h-8 bg-[#8e8b76] opacity-95 shadow-sm z-30" />
-    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-28 h-8 bg-black/10 translate-y-1 blur-[3px] z-20" />
+    <motion.div
+      initial={{ opacity: 0, scale: 1.3, y: -20, rotate: index % 2 === 0 ? -2 : 2 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0, rotate: index % 2 === 0 ? -2 : 2 }}
+      viewport={{ once: true }}
+      transition={{ delay: 1.4 + index * 0.2, duration: 0.6, type: "spring", stiffness: 200 }}
+      className="absolute -top-4 left-1/2 -translate-x-1/2 w-28 h-8 bg-[#8e8b76]/90 backdrop-blur-sm shadow-sm z-30"
+    />
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ delay: 1.5 + index * 0.2 }}
+      className="absolute -top-4 left-1/2 -translate-x-1/2 w-28 h-8 bg-black/10 translate-y-1 blur-[3px] z-20"
+    />
 
     {/* Image Container with Shutter Door */}
     <div
@@ -108,28 +124,66 @@ export default function FeaturedArtwork() {
   const [activeImage, setActiveImage] = useState(null);
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-28 bg-white">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-10">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            <p className="text-gallery-accent text-sm tracking-[0.5em] uppercase mb-6">
-              🧩 The Curator's Eye
-            </p>
-            <h2 className="text-6xl font-light text-gallery-text leading-tight">
-              Opening the Doors <br /> to <span className="italic">Hidden Beauty</span>
-            </h2>
-          </motion.div>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-10">
+          <div className="overflow-hidden">
+            <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <motion.p
+                initial={{ opacity: 0, letterSpacing: "0.1em" }}
+                whileInView={{ opacity: 1, letterSpacing: "0.5em" }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="text-gallery-accent text-sm uppercase mb-6"
+              >
+                🧩 The Curator's Eye
+              </motion.p>
+              <h2 className="text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4 leading-tight">
+                {"Opening the Doors".split(" ").map((word, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, filter: "blur(10px)", y: 20 }}
+                    whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, delay: i * 0.1 }}
+                    className="inline-block mr-4"
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+                <br />
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: 0.6 }}
+                  className="inline-block mr-4"
+                >
+                  to
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, x: -20, rotateY: 90 }}
+                  whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.2, delay: 0.8, ease: "easeOut" }}
+                  className="font-serif text-gallery-gold font-light inline-block"
+                >
+                  Hidden Beauty
+                </motion.span>
+              </h2>
+            </motion.div>
+          </div>
 
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 1.2, delay: 0.3 }}
             className="text-right"
           >
             <p className="text-gallery-muted max-w-sm ml-auto mb-8 text-lg font-light leading-relaxed">
@@ -142,7 +196,22 @@ export default function FeaturedArtwork() {
         </div>
 
         {/* 🎨 MOODBOARD LAYOUT */}
-        <div className="bg-[#9c9a87] py-12 px-6 md:px-12 lg:px-24 rounded-sm shadow-[inset_0_0_100px_rgba(0,0,0,0.1)] grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-stretch relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 50, rotateX: 5 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-[#9c9a87] py-12 px-6 md:px-12 lg:px-24 rounded-sm shadow-[inset_0_0_100px_rgba(0,0,0,0.1)] grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-stretch relative overflow-hidden"
+          style={{ perspective: "1200px" }}
+        >
+          {/* Animated Overlay "Door" Reveal */}
+          <motion.div
+            initial={{ scaleX: 1 }}
+            whileInView={{ scaleX: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.5, ease: [0.77, 0, 0.175, 1], delay: 0.5 }}
+            className="absolute inset-0 bg-[#1c1c1c] z-[60] origin-left pointer-events-none"
+          />
 
           {/* Subtle Background Texture */}
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} />
@@ -166,7 +235,7 @@ export default function FeaturedArtwork() {
                 Allow your eyes to wander. The beauty lies not in the center, but in the unseen corners of the canvas.
               </p>
 
-              <AnimatedButton onClick={() => setIsModalOpen(true)} text="See the beauty" />
+              <AnimatedButton onClick={() => setIsModalOpen(true)} text="See the beauty" delay={1.8} />
             </div>
             <ArtworkCard item={featuredItems[2]} index={2} aspectClass="aspect-[2/1]" className="" onImageClick={setActiveImage} />
           </div>
@@ -176,7 +245,7 @@ export default function FeaturedArtwork() {
             <ArtworkCard item={featuredItems[3]} index={3} aspectClass="flex-1 min-h-0" className="h-full flex flex-col" onImageClick={setActiveImage} />
           </div>
 
-        </div>
+        </motion.div>
       </div>
 
       {/* 🔮 LAYOUT MODAL */}

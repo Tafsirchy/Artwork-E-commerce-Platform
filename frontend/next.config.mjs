@@ -22,6 +22,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.alphacoders.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.magnific.com',
+      },
     ],
   },
 };

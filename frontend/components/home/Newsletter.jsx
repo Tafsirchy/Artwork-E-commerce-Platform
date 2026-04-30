@@ -15,7 +15,7 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-40 bg-gallery-bg relative overflow-hidden">
+    <section className="py-28 bg-gallery-bg relative overflow-hidden">
       {/* Decorative Blur Orbs */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-gallery-gold/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-gallery-accent/10 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2" />
@@ -37,15 +37,42 @@ export default function Newsletter() {
             </motion.div>
           </div>
 
-          <p className="text-gallery-accent text-sm tracking-[0.6em] uppercase mb-8">
+          <p className="text-gallery-accent text-sm tracking-[0.6em] uppercase mb-20">
             📩 Invitation to the Infinite
           </p>
-          <h2 className="text-5xl md:text-7xl font-light text-gallery-text mb-12 leading-none">
-            Join Our <span className="italic">Private Circle</span>
+          <h2 className="text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4 leading-none">
+            {"Join Our".split(" ").map((word, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                className="inline-block mr-6"
+              >
+                {word}
+              </motion.span>
+            ))}
+            <br />
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, delay: 0.4 }}
+              className="font-serif text-gallery-gold font-light"
+            >
+              Private Circle
+            </motion.span>
           </h2>
-          <p className="text-gallery-muted text-lg max-w-xl mx-auto mb-16 leading-relaxed font-light">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.5, delay: 0.6 }}
+            className="text-gallery-muted text-lg max-w-xl mx-auto mb-16 leading-relaxed font-light"
+          >
             Become part of a global collective. Receive exclusive early access to new collections and private gallery viewings.
-          </p>
+          </motion.p>
 
           <form
             onSubmit={handleSubscribe}

@@ -1,11 +1,12 @@
 "use client";
 import { useState, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import { CloudRain } from "lucide-react";
 import { shelfCategories } from "./shelfData";
 import Shelf from "./Shelf";
 import CategoryModal from "./CategoryModal";
 import WeatherSystem from "./WeatherSystem";
+import ArtworkModal from "./ArtworkModal";
 
 /* ─── SVG Tree (trunk + branches) ─────────────────────────────── */
 function TreeSVG() {
@@ -18,40 +19,88 @@ function TreeSVG() {
       preserveAspectRatio="xMidYMid meet"
     >
       {/* Main trunk */}
-      <path
+      <motion.path
+        initial={{ pathLength: 0, opacity: 0 }}
+        whileInView={{ pathLength: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.8, ease: "easeInOut" }}
         d="M300 820 C298 720 295 620 300 520 C305 420 300 320 300 220 C300 160 300 100 300 60"
         stroke="url(#trunkGrad)"
         strokeWidth="36"
         strokeLinecap="round"
       />
       {/* Trunk texture */}
-      <path
+      <motion.path
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 0.3 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 1 }}
         d="M300 820 C298 720 295 620 300 520 C305 420 300 320 300 220"
         stroke="#7a5230"
         strokeWidth="10"
         strokeLinecap="round"
-        opacity="0.3"
         strokeDasharray="4 28"
       />
 
       {/* Top branch — Abstract */}
-      <path d="M300 80 C300 80 300 60 300 40" stroke="url(#branchGrad)" strokeWidth="18" strokeLinecap="round" />
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 1.2 }}
+        d="M300 80 C300 80 300 60 300 40" stroke="url(#branchGrad)" strokeWidth="18" strokeLinecap="round"
+      />
 
       {/* Upper-left branch — Landscape */}
-      <path d="M300 210 C280 210 220 220 130 235" stroke="url(#branchGrad)" strokeWidth="20" strokeLinecap="round" />
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.6 }}
+        d="M300 210 C280 210 220 220 130 235" stroke="url(#branchGrad)" strokeWidth="20" strokeLinecap="round"
+      />
       {/* Upper-right branch — Modern */}
-      <path d="M300 210 C320 210 380 220 470 235" stroke="url(#branchGrad)" strokeWidth="18" strokeLinecap="round" />
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.7 }}
+        d="M300 210 C320 210 380 220 470 235" stroke="url(#branchGrad)" strokeWidth="18" strokeLinecap="round"
+      />
 
       {/* Mid-left branch — Minimalism */}
-      <path d="M300 390 C275 390 200 400 70 415" stroke="url(#branchGrad)" strokeWidth="22" strokeLinecap="round" />
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.4 }}
+        d="M300 390 C275 390 200 400 70 415" stroke="url(#branchGrad)" strokeWidth="22" strokeLinecap="round"
+      />
       {/* Mid-right branch — Expressionism */}
-      <path d="M300 390 C325 390 400 400 520 415" stroke="url(#branchGrad)" strokeWidth="20" strokeLinecap="round" />
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.5 }}
+        d="M300 390 C325 390 400 400 520 415" stroke="url(#branchGrad)" strokeWidth="20" strokeLinecap="round"
+      />
 
       {/* Bottom branch — Illustration */}
-      <path d="M300 590 C300 590 300 600 300 610" stroke="url(#branchGrad)" strokeWidth="26" strokeLinecap="round" />
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        d="M300 590 C300 590 300 600 300 610" stroke="url(#branchGrad)" strokeWidth="26" strokeLinecap="round"
+      />
 
       {/* Root flare */}
-      <ellipse cx="300" cy="822" rx="80" ry="14" fill="#a0784c" opacity="0.25" />
+      <motion.ellipse
+        initial={{ scale: 0, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 0.25 }}
+        viewport={{ once: true }}
+        cx="300" cy="822" rx="80" ry="14" fill="#a0784c"
+      />
 
       {/* Gradients */}
       <defs>
@@ -72,6 +121,7 @@ function TreeSVG() {
 /* ─── Main Section ─────────────────────────────────────────────── */
 export default function ArtShelfSection() {
   const [activeCategory, setActiveCategory] = useState(null);
+  const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [isRaining, setIsRaining] = useState(false);
   const closeTimer = useRef(null);
 
@@ -81,16 +131,31 @@ export default function ArtShelfSection() {
 
   const scheduleClose = useCallback(() => {
     cancelClose();
-    closeTimer.current = setTimeout(() => setActiveCategory(null), 250);
-  }, [cancelClose]);
+    // Don't close if an artwork is being viewed
+    if (selectedArtwork) return;
+    closeTimer.current = setTimeout(() => setActiveCategory(null), 100);
+  }, [cancelClose, selectedArtwork]);
 
   const handleShelfEnter = useCallback((cat) => {
     cancelClose();
     setActiveCategory(cat);
   }, [cancelClose]);
 
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const treeY = useTransform(scrollYProgress, [0, 1], [40, -40]);
+  const treeRotate = useTransform(scrollYProgress, [0, 1], [-1.5, 1.5]);
+  const treeScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.96, 1, 0.96]);
+
+  const smoothY = useSpring(treeY, { stiffness: 100, damping: 30 });
+  const smoothRotate = useSpring(treeRotate, { stiffness: 100, damping: 30 });
+
   return (
-    <section className="relative py-24 overflow-hidden transition-colors duration-1000" style={{ backgroundColor: isRaining ? "#202836" : "#f8f6f2" }}>
+    <section className="relative py-28 overflow-hidden transition-colors duration-1000" style={{ backgroundColor: isRaining ? "#202836" : "#f8f6f2" }}>
       {/* Weather System */}
       <WeatherSystem active={isRaining} />
 
@@ -113,31 +178,31 @@ export default function ArtShelfSection() {
         </button>
 
         <motion.div
-          animate={{ 
+          animate={{
             y: [0, -6, 0],
           }}
-          transition={{ 
-            duration: 3.5, 
+          transition={{
+            duration: 3.5,
             repeat: Infinity,
-            ease: "easeInOut" 
+            ease: "easeInOut"
           }}
           className="flex flex-col items-center pointer-events-none"
         >
-          <div 
+          <div
             className="text-[12px] font-black mb-1.5"
             style={{ color: isRaining ? "#93c5fd" : "#8b6340" }}
           >
             ↑
           </div>
-          
-          <div 
+
+          <div
             className="px-3 py-1.5 rounded-sm border backdrop-blur-sm shadow-xl"
-            style={{ 
+            style={{
               backgroundColor: isRaining ? "rgba(147, 197, 253, 0.1)" : "rgba(139, 99, 64, 0.05)",
               borderColor: isRaining ? "rgba(147, 197, 253, 0.3)" : "rgba(139, 99, 64, 0.2)"
             }}
           >
-            <span 
+            <span
               className="text-[8px] tracking-[0.6em] font-black uppercase text-center block"
               style={{ color: isRaining ? "#93c5fd" : "#8b6340" }}
             >
@@ -156,31 +221,31 @@ export default function ArtShelfSection() {
       {/* Section Header */}
       <div className="w-11/12 mx-auto text-center mb-6 relative z-10">
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, letterSpacing: "0.1em" }}
+          whileInView={{ opacity: 1, letterSpacing: "0.4em" }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-[10px] tracking-[0.4em] uppercase mb-3"
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="text-[10px] uppercase mb-3"
           style={{ color: isRaining ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.35)" }}
         >
           Our Living Archive
         </motion.p>
         <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, filter: "blur(10px)", y: 20 }}
+          whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-5xl md:text-6xl font-light font-serif tracking-wide"
-          style={{ color: isRaining ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.8)" }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4"
+          style={{ color: isRaining ? "rgba(255,255,255,0.9)" : undefined }}
         >
-          Explore the Collection
+          Explore the <br /> <span className="font-serif text-gallery-gold">Collection</span>
         </motion.h2>
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.25 }}
-          className="mt-4 text-sm max-w-lg mx-auto"
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="mt-4 text-sm max-w-lg mx-auto font-light"
           style={{ color: isRaining ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.4)" }}
         >
           Hover over a shelf to unveil an entire world. Click to step inside.
@@ -189,12 +254,19 @@ export default function ArtShelfSection() {
 
       {/* ─── Tree Shelf Stage ─────────────────────────────── */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.97 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.9, delay: 0.2 }}
+        ref={containerRef}
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         className="relative mx-auto"
-        style={{ width: "min(680px, 92%)", height: "860px" }}
+        style={{
+          width: "min(680px, 92%)",
+          height: "860px",
+          y: smoothY,
+          rotate: smoothRotate,
+          scale: treeScale
+        }}
       >
         {/* Tree SVG background */}
         <TreeSVG />
@@ -245,16 +317,23 @@ export default function ArtShelfSection() {
       {/* ─── Category Modal (Level 2) ────────────────────── */}
       <AnimatePresence>
         {activeCategory && (
-          <div
+          <CategoryModal
+            category={activeCategory}
+            onClose={() => setActiveCategory(null)}
             onMouseEnter={cancelClose}
             onMouseLeave={scheduleClose}
-            className="contents"
-          >
-            <CategoryModal
-              category={activeCategory}
-              onClose={() => setActiveCategory(null)}
-            />
-          </div>
+            onSelectArtwork={setSelectedArtwork}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ─── Artwork Modal (Level 3) ────────────────────── */}
+      <AnimatePresence>
+        {selectedArtwork && (
+          <ArtworkModal
+            artwork={selectedArtwork}
+            onClose={() => setSelectedArtwork(null)}
+          />
         )}
       </AnimatePresence>
     </section>

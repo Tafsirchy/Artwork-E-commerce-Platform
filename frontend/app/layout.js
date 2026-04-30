@@ -1,4 +1,4 @@
-import { Outfit } from "next/font/google";
+import { Outfit, Monsieur_La_Doulaise } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
@@ -12,6 +12,13 @@ const outfit = Outfit({
   display: "swap",
 });
 
+const signatureFont = Monsieur_La_Doulaise({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-signature",
+  display: "swap",
+});
+
 export const metadata = {
   title: "Bristiii - Modern Art Gallery",
   description: "A quiet gallery space where the walls disappear and the art becomes the focus.",
@@ -19,7 +26,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${outfit.variable} h-full antialiased`}>
+    <html lang="en" className={`${outfit.variable} ${signatureFont.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-gallery-bg font-outfit">
         <Navbar />
         <main className="flex-1">
@@ -29,7 +36,7 @@ export default function RootLayout({ children }) {
         </main>
         <Footer />
         <ToastContainer 
-          position="bottom-right"
+          position="top-right"
           autoClose={3000}
           hideProgressBar={false}
           theme="light"

@@ -53,7 +53,7 @@ export default function MainGallery() {
   );
 
   return (
-    <section className="py-32 bg-gallery-bg">
+    <section className="py-28 bg-gallery-bg">
       <div className="container mx-auto px-6">
 
         <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-10">
@@ -62,8 +62,8 @@ export default function MainGallery() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-light text-gallery-text tracking-widest uppercase mb-4">
-              Explore the Collection
+            <h2 className="text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4">
+              Explore the <br /> <span className="font-serif text-gallery-gold font-light">Collection</span>
             </h2>
             <div className="h-[1px] w-24 bg-gallery-gold" />
           </motion.div>
@@ -141,7 +141,7 @@ export default function MainGallery() {
         </motion.div>
 
         {visibleProducts.length === 0 && (
-          <div className="py-40 text-center">
+          <div className="py-28 text-center">
             <p className="text-gallery-muted tracking-[0.2em] uppercase">No artworks found in this category.</p>
           </div>
         )}

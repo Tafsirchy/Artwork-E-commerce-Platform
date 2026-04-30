@@ -2,8 +2,8 @@
 
 import Hero from "@/components/home/Hero";
 import FeaturedArtwork from "@/components/home/FeaturedArtwork";
+import LivePencilSketch from "@/components/home/LivePencilSketch";
 import ArtShelfSection from "@/components/home/shelf/ArtShelfSection";
-import MainGallery from "@/components/home/MainGallery";
 import ArtistStory from "@/components/home/ArtistStory";
 import ValueSection from "@/components/home/ValueSection";
 import Testimonials from "@/components/home/Testimonials";
@@ -19,11 +19,11 @@ export default function HomePage() {
       {/* 🧩 2. Featured Artwork (Curated Picks) */}
       <FeaturedArtwork />
 
+      {/* ✏️ 2.5 Live Pencil Sketch — "The Living Artwork" */}
+      <LivePencilSketch />
+
       {/* 🌳 3. Artistic Shelf — "Explore the Collection" */}
       <ArtShelfSection />
-
-      {/* 🖼️ 4. Main Gallery Grid (Core Section) + 🎭 Style Filter */}
-      <MainGallery />
 
       {/* 👩🎨 5. Artist Story Section (Very Important) */}
       <ArtistStory />

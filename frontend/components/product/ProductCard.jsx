@@ -4,26 +4,42 @@ import Link from "next/link";
 import Image from "next/image";
 import useCartStore from "@/store/cartStore";
 import { toast } from "react-toastify";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
 import { getValidImageSrc } from "@/lib/utils";
+import useWishlistStore from "@/store/wishlistStore";
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCartStore();
+  const { toggleWishlist, isInWishlist } = useWishlistStore();
+  const isWishlisted = isInWishlist(product._id);
 
   const handleAddToCart = (e) => {
-    e.preventDefault(); // Prevent linking to the product page when clicking the button
+    e.preventDefault();
     addToCart(product);
     toast.success(`${product.title} added to cart!`, { 
       style: { backgroundColor: "#4CAF50", color: "#fff" } 
     });
   };
 
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    const added = toggleWishlist(product);
+    if (added) {
+      toast.success(`${product.title} added to wishlist!`, {
+        icon: "❤️",
+        style: { backgroundColor: "#fff", color: "#C4A484" }
+      });
+    } else {
+      toast.info(`${product.title} removed from wishlist`);
+    }
+  };
+
   const imageSrc = getValidImageSrc(product.imageUrl);
 
   return (
     <Link href={`/products/${product._id}`} className="group block">
-      <div className="bg-gallery-surface border border-gallery-border overflow-hidden transition-transform duration-300 group-hover:scale-[1.03] shadow-sm hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
-        <div className="relative aspect-[4/5] w-full overflow-hidden bg-gallery-soft">
+      <div className="bg-gallery-surface border border-gallery-border overflow-hidden transition-transform duration-300 group-hover:scale-[1.03] shadow-sm hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] relative">
+        <div className="relative aspect-square w-full overflow-hidden bg-gallery-soft">
           <Image
             src={imageSrc}
             alt={product.title}
@@ -31,8 +47,20 @@ export default function ProductCard({ product }) {
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
+          
+          {/* Wishlist Button */}
+          <button
+            onClick={handleWishlist}
+            className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-white/80 backdrop-blur-md shadow-lg border border-gallery-gold/20 hover:scale-110 transition-all group/wish"
+            aria-label="Add to wishlist"
+          >
+            <Heart 
+              size={18} 
+              className={`transition-colors ${isWishlisted ? 'fill-red-500 stroke-red-500' : 'text-gallery-muted group-hover/wish:text-red-400'}`} 
+            />
+          </button>
         </div>
-        <div className="p-5 flex flex-col justify-between">
+        <div className="p-4 flex flex-col justify-between">
           <div>
             <h3 className="text-xl font-light text-gallery-text truncate">{product.title}</h3>
             <p className="text-sm text-gallery-muted mt-1">{product.creator}</p>

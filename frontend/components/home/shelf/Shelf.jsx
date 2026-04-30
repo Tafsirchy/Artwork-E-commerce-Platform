@@ -90,23 +90,31 @@ export default function Shelf({ category, onSelect, onDeselect }) {
         {category.artworks.map((art, i) => (
           <motion.div
             key={art.id}
-            className="relative overflow-hidden shadow-md bg-white"
+            initial={{ opacity: 0, y: 40, scale: 0.5, rotate: ROTATIONS[i % ROTATIONS.length] - 20 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1, rotate: ROTATIONS[i % ROTATIONS.length] }}
+            viewport={{ once: true, amount: 0.2 }}
+            className="relative overflow-hidden shadow-md bg-white origin-bottom"
             style={{
               width: "48px",
               height: i % 3 === 0 ? "64px" : i % 3 === 1 ? "52px" : "58px",
-              rotate: `${ROTATIONS[i % ROTATIONS.length]}deg`,
               border: "2px solid white",
               boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
             }}
             animate={{
-              y: hovered ? -3 : [0, -3, 0],
-              boxShadow: hovered ? `0 8px 24px ${category.glowColor}` : "0 2px 8px rgba(0,0,0,0.18)"
+              y: hovered ? -8 : [0, -3, 0],
+              scale: hovered ? 1.15 : 1,
+              rotate: hovered ? ROTATIONS[i % ROTATIONS.length] * 1.8 : ROTATIONS[i % ROTATIONS.length],
+              boxShadow: hovered 
+                ? `0 15px 35px ${category.glowColor}, 0 5px 15px rgba(0,0,0,0.2)` 
+                : "0 4px 12px rgba(0,0,0,0.15)"
             }}
-            transition={
-              hovered 
-                ? { duration: 0.3 } 
-                : { duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }
-            }
+            transition={{
+              y: hovered ? { type: "spring", stiffness: 400, damping: 20 } : { duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" },
+              scale: { type: "spring", stiffness: 400, damping: 25 },
+              rotate: { type: "spring", stiffness: 300, damping: 20 },
+              opacity: { duration: 0.5, delay: i * 0.1 },
+              default: { type: "spring", stiffness: 200, damping: 15, delay: i * 0.1 }
+            }}
           >
             <Image
               src={art.image}
@@ -122,9 +130,13 @@ export default function Shelf({ category, onSelect, onDeselect }) {
       {/* Shelf Plank */}
       <motion.div
         className="rounded-sm relative"
+        initial={{ scaleX: 0, opacity: 0, filter: "blur(4px)" }}
+        whileInView={{ scaleX: 1, opacity: 1, filter: "blur(0px)" }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         animate={{
           boxShadow: hovered
-            ? `0 6px 30px ${category.glowColor}, 0 2px 6px rgba(0,0,0,0.15)`
+            ? `0 10px 40px ${category.glowColor}, 0 4px 10px rgba(0,0,0,0.2)`
             : "0 2px 6px rgba(0,0,0,0.12)",
         }}
         style={{
@@ -132,6 +144,7 @@ export default function Shelf({ category, onSelect, onDeselect }) {
           height: "14px",
           background:
             "linear-gradient(180deg, #c8a97e 0%, #a0784c 50%, #8b6340 100%)",
+          originX: category.position.left === "50%" ? 0.5 : (category.direction === "left" ? 1 : 0),
         }}
       >
         {/* Wood grain detail lines */}

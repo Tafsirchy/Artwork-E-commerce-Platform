@@ -11,7 +11,7 @@ export default function Footer() {
   return (
     <footer className="bg-gallery-surface pt-24 pb-12 border-t border-gallery-border">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-16">
 
           {/* Brand Col */}
           <div className="lg:col-span-1">
