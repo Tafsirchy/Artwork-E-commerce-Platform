@@ -1,9 +1,11 @@
 "use client";
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { CloudRain } from "lucide-react";
 import { shelfCategories } from "./shelfData";
 import Shelf from "./Shelf";
 import CategoryModal from "./CategoryModal";
+import WeatherSystem from "./WeatherSystem";
 
 /* ─── SVG Tree (trunk + branches) ─────────────────────────────── */
 function TreeSVG() {
@@ -70,6 +72,7 @@ function TreeSVG() {
 /* ─── Main Section ─────────────────────────────────────────────── */
 export default function ArtShelfSection() {
   const [activeCategory, setActiveCategory] = useState(null);
+  const [isRaining, setIsRaining] = useState(false);
   const closeTimer = useRef(null);
 
   const cancelClose = useCallback(() => {
@@ -87,7 +90,63 @@ export default function ArtShelfSection() {
   }, [cancelClose]);
 
   return (
-    <section className="relative py-24 bg-[#f8f6f2] overflow-hidden">
+    <section className="relative py-24 overflow-hidden transition-colors duration-1000" style={{ backgroundColor: isRaining ? "#202836" : "#f8f6f2" }}>
+      {/* Weather System */}
+      <WeatherSystem active={isRaining} />
+
+      {/* Weather Toggle Button Group */}
+      <div className="absolute top-32 right-8 z-40 flex flex-col items-end gap-3">
+        <button
+          onClick={() => setIsRaining(!isRaining)}
+          className="group relative flex items-center gap-2 px-5 py-2.5 rounded-full backdrop-blur-md border shadow-lg hover:transition-all duration-500 text-[11px] font-bold tracking-[0.2em] uppercase overflow-hidden"
+          style={{
+            backgroundColor: isRaining ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.6)",
+            borderColor: isRaining ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.5)",
+            color: isRaining ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.7)"
+          }}
+        >
+          {/* Subtle button glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
+          <CloudRain size={16} className={`${isRaining ? "text-blue-300" : "text-gray-500"} transition-colors duration-500`} />
+          <span className="relative z-10">{isRaining ? "Clear Skies" : "Summon Storm"}</span>
+        </button>
+
+        <motion.div
+          animate={{ 
+            y: [0, -6, 0],
+          }}
+          transition={{ 
+            duration: 3.5, 
+            repeat: Infinity,
+            ease: "easeInOut" 
+          }}
+          className="flex flex-col items-center pointer-events-none"
+        >
+          <div 
+            className="text-[12px] font-black mb-1.5"
+            style={{ color: isRaining ? "#93c5fd" : "#8b6340" }}
+          >
+            ↑
+          </div>
+          
+          <div 
+            className="px-3 py-1.5 rounded-sm border backdrop-blur-sm shadow-xl"
+            style={{ 
+              backgroundColor: isRaining ? "rgba(147, 197, 253, 0.1)" : "rgba(139, 99, 64, 0.05)",
+              borderColor: isRaining ? "rgba(147, 197, 253, 0.3)" : "rgba(139, 99, 64, 0.2)"
+            }}
+          >
+            <span 
+              className="text-[8px] tracking-[0.6em] font-black uppercase text-center block"
+              style={{ color: isRaining ? "#93c5fd" : "#8b6340" }}
+            >
+              {isRaining ? "Restore Serenity" : "Experience Atmosphere"}
+            </span>
+          </div>
+        </motion.div>
+      </div>
+
       {/* Subtle paper texture overlay */}
       <div
         className="absolute inset-0 opacity-[0.025] pointer-events-none"
@@ -101,7 +160,8 @@ export default function ArtShelfSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-[10px] tracking-[0.4em] uppercase text-black/35 mb-3"
+          className="text-[10px] tracking-[0.4em] uppercase mb-3"
+          style={{ color: isRaining ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.35)" }}
         >
           Our Living Archive
         </motion.p>
@@ -110,7 +170,8 @@ export default function ArtShelfSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-5xl md:text-6xl font-light font-serif text-black/80 tracking-wide"
+          className="text-5xl md:text-6xl font-light font-serif tracking-wide"
+          style={{ color: isRaining ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.8)" }}
         >
           Explore the Collection
         </motion.h2>
@@ -119,7 +180,8 @@ export default function ArtShelfSection() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.25 }}
-          className="mt-4 text-sm text-black/40 max-w-lg mx-auto"
+          className="mt-4 text-sm max-w-lg mx-auto"
+          style={{ color: isRaining ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.4)" }}
         >
           Hover over a shelf to unveil an entire world. Click to step inside.
         </motion.p>
@@ -132,7 +194,7 @@ export default function ArtShelfSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.9, delay: 0.2 }}
         className="relative mx-auto"
-        style={{ width: "min(680px, 92vw)", height: "860px" }}
+        style={{ width: "min(680px, 92%)", height: "860px" }}
       >
         {/* Tree SVG background */}
         <TreeSVG />
@@ -174,7 +236,8 @@ export default function ArtShelfSection() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.8 }}
-        className="text-center text-[10px] tracking-[0.3em] uppercase text-black/25 mt-2"
+        className="text-center text-[10px] tracking-[0.3em] uppercase mt-2"
+        style={{ color: isRaining ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.25)" }}
       >
         Hover a shelf · Click to explore
       </motion.p>

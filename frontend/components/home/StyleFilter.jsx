@@ -6,7 +6,7 @@ const categories = ["All", "Abstract", "Minimalism", "Modern", "Digital Art", "O
 
 export default function StyleFilter({ activeCategory, onFilter }) {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+    <div className="w-full flex flex-wrap items-center justify-center gap-3 md:gap-6 px-2 sm:px-0">
       {categories.map((category) => {
         const isActive = activeCategory === category;
         return (

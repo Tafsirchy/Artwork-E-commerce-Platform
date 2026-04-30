@@ -76,7 +76,7 @@ export default function MainGallery() {
 
         <motion.div
           layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 sm:gap-x-6 lg:gap-x-8 gap-y-16 sm:gap-y-20"
         >
           <AnimatePresence mode="popLayout">
             {visibleProducts.map((product, i) => (

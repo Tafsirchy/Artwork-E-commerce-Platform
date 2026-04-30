@@ -52,7 +52,7 @@ function Shard({ shardInfo, index }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setImgSrc(galleryImages[Math.floor(Math.random() * galleryImages.length)]);
-    }, Math.random() * 200 + 100);
+    }, Math.random() * 2000 + 2000); // Super slow meditative changes
     return () => clearInterval(interval);
   }, []);
 
@@ -244,7 +244,7 @@ export default function Hero() {
 
   useEffect(() => {
     setIsMounted(true);
-    let layoutTimer = setInterval(shuffleLayout, 800);
+    let layoutTimer = setInterval(shuffleLayout, 800); // Faster layout shifts to build the grid
 
     const handleVisibility = () => {
       if (document.hidden) {

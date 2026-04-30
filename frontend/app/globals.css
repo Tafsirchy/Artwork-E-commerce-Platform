@@ -138,8 +138,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply overflow-hidden h-full;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-y-auto h-full;
   }
   html {
     @apply font-sans;

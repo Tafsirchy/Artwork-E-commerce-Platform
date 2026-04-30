@@ -5,43 +5,84 @@ import Image from "next/image";
 
 const ROTATIONS = [-6, 3, -4, 7, -3, 5, -7, 4];
 
+function Leaf({ i }) {
+  const greens = ["#4ade80", "#22c55e", "#16a34a", "#86efac", "#15803d", "#3b82f633"];
+  const color = greens[i % 5]; // use 5 for color, 6th is just fallback if needed but we have 5 solid greens
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0, y: 0, x: 0 }}
+      animate={{
+        opacity: [0, 1, 1, 0],
+        scale: [0, 1.2 + Math.random(), 1, 0.8],
+        y: [0, -10 - Math.random() * 30, 40 + Math.random() * 80],
+        x: [0, (i % 2 === 0 ? 1 : -1) * (20 + Math.random() * 70)],
+        rotate: [0, (i % 2 === 0 ? 1 : -1) * (90 + Math.random() * 180)]
+      }}
+      transition={{ duration: 1.5 + Math.random() * 1.5, repeat: Infinity, ease: "easeInOut", delay: Math.random() * 0.8 }}
+      className="absolute z-10 pointer-events-none"
+      style={{
+        width: "20px",
+        height: "20px",
+        backgroundColor: color,
+        borderRadius: "0 60% 0 60%", // classic leaf shape
+        boxShadow: "0 2px 5px rgba(0,0,0,0.15)"
+      }}
+    />
+  );
+}
+
 export default function Shelf({ category, onSelect, onDeselect }) {
   const [hovered, setHovered] = useState(false);
+  const [labelHovered, setLabelHovered] = useState(false);
 
   return (
     /* ── Outer wrapper: pure CSS positioning (never touched by GSAP/Framer) ── */
     <div
       className="absolute"
       style={category.position}
-      onMouseEnter={() => {
-        setHovered(true);
-        onSelect(category);
-      }}
-      onMouseLeave={() => {
-        setHovered(false);
-        onDeselect && onDeselect();
-      }}
     >
+      {/* Category Label (Directional) - SIBLING to prevent modal trigger */}
+      <motion.div
+        onMouseEnter={(e) => { e.stopPropagation(); setLabelHovered(true); }}
+        onMouseLeave={(e) => { e.stopPropagation(); setLabelHovered(false); }}
+        onClick={() => onSelect(category)}
+        initial={false}
+        animate={{ 
+          opacity: (hovered || labelHovered) ? 1 : 0.65, 
+          x: category.direction === "left" ? ((hovered || labelHovered) ? -35 : -25) : ((hovered || labelHovered) ? 35 : 25),
+          scale: (hovered || labelHovered) ? 1.05 : 1
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className="absolute top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-full text-[10px] tracking-[0.3em] uppercase font-bold whitespace-nowrap z-20 flex items-center gap-3 cursor-pointer"
+        style={{
+          [category.direction === "left" ? "right" : "left"]: "100%",
+          backgroundColor: (hovered || labelHovered) ? category.color : "#efebe3",
+          color: (hovered || labelHovered) ? "#fff" : "#8b6340",
+          boxShadow: (hovered || labelHovered) ? `0 4px 20px ${category.glowColor}` : "0 2px 8px rgba(0,0,0,0.05)",
+          border: `1px solid ${(hovered || labelHovered) ? "transparent" : "#d8cabc"}`
+        }}
+      >
+        {category.direction === "left" && <span className="text-lg leading-none">←</span>}
+        {category.name}
+        {category.direction === "right" && <span className="text-lg leading-none">→</span>}
+      </motion.div>
+
       {/* ── Inner wrapper: Framer Motion animation only ── */}
       <motion.div
-        className="flex flex-col items-center cursor-pointer"
+        onMouseEnter={() => {
+          setHovered(true);
+          onSelect(category);
+        }}
+        onMouseLeave={() => {
+          setHovered(false);
+          if (onDeselect) onDeselect();
+        }}
+        className="flex flex-col items-center cursor-pointer relative"
         whileHover={{ y: -6, scale: 1.03 }}
         animate={{ y: 0, scale: 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
-      {/* Category Label */}
-      <motion.div
-        animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 8 }}
-        transition={{ duration: 0.3 }}
-        className="mb-2 px-4 py-1 rounded-full text-[10px] tracking-[0.35em] uppercase font-medium"
-        style={{
-          backgroundColor: category.color,
-          color: "#fff",
-          boxShadow: hovered ? `0 4px 20px ${category.glowColor}` : "none",
-        }}
-      >
-        {category.name}
-      </motion.div>
 
       {/* Shelf Board + Miniature Images */}
       <div className="relative flex items-end justify-center gap-[3px] pb-1">
@@ -57,12 +98,15 @@ export default function Shelf({ category, onSelect, onDeselect }) {
               border: "2px solid white",
               boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
             }}
-            animate={
-              hovered
-                ? { y: -3, boxShadow: `0 8px 24px ${category.glowColor}` }
-                : { y: 0 }
+            animate={{
+              y: hovered ? -3 : [0, -3, 0],
+              boxShadow: hovered ? `0 8px 24px ${category.glowColor}` : "0 2px 8px rgba(0,0,0,0.18)"
+            }}
+            transition={
+              hovered 
+                ? { duration: 0.3 } 
+                : { duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }
             }
-            transition={{ delay: i * 0.04, duration: 0.3 }}
           >
             <Image
               src={art.image}
@@ -103,7 +147,17 @@ export default function Shelf({ category, onSelect, onDeselect }) {
         {/* Shadow under shelf */}
         <div className="absolute -bottom-2 left-2 right-2 h-2 bg-black/10 blur-sm rounded-full" />
       </motion.div>
-    </motion.div>
+
+      {/* Leaves Generation */}
+      {labelHovered && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-30 flex items-center justify-center">
+          {Array.from({ length: 24 }).map((_, i) => (
+            <Leaf key={i} i={i} />
+          ))}
+        </div>
+      )}
+
+      </motion.div>
     </div>
   );
 }
