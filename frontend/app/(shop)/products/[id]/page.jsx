@@ -59,7 +59,7 @@ export default function ProductDetailsPage({ params }) {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-16 px-6 md:px-12">
-      <div className="w-11/12 mx-auto bg-gallery-surface border border-gallery-border shadow-sm flex flex-col md:flex-row">
+      <div className="container mx-auto px-6 bg-gallery-surface border border-gallery-border shadow-sm flex flex-col md:flex-row">
         {/* Image Section */}
         <div className="w-full md:w-1/2 relative min-h-[500px] bg-gallery-soft">
           <Image
@@ -77,9 +77,9 @@ export default function ProductDetailsPage({ params }) {
           <p className="text-sm tracking-widest text-gallery-muted uppercase mb-3">{product.category}</p>
           <h1 className="text-4xl lg:text-5xl font-light text-gallery-text mb-4">{product.title}</h1>
           <p className="text-xl text-gallery-muted italic mb-8">by {product.creator}</p>
-          
+
           <div className="h-px w-16 bg-gallery-gold mb-8"></div>
-          
+
           <p className="text-gallery-muted leading-relaxed mb-10">
             {product.description}
           </p>

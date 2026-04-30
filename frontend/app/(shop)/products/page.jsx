@@ -26,7 +26,7 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-16 px-6 md:px-12">
-      <div className="w-11/12 mx-auto">
+      <div className="container mx-auto px-6">
         <div className="text-center mb-14">
           <p className="text-sm tracking-[0.3em] uppercase text-gallery-muted mb-3">Bristiii</p>
           <h1 className="text-5xl font-light text-gallery-text">Curated Gallery</h1>
@@ -36,18 +36,18 @@ export default function ProductsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {loading
             ? Array.from({ length: 8 }).map((_, i) => (
-                <ProductCardSkeleton key={i} />
-              ))
+              <ProductCardSkeleton key={i} />
+            ))
             : (Array.isArray(products) ? products : []).map((product, i) => (
-                <motion.div
-                  key={product._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.07 }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
+              <motion.div
+                key={product._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
+              >
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
         </div>
 
         {!loading && (Array.isArray(products) ? products : []).length === 0 && (

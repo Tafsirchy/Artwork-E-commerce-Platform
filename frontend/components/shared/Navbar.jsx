@@ -30,7 +30,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-gallery-surface/95 backdrop-blur-sm border-b border-gallery-border">
-      <div className="w-11/12 mx-auto h-20 flex items-center justify-between">
+      <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-xl font-light tracking-[0.4em] text-gallery-text hover:text-gallery-accent transition-all">
           BRISTIII
@@ -42,11 +42,10 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-sm tracking-widest uppercase transition-colors ${
-                pathname === link.href 
-                  ? "text-gallery-accent border-b border-gallery-accent pb-0.5" 
-                  : "text-gallery-muted hover:text-gallery-text"
-              }`}
+              className={`text-sm tracking-widest uppercase transition-colors ${pathname === link.href
+                ? "text-gallery-accent border-b border-gallery-accent pb-0.5"
+                : "text-gallery-muted hover:text-gallery-text"
+                }`}
             >
               {link.label}
             </Link>

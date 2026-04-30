@@ -25,9 +25,9 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-16 px-6 md:px-12">
-      <div className="w-11/12 mx-auto">
+      <div className="container mx-auto px-6">
         <h1 className="text-4xl font-light text-gallery-text mb-12">Your Collection</h1>
-        
+
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Cart Items */}
           <div className="w-full lg:w-2/3">
@@ -47,27 +47,27 @@ export default function CartPage() {
                       <h3 className="text-xl font-light text-gallery-text">{item.product.title}</h3>
                       <p className="text-sm text-gallery-muted mt-1">{item.product.creator}</p>
                     </div>
-                    
+
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center border border-gallery-border">
-                        <button 
+                        <button
                           onClick={() => updateQuantity(item.product._id, item.quantity - 1)}
                           className="px-3 py-1 text-gallery-muted hover:text-gallery-text transition-colors"
                         >
                           <Minus size={16} />
                         </button>
                         <span className="px-4 py-1 text-gallery-text border-x border-gallery-border">{item.quantity}</span>
-                        <button 
+                        <button
                           onClick={() => updateQuantity(item.product._id, item.quantity + 1)}
                           className="px-3 py-1 text-gallery-muted hover:text-gallery-text transition-colors"
                         >
                           <Plus size={16} />
                         </button>
                       </div>
-                      
+
                       <div className="flex items-center gap-6">
                         <span className="font-bold text-gallery-accent">${(item.product.price * item.quantity).toFixed(2)}</span>
-                        <button 
+                        <button
                           onClick={() => removeFromCart(item.product._id)}
                           className="text-gallery-muted hover:text-red-500 transition-colors"
                           aria-label="Remove item"
@@ -86,7 +86,7 @@ export default function CartPage() {
           <div className="w-full lg:w-1/3">
             <div className="bg-gallery-surface border border-gallery-border p-6 shadow-sm sticky top-24">
               <h2 className="text-2xl font-light text-gallery-text mb-6 border-b border-gallery-border pb-4">Order Summary</h2>
-              
+
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-gallery-muted">
                   <span>Subtotal</span>
@@ -97,15 +97,15 @@ export default function CartPage() {
                   <span>Calculated at checkout</span>
                 </div>
               </div>
-              
+
               <div className="border-t border-gallery-border pt-4 mb-8">
                 <div className="flex justify-between text-xl text-gallery-text font-bold">
                   <span>Total</span>
                   <span className="text-gallery-accent">${getTotal().toFixed(2)}</span>
                 </div>
               </div>
-              
-              <button 
+
+              <button
                 onClick={() => router.push('/checkout')}
                 className="w-full py-4 bg-gallery-primary text-white text-lg rounded hover:bg-black transition-colors"
               >

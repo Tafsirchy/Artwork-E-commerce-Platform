@@ -54,8 +54,8 @@ export default function MainGallery() {
 
   return (
     <section className="py-32 bg-gallery-bg">
-      <div className="w-11/12 mx-auto">
-        
+      <div className="container mx-auto px-6">
+
         <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -68,13 +68,13 @@ export default function MainGallery() {
             <div className="h-[1px] w-24 bg-gallery-gold" />
           </motion.div>
 
-          <StyleFilter 
-            activeCategory={activeCategory} 
-            onFilter={handleFilter} 
+          <StyleFilter
+            activeCategory={activeCategory}
+            onFilter={handleFilter}
           />
         </div>
 
-        <motion.div 
+        <motion.div
           layout
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20"
         >
@@ -86,10 +86,10 @@ export default function MainGallery() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ 
-                  duration: 0.8, 
+                transition={{
+                  duration: 0.8,
                   delay: i * 0.05,
-                  ease: [0.16, 1, 0.3, 1] 
+                  ease: [0.16, 1, 0.3, 1]
                 }}
                 className="group relative"
               >
@@ -106,10 +106,10 @@ export default function MainGallery() {
                       fill
                       className="object-cover"
                     />
-                    
+
                     {/* Hover Overlay: Blooming Details */}
                     <div className="absolute inset-0 bg-gallery-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center gap-4">
-                      <button 
+                      <button
                         onClick={() => {
                           addToCart(product);
                           toast.success(`${product.title} added to cart`);

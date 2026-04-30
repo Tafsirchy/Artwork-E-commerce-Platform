@@ -18,14 +18,14 @@ export default function ArtistStory() {
   return (
     <section ref={containerRef} className="py-40 bg-gallery-surface relative overflow-hidden">
       {/* Abstract Background Elements */}
-      <motion.div 
+      <motion.div
         style={{ y: imgY }}
         className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-gallery-gold/5 rounded-full blur-[120px] -mr-[20vw] -mt-[10vw]"
       />
 
-      <div className="w-11/12 mx-auto relative z-10">
+      <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-32">
-          
+
           {/* Image Column with Artistic Reveal */}
           <div className="w-full lg:w-1/2">
             <div className="relative group">
@@ -36,13 +36,13 @@ export default function ArtistStory() {
                 transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
                 className="relative aspect-[3/4] w-full max-w-lg mx-auto shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)]"
               >
-                <Image 
+                <Image
                   src="/artist_at_work_1777459044495.png"
                   alt="Artist Soul"
                   fill
                   className="object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
-                
+
                 {/* Decorative Frame */}
                 <div className="absolute -inset-4 border border-gallery-gold/20 -z-10 group-hover:inset-0 transition-all duration-700" />
               </motion.div>
@@ -78,7 +78,7 @@ export default function ArtistStory() {
                 </div>
 
                 <h2 className="text-6xl font-light text-gallery-text mb-10 leading-tight">
-                  Beyond the <br /> 
+                  Beyond the <br />
                   <span className="italic text-gallery-gold">Observed World</span>
                 </h2>
 
@@ -98,7 +98,7 @@ export default function ArtistStory() {
                   </p>
                 </div>
 
-                <motion.div 
+                <motion.div
                   className="mt-16 inline-flex items-center gap-6 group cursor-pointer"
                   whileHover={{ x: 10 }}
                 >

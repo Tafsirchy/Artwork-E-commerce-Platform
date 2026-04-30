@@ -10,9 +10,9 @@ export default function Footer() {
 
   return (
     <footer className="bg-gallery-surface pt-24 pb-12 border-t border-gallery-border">
-      <div className="w-11/12 mx-auto">
+      <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
-          
+
           {/* Brand Col */}
           <div className="lg:col-span-1">
             <Link href="/" className="text-2xl font-light tracking-[0.3em] text-gallery-text block mb-8">
@@ -67,7 +67,7 @@ export default function Footer() {
           <p className="text-[10px] tracking-[0.2em] uppercase text-gallery-muted">
             © 2026 Bristiii Art Gallery. All rights reserved.
           </p>
-          <button 
+          <button
             onClick={scrollToTop}
             className="flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-gallery-muted hover:text-gallery-text transition-colors group"
           >

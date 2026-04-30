@@ -43,8 +43,8 @@ const CheckoutForm = ({ clientSecret, onSuccess }) => {
       <div className="p-4 border border-gallery-border bg-white mb-6">
         <CardElement options={{ style: { base: { fontSize: '16px' } } }} />
       </div>
-      <button 
-        disabled={isProcessing || !stripe} 
+      <button
+        disabled={isProcessing || !stripe}
         className="w-full py-4 bg-gallery-primary text-white text-lg rounded hover:bg-black transition-colors disabled:opacity-50"
       >
         {isProcessing ? "Processing..." : "Pay Now"}
@@ -57,14 +57,14 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, getTotal, clearCart } = useCartStore();
   const { user } = useAuthStore();
-  
+
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [country, setCountry] = useState("");
   const [location, setLocation] = useState({ lat: 40.7128, lng: -74.0060 });
   const [paymentMethod, setPaymentMethod] = useState("Card");
-  
+
   const [clientSecret, setClientSecret] = useState("");
   const [orderId, setOrderId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -103,7 +103,7 @@ export default function CheckoutPage() {
 
       const { data } = await api.post("/orders", orderData);
       setOrderId(data.order._id);
-      
+
       if (paymentMethod === "Card") {
         setClientSecret(data.clientSecret);
       } else {
@@ -118,7 +118,7 @@ export default function CheckoutPage() {
 
   const handleSuccess = () => {
     clearCart();
-    toast.success("Order placed successfully!", { style: { backgroundColor: "#4CAF50", color: "#fff" }});
+    toast.success("Order placed successfully!", { style: { backgroundColor: "#4CAF50", color: "#fff" } });
     router.push("/products"); // Redirect to shop or orders list
   };
 
@@ -126,27 +126,27 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-12 px-6 md:px-12">
-      <div className="w-11/12 mx-auto flex flex-col lg:flex-row gap-12">
-        
+      <div className="container mx-auto px-6 flex flex-col lg:flex-row gap-12">
+
         {/* Left Col - Details */}
         <div className="w-full lg:w-2/3 space-y-8">
-          
+
           <div className="bg-gallery-surface border border-gallery-border p-6 md:p-8">
             <h2 className="text-2xl font-light text-gallery-text mb-6 border-b border-gallery-border pb-4">Shipping Address</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input 
+              <input
                 type="text" placeholder="Address" value={address} onChange={e => setAddress(e.target.value)}
                 className="col-span-1 md:col-span-2 w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
               />
-              <input 
+              <input
                 type="text" placeholder="City" value={city} onChange={e => setCity(e.target.value)}
                 className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
               />
-              <input 
+              <input
                 type="text" placeholder="Postal Code" value={postalCode} onChange={e => setPostalCode(e.target.value)}
                 className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
               />
-              <input 
+              <input
                 type="text" placeholder="Country" value={country} onChange={e => setCountry(e.target.value)}
                 className="col-span-1 md:col-span-2 w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
               />
@@ -162,7 +162,7 @@ export default function CheckoutPage() {
             <h2 className="text-2xl font-light text-gallery-text mb-6 border-b border-gallery-border pb-4">Payment Method</h2>
             <div className="flex gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input 
+                <input
                   type="radio" value="Card" checked={paymentMethod === "Card"} onChange={e => setPaymentMethod(e.target.value)}
                   className="w-4 h-4 text-gallery-primary"
                   disabled={clientSecret !== ""}
@@ -170,7 +170,7 @@ export default function CheckoutPage() {
                 <span className="text-gallery-text">Credit/Debit Card</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input 
+                <input
                   type="radio" value="COD" checked={paymentMethod === "COD"} onChange={e => setPaymentMethod(e.target.value)}
                   className="w-4 h-4 text-gallery-primary"
                   disabled={clientSecret !== ""}
@@ -186,7 +186,7 @@ export default function CheckoutPage() {
         <div className="w-full lg:w-1/3">
           <div className="bg-gallery-surface border border-gallery-border p-6 sticky top-24">
             <h2 className="text-2xl font-light text-gallery-text mb-6 border-b border-gallery-border pb-4">Order Summary</h2>
-            
+
             <div className="space-y-4 mb-6 max-h-60 overflow-y-auto">
               {items.map(item => (
                 <div key={item.product._id} className="flex justify-between text-sm">
@@ -195,16 +195,16 @@ export default function CheckoutPage() {
                 </div>
               ))}
             </div>
-            
+
             <div className="border-t border-gallery-border pt-4 mb-8">
               <div className="flex justify-between text-xl text-gallery-text font-bold">
                 <span>Total</span>
                 <span className="text-gallery-accent">${getTotal().toFixed(2)}</span>
               </div>
             </div>
-            
+
             {!clientSecret ? (
-              <button 
+              <button
                 onClick={placeOrder}
                 disabled={isSubmitting}
                 className="w-full py-4 bg-gallery-primary text-white text-lg rounded hover:bg-black transition-colors disabled:opacity-50"

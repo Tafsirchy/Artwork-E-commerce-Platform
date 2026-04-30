@@ -20,7 +20,7 @@ export default function Newsletter() {
       <div className="absolute top-0 left-0 w-96 h-96 bg-gallery-gold/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-gallery-accent/10 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2" />
 
-      <div className="w-11/12 mx-auto text-center relative z-10">
+      <div className="container mx-auto px-6 text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -28,7 +28,7 @@ export default function Newsletter() {
           transition={{ duration: 1 }}
         >
           <div className="flex justify-center mb-8">
-            <motion.div 
+            <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               className="text-gallery-gold"
@@ -47,7 +47,7 @@ export default function Newsletter() {
             Become part of a global collective. Receive exclusive early access to new collections and private gallery viewings.
           </p>
 
-          <form 
+          <form
             onSubmit={handleSubscribe}
             className="max-w-2xl mx-auto relative group"
           >
@@ -70,7 +70,7 @@ export default function Newsletter() {
             </div>
           </form>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             className="mt-10 text-[9px] text-gallery-muted uppercase tracking-[0.3em]"

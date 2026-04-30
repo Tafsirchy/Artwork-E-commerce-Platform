@@ -269,7 +269,7 @@ export default function Hero() {
   }, [shuffleLayout]);
 
   return (
-    <section ref={heroRef} className="relative h-[85vh] w-full bg-gallery-bg flex items-center overflow-hidden">
+    <section ref={heroRef} className="relative w-full bg-gallery-bg flex items-center overflow-hidden">
       <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] bg-gallery-gold/5 rounded-full blur-[120px]" />
 
       {/* 🧩 POETIC FRAGMENTS (Full Screen Absolute, safely framing the center) */}
@@ -309,7 +309,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative z-20 w-11/12 mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-12">
+      <div className="relative z-20 container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-12">
 
         {/* 🏛️ LEFT SIDE: Source Clusters */}
         <div className="left-side-container relative h-full flex flex-col items-start justify-center order-1 w-full">
