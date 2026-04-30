@@ -2,6 +2,7 @@
 
 import Hero from "@/components/home/Hero";
 import FeaturedArtwork from "@/components/home/FeaturedArtwork";
+import ArtShelfSection from "@/components/home/shelf/ArtShelfSection";
 import MainGallery from "@/components/home/MainGallery";
 import ArtistStory from "@/components/home/ArtistStory";
 import ValueSection from "@/components/home/ValueSection";
@@ -18,7 +19,10 @@ export default function HomePage() {
       {/* 🧩 2. Featured Artwork (Curated Picks) */}
       <FeaturedArtwork />
 
-      {/* 🖼️ 3. Main Gallery Grid (Core Section) + 🎭 4. Category / Style Filter */}
+      {/* 🌳 3. Artistic Shelf — "Explore the Collection" */}
+      <ArtShelfSection />
+
+      {/* 🖼️ 4. Main Gallery Grid (Core Section) + 🎭 Style Filter */}
       <MainGallery />
 
       {/* 👩🎨 5. Artist Story Section (Very Important) */}
