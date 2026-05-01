@@ -47,12 +47,14 @@ const layoutSlots = [
 ];
 
 function Shard({ shardInfo, index }) {
-  const [imgSrc, setImgSrc] = useState(galleryImages[Math.floor(Math.random() * galleryImages.length)]);
+  // 🚀 FIX: Start with a stable image to prevent hydration mismatch flashes
+  const [imgSrc, setImgSrc] = useState(galleryImages[index % galleryImages.length]);
 
   useEffect(() => {
+    // Only start randomized interval after hydration
     const interval = setInterval(() => {
       setImgSrc(galleryImages[Math.floor(Math.random() * galleryImages.length)]);
-    }, Math.random() * 2000 + 2000); // Super slow meditative changes
+    }, Math.random() * 2000 + 4000); 
     return () => clearInterval(interval);
   }, []);
 
@@ -285,7 +287,7 @@ export default function Hero() {
   }, [shuffleLayout]);
 
   return (
-    <section ref={heroRef} className="relative w-full bg-gallery-bg flex items-center overflow-hidden">
+    <section ref={heroRef} className="relative w-full min-h-screen bg-gallery-bg flex items-center overflow-hidden">
       <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] bg-gallery-gold/5 rounded-full blur-[120px]" />
 
       {/* 🧩 POETIC FRAGMENTS (Full Screen Absolute, safely framing the center) */}
@@ -330,7 +332,7 @@ export default function Hero() {
         {/* 🏛️ LEFT SIDE: Source Clusters */}
         <div className="left-side-container relative h-full flex flex-col items-start justify-center order-1 w-full">
           <div ref={clusterRef} className="relative w-full max-w-[420px] h-[420px]">
-            {isMounted && [0, 1, 2].map((cardIndex) => {
+            {[0, 1, 2].map((cardIndex) => {
               const currentSlotIndex = slotIndices[cardIndex];
               const slot = layoutSlots[currentSlotIndex];
               return (

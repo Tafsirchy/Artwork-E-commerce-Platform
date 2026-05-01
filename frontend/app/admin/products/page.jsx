@@ -3,17 +3,26 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
-import api from "@/lib/api";
+import api, { setAuthToken } from "@/lib/api";
 import { toast } from "react-toastify";
 import { Upload, Edit2, Trash2, X } from "lucide-react";
 import ProfileAside from "@/components/dashboard/ProfileAside";
+import { motion } from "framer-motion";
 
 export default function AdminProductsPage() {
-  const { user } = useAuthStore();
+  const { user, token, _hasHydrated } = useAuthStore();
   const router = useRouter();
 
   const [products, setProducts] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
+
+  // Pagination Logic
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
 
   // Form States
   const [isEditing, setIsEditing] = useState(false);
@@ -29,6 +38,7 @@ export default function AdminProductsPage() {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -37,19 +47,24 @@ export default function AdminProductsPage() {
   };
 
   useEffect(() => {
+    if (!_hasHydrated) return;
+
     if (user?.role === "admin") {
+      if (token) setAuthToken(token);
       fetchProducts();
     } else if (user) {
       router.push("/");
     }
-  }, [user]);
+  }, [user, _hasHydrated, token]);
 
   const fetchProducts = async () => {
     try {
       const { data } = await api.get("/products");
       setProducts(data);
     } catch (error) {
-      toast.error("Failed to fetch products");
+      console.error("Failed to fetch products", error);
+      const msg = error.response?.data?.message || "Failed to fetch products";
+      toast.error(msg);
     } finally {
       setFetchLoading(false);
     }
@@ -79,7 +94,7 @@ export default function AdminProductsPage() {
     setColorConcept(p.colorConcept ? p.colorConcept.join(", ") : "");
     setPreview(p.imageUrl);
     setImage(null);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setShowModal(true);
   };
 
   const resetForm = () => {
@@ -129,6 +144,7 @@ export default function AdminProductsPage() {
         toast.success("Artwork added successfully!");
       }
       resetForm();
+      setShowModal(false);
       fetchProducts();
     } catch (error) {
       toast.error(error.response?.data?.message || "Operation failed");
@@ -142,109 +158,31 @@ export default function AdminProductsPage() {
   return (
     <div className="min-h-screen bg-gallery-bg p-8 pt-24">
       <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row gap-12">
-        
+
         {/* Sidebar Profile */}
         <ProfileAside />
 
         {/* Main Content Area */}
         <div className="flex-1">
-          <h1 className="text-4xl font-light text-gallery-text mb-10 tracking-tighter uppercase">Gallery Management</h1>
+          <div className="flex items-center justify-between mb-10">
+            <h1 className="text-4xl font-light text-gallery-text tracking-tighter uppercase">Gallery Management</h1>
+            <button
+              onClick={() => { resetForm(); setShowModal(true); }}
+              className="px-8 py-4 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-gallery-gold transition-all"
+            >
+              Add New Piece
+            </button>
+          </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-12">
-            {/* Add/Edit Form */}
-            <div className="xl:col-span-1">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xs tracking-[0.4em] uppercase text-gallery-gold font-bold">
-                  {isEditing ? "Edit Masterpiece" : "Add New Artwork"}
-                </h2>
-                {isEditing && (
-                  <button onClick={resetForm} className="text-gallery-muted hover:text-gallery-text">
-                    <X size={16} />
-                  </button>
-                )}
-              </div>
-              
-              <div className="bg-white border border-gallery-border p-8 shadow-sm">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <div
-                      className="border-2 border-dashed border-gallery-border p-6 text-center cursor-pointer hover:border-gallery-gold transition-colors bg-gallery-soft/30"
-                      onClick={() => document.getElementById("image-input").click()}
-                    >
-                      {preview ? (
-                        <img src={preview} alt="Preview" className="max-h-32 mx-auto object-contain" />
-                      ) : (
-                        <div className="flex flex-col items-center gap-2 text-gallery-muted">
-                          <Upload size={24} />
-                          <p className="text-[10px] uppercase tracking-widest">Upload Artwork</p>
-                        </div>
-                      )}
-                      <input id="image-input" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Title</label>
-                      <input type="text" required value={title} onChange={e => setTitle(e.target.value)}
-                        className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light" />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Artist</label>
-                      <input type="text" required value={creator} onChange={e => setCreator(e.target.value)}
-                        className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Base Price ($)</label>
-                        <input type="number" required min="0.01" step="0.01" value={price} onChange={e => setPrice(e.target.value)}
-                          className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light" />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Offer Price ($)</label>
-                        <input type="number" min="0" step="0.01" value={offerPrice} onChange={e => setOfferPrice(e.target.value)}
-                          className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light bg-gallery-accent/5 placeholder:text-gallery-muted/50" 
-                          placeholder="Optional" />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 gap-4">
-                      <div>
-                        <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Stock Inventory</label>
-                        <input type="number" required min="0" value={stock} onChange={e => setStock(e.target.value)}
-                          className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Category</label>
-                      <select value={category} onChange={e => setCategory(e.target.value)}
-                        className="w-full px-4 py-3 border border-gallery-border bg-white focus:outline-none focus:border-gallery-gold rounded-none font-light appearance-none">
-                        {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Color Concept (Hex codes)</label>
-                      <input type="text" value={colorConcept} onChange={e => setColorConcept(e.target.value)}
-                        placeholder="#000000, #FFFFFF"
-                        className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light placeholder:text-[9px]" />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Description</label>
-                      <textarea required rows={3} value={description} onChange={e => setDescription(e.target.value)}
-                        className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light resize-none" />
-                    </div>
-                  </div>
-
-                  <button type="submit" disabled={loading}
-                    className="w-full py-4 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-gallery-gold transition-all disabled:opacity-50 rounded-none">
-                    {loading ? (isEditing ? "Updating..." : "Adding...") : (isEditing ? "Save Changes" : "Add to Collection")}
-                  </button>
-                </form>
-              </div>
-            </div>
-
+          <div className="grid grid-cols-1 gap-12">
             {/* List View */}
-            <div className="xl:col-span-2">
-              <h2 className="text-xs tracking-[0.4em] uppercase text-gallery-gold font-bold mb-8">Active Collection</h2>
+            <div className="w-full">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xs tracking-[0.4em] uppercase text-gallery-gold font-bold">Active Collection</h2>
+                <div className="text-[10px] tracking-[0.2em] uppercase text-gallery-muted font-bold">
+                  {products.length} Masterpieces
+                </div>
+              </div>
               <div className="bg-white border border-gallery-border shadow-sm overflow-hidden">
                 {fetchLoading ? (
                   <div className="p-20 text-center text-gallery-muted uppercase tracking-widest text-xs">Loading Collection...</div>
@@ -261,32 +199,32 @@ export default function AdminProductsPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gallery-border">
-                        {products.map((p) => (
+                        {currentItems.map((p) => (
                           <tr key={p._id} className="hover:bg-gallery-soft/10 transition-colors group">
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 border border-gallery-border overflow-hidden bg-gallery-bg shrink-0">
                                   <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
                                 </div>
-                                <span className="text-sm font-medium text-gallery-text truncate max-w-[150px]">{p.title}</span>
+                                <span className="text-sm font-medium text-gallery-text truncate max-w-[200px]">{p.title}</span>
                               </div>
                             </td>
                             <td className="px-6 py-4 text-sm text-gallery-muted">{p.creator}</td>
                             <td className="px-6 py-4 text-sm font-bold text-gallery-accent">${p.price.toFixed(2)}</td>
                             <td className="px-6 py-4 text-sm text-gallery-text">{p.stock}</td>
                             <td className="px-6 py-4 text-right">
-                              <div className="flex justify-end gap-4">
+                              <div className="flex justify-end gap-6">
                                 <button
                                   onClick={() => handleEdit(p)}
-                                  className="text-[9px] tracking-widest uppercase font-bold text-gallery-gold hover:text-gallery-primary transition-colors"
+                                  className="text-[9px] tracking-widest uppercase font-bold text-gallery-gold hover:text-gallery-primary transition-colors flex items-center gap-2"
                                 >
-                                  <Edit2 size={14} />
+                                  <Edit2 size={14} /> <span>Edit</span>
                                 </button>
                                 <button
                                   onClick={() => handleDelete(p._id)}
-                                  className="text-[9px] tracking-widest uppercase font-bold text-red-400 hover:text-red-600 transition-colors"
+                                  className="text-[9px] tracking-widest uppercase font-bold text-red-400 hover:text-red-600 transition-colors flex items-center gap-2"
                                 >
-                                  <Trash2 size={14} />
+                                  <Trash2 size={14} /> <span>Remove</span>
                                 </button>
                               </div>
                             </td>
@@ -294,6 +232,31 @@ export default function AdminProductsPage() {
                         ))}
                       </tbody>
                     </table>
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                      <div className="px-6 py-4 border-t border-gallery-border flex items-center justify-between bg-gallery-soft/10">
+                        <p className="text-[10px] tracking-widest uppercase text-gallery-muted font-bold">
+                          Page {currentPage} of {totalPages}
+                        </p>
+                        <div className="flex gap-2">
+                          <button
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage(prev => prev - 1)}
+                            className="px-4 py-2 border border-gallery-border text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-white transition-all disabled:opacity-30"
+                          >
+                            Previous
+                          </button>
+                          <button
+                            disabled={currentPage === totalPages}
+                            onClick={() => setCurrentPage(prev => prev + 1)}
+                            className="px-4 py-2 border border-gallery-border text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-white transition-all disabled:opacity-30"
+                          >
+                            Next
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -301,6 +264,127 @@ export default function AdminProductsPage() {
           </div>
         </div>
       </div>
+
+      {/* Artwork Form Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => { resetForm(); setShowModal(false); }}
+            className="absolute inset-0 bg-gallery-primary/60 backdrop-blur-sm"
+          />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-white w-full max-w-2xl border border-gallery-border shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]"
+          >
+            {/* Modal Header */}
+            <div className="px-8 py-6 border-b border-gallery-border flex items-center justify-between bg-gallery-soft/30">
+              <h2 className="text-xs tracking-[0.4em] uppercase text-gallery-gold font-bold">
+                {isEditing ? "Edit Masterpiece" : "Register New Artwork"}
+              </h2>
+              <button onClick={() => { resetForm(); setShowModal(false); }} className="text-gallery-muted hover:text-gallery-text transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body (Scrollable) */}
+            <div className="flex-1 overflow-y-auto p-8">
+              <form id="artwork-form" onSubmit={handleSubmit} className="space-y-8">
+                <div
+                  className="border-2 border-dashed border-gallery-border p-8 text-center cursor-pointer hover:border-gallery-gold transition-colors bg-gallery-soft/30 group"
+                  onClick={() => document.getElementById("image-input").click()}
+                >
+                  {preview ? (
+                    <img src={preview} alt="Preview" className="max-h-48 mx-auto object-contain shadow-lg" />
+                  ) : (
+                    <div className="flex flex-col items-center gap-3 text-gallery-muted group-hover:text-gallery-gold transition-colors">
+                      <Upload size={32} />
+                      <p className="text-[10px] uppercase tracking-widest font-bold">Select Artwork Image</p>
+                    </div>
+                  )}
+                  <input id="image-input" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Title</label>
+                    <input type="text" required value={title} onChange={e => setTitle(e.target.value)}
+                      className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light bg-gallery-soft/10" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Artist</label>
+                    <input type="text" required value={creator} onChange={e => setCreator(e.target.value)}
+                      className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light bg-gallery-soft/10" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <div className="col-span-2 md:col-span-1">
+                    <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Base Price ($)</label>
+                    <input type="number" required min="0.01" step="0.01" value={price} onChange={e => setPrice(e.target.value)}
+                      className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Offer Price ($)</label>
+                    <input type="number" min="0" step="0.01" value={offerPrice} onChange={e => setOfferPrice(e.target.value)}
+                      className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light bg-gallery-accent/5"
+                      placeholder="Optional" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Stock</label>
+                    <input type="number" required min="0" value={stock} onChange={e => setStock(e.target.value)}
+                      className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Category</label>
+                    <select value={category} onChange={e => setCategory(e.target.value)}
+                      className="w-full px-4 py-3 border border-gallery-border bg-white focus:outline-none focus:border-gallery-gold rounded-none font-light appearance-none">
+                      {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Color Concept</label>
+                    <input type="text" value={colorConcept} onChange={e => setColorConcept(e.target.value)}
+                      placeholder="#000000, #FFFFFF"
+                      className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-gallery-muted mb-2 font-bold">Narrative Description</label>
+                  <textarea required rows={4} value={description} onChange={e => setDescription(e.target.value)}
+                    className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:border-gallery-gold rounded-none font-light resize-none" />
+                </div>
+              </form>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-8 py-6 border-t border-gallery-border flex gap-4 bg-gallery-soft/30">
+              <button
+                type="submit"
+                form="artwork-form"
+                disabled={loading}
+                className="flex-1 py-4 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-gallery-gold transition-all disabled:opacity-50"
+              >
+                {loading ? "Synchronizing..." : (isEditing ? "Save Masterpiece" : "Add to Collection")}
+              </button>
+              <button
+                onClick={() => { resetForm(); setShowModal(false); }}
+                className="px-8 py-4 border border-gallery-border text-[10px] tracking-[0.3em] uppercase font-bold hover:bg-white transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

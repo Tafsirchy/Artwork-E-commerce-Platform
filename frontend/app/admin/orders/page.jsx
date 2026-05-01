@@ -28,9 +28,22 @@ export default function AdminOrders() {
       const { data } = await api.get("/orders");
       setOrders(data);
     } catch (error) {
-      toast.error("Failed to fetch order archive");
+      console.error("Failed to fetch orders", error);
+      const msg = error.response?.data?.message || "Failed to fetch order archive";
+      toast.error(msg);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTransit = async (orderId) => {
+    if (!window.confirm("Mark this acquisition as in transit?")) return;
+    try {
+      await api.put(`/orders/${orderId}/transit`);
+      toast.success("Order status updated to In Transit");
+      fetchOrders();
+    } catch (error) {
+      toast.error("Failed to update status to Transit");
     }
   };
 
@@ -41,7 +54,7 @@ export default function AdminOrders() {
       toast.success("Order status updated to Delivered");
       fetchOrders();
     } catch (error) {
-      toast.error("Failed to update status");
+      toast.error("Failed to update status to Delivered");
     }
   };
 
@@ -88,7 +101,7 @@ export default function AdminOrders() {
                       <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-bold text-gallery-text">Date</th>
                       <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-bold text-gallery-text">Total Value</th>
                       <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-bold text-gallery-text">Payment</th>
-                      <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-bold text-gallery-text">Delivery</th>
+                      <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-bold text-gallery-text">Delivery Status</th>
                       <th className="px-6 py-4 text-right text-[10px] tracking-widest uppercase font-bold text-gallery-text">Actions</th>
                     </tr>
                   </thead>
@@ -120,21 +133,34 @@ export default function AdminOrders() {
                             <span className="inline-flex items-center gap-1.5 text-blue-600 border border-blue-100 bg-blue-50 px-3 py-1 text-[9px] uppercase font-bold tracking-widest">
                               <PackageCheck size={12} /> Received
                             </span>
-                          ) : (
+                          ) : order.isTransit ? (
                             <span className="inline-flex items-center gap-1.5 text-amber-600 border border-amber-100 bg-amber-50 px-3 py-1 text-[9px] uppercase font-bold tracking-widest">
                               <Truck size={12} /> In Transit
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 text-gallery-muted border border-gallery-border bg-gallery-soft/30 px-3 py-1 text-[9px] uppercase font-bold tracking-widest">
+                              <X size={12} /> Processing
                             </span>
                           )}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end gap-2">
-                            {!order.isDelivered && (
+                            {!order.isTransit && !order.isDelivered && (
+                              <button 
+                                onClick={() => handleTransit(order._id)}
+                                title="Mark as In Transit"
+                                className="p-2 border border-gallery-border text-gallery-muted hover:text-amber-600 hover:border-amber-600 transition-all"
+                              >
+                                <Truck size={14} />
+                              </button>
+                            )}
+                            {order.isTransit && !order.isDelivered && (
                               <button 
                                 onClick={() => handleDeliver(order._id)}
                                 title="Mark as Delivered"
                                 className="p-2 border border-gallery-border text-gallery-muted hover:text-blue-600 hover:border-blue-600 transition-all"
                               >
-                                <Truck size={14} />
+                                <PackageCheck size={14} />
                               </button>
                             )}
                             <button 

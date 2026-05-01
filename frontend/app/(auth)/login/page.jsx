@@ -19,7 +19,7 @@ export default function LoginPage() {
     try {
       await login(email, password);
       toast.success("Identity verified", { style: { backgroundColor: "#1a1a1a", color: "#fff" } });
-      router.push("/products");
+      router.push("/");
     } catch (error) {
       toast.error(error.message || "Verification failed");
     }

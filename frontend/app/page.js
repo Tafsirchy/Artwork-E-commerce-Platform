@@ -1,5 +1,4 @@
-"use client";
-
+// Home Page — Server Component for maximum stability and flash prevention
 import Hero from "@/components/home/Hero";
 import OfferSlider from "@/components/home/OfferSlider";
 import FeaturedArtwork from "@/components/home/FeaturedArtwork";

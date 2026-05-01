@@ -84,7 +84,7 @@ export default function ArtistStory() {
       />
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="flex flex-col items-center text-center max-w-5xl mx-auto">
+        <div className="flex flex-col items-center text-center  mx-auto">
 
           {/* Section Header */}
           <div className="mb-16">
@@ -133,7 +133,7 @@ export default function ArtistStory() {
           </div>
 
           {/* Deconstructed Image Section (True 3-Part Partition) */}
-          <div className="w-full max-w-5xl relative mb-16">
+          <div className="w-full  relative mb-16">
             <div className="relative flex gap-1 md:gap-2 justify-center items-center">
               {/* Slice 1 - Left 1/3 */}
               <motion.div

@@ -138,12 +138,43 @@ export default function CategoryModal({ category, onClose, onMouseEnter, onMouse
               {/* 🔄 Dynamic Page Stacks */}
               <div className="flex-1 flex preserve-3d relative">
                  {/* Underneath Content (Static background for current spread) */}
+                 {/* 🏗️ Underneath Content (Static background for current spread) */}
                  <div className="absolute inset-0 flex">
                     <div className="flex-1 border-r border-black/5">
-                       <PageContent data={bookPages[currentPageIndex]} side="left" categoryColor={category.color} onSelect={onSelectArtwork} />
+                       {/* If flipping next, keep the previous left page visible until finish */}
+                       <PageContent 
+                          data={isFlipping && flipDirection === "next" ? bookPages[currentPageIndex - 1] : bookPages[currentPageIndex]} 
+                          side="left" 
+                          categoryColor={category.color} 
+                          onSelect={onSelectArtwork} 
+                       />
+                       {/* Dynamic shadow on stationary left page when flipping prev (reveal) */}
+                       {isFlipping && flipDirection === "prev" && (
+                          <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.15 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black z-10 pointer-events-none"
+                          />
+                       )}
                     </div>
-                    <div className="flex-1">
-                       <PageContent data={bookPages[currentPageIndex]} side="right" categoryColor={category.color} onSelect={onSelectArtwork} />
+                    <div className="flex-1 relative">
+                       {/* If flipping prev, keep the previous right page visible until finish */}
+                       <PageContent 
+                          data={isFlipping && flipDirection === "prev" ? bookPages[currentPageIndex + 1] : bookPages[currentPageIndex]} 
+                          side="right" 
+                          categoryColor={category.color} 
+                          onSelect={onSelectArtwork} 
+                       />
+                       {/* Dynamic shadow on stationary right page when flipping next (reveal) */}
+                       {isFlipping && flipDirection === "next" && (
+                          <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.15 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black z-10 pointer-events-none"
+                          />
+                       )}
                     </div>
                  </div>
 
@@ -307,7 +338,9 @@ function PageContent({ data, side, categoryColor, onSelect }) {
                    src={artwork.image}
                    alt={artwork.title}
                    fill
-                   className="object-cover transition-all duration-1000 group-hover:scale-110"
+                   priority
+                   onLoadingComplete={(img) => img.classList.remove('opacity-0')}
+                   className="object-cover transition-all duration-1000 group-hover:scale-110 opacity-0"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 flex items-center justify-center">
                    <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">

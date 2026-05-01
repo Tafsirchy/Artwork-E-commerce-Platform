@@ -23,9 +23,9 @@ function hexToRgb(hex) {
 
 function colorDist(a, b) {
   try {
-    const [r1,g1,b1] = hexToRgb(a);
-    const [r2,g2,b2] = hexToRgb(b);
-    return Math.sqrt((r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2);
+    const [r1, g1, b1] = hexToRgb(a);
+    const [r2, g2, b2] = hexToRgb(b);
+    return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
   } catch { return 999; }
 }
 
@@ -35,7 +35,7 @@ class Particle {
     this.cx = cx;
     const core = Math.random() > 0.35;
     const angle = Math.random() * Math.PI * 2;
-    const dist  = core
+    const dist = core
       ? Math.pow(Math.random(), 0.6) * 190
       : Math.pow(Math.random(), 0.85) * 380;
 
@@ -54,13 +54,13 @@ class Particle {
     this.size = rand > 0.98 ? (Math.random() * 5 + 3) : (Math.random() * 1.5 + 0.5);
     this.type = rand > 0.93 ? 'splash' : (rand > 0.8 ? 'blob' : 'dot');
 
-    this.alpha  = Math.random() * 0.65 + 0.35;
-    this.speed  = Math.random() * 0.003 + 0.001;
-    this.dir    = Math.random() > 0.5 ? 1 : -1;
-    this.dx     = Math.random() * 3000;
-    this.dy     = Math.random() * 3000;
-    this.pulse  = Math.random() * Math.PI * 2;
-    this.hl     = 0; 
+    this.alpha = Math.random() * 0.65 + 0.35;
+    this.speed = Math.random() * 0.003 + 0.001;
+    this.dir = Math.random() > 0.5 ? 1 : -1;
+    this.dx = Math.random() * 3000;
+    this.dy = Math.random() * 3000;
+    this.pulse = Math.random() * Math.PI * 2;
+    this.hl = 0;
     this.isMatch = false;
     this.artworkIds = [];
   }
@@ -99,8 +99,8 @@ class Particle {
   draw(ctx) {
     const drawSz = this.sz * (1 + this.hl * 2);
     ctx.globalAlpha = this.isMatch ? Math.min(1, this.alpha + 0.5) : this.alpha;
-    ctx.fillStyle   = this.color;
-    
+    ctx.fillStyle = this.color;
+
     // ⚠️ REPLACED Expensive shadowBlur with a secondary glow fill for performance
     if (this.hl > 0.1) {
       ctx.save();
@@ -139,48 +139,48 @@ function drawTrunk(ctx, t, W, H, cx, cy) {
   ctx.save();
   const sw = Math.sin(t * 0.001) * 3;
 
-  const sg = ctx.createRadialGradient(cx+20, H-12, 5, cx+60, H-12, 190);
+  const sg = ctx.createRadialGradient(cx + 20, H - 12, 5, cx + 60, H - 12, 190);
   sg.addColorStop(0, "rgba(0,0,0,0.3)"); sg.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = sg;
   ctx.beginPath();
-  ctx.ellipse(cx+45, H-12, 190, 22, 0, 0, Math.PI*2);
+  ctx.ellipse(cx + 45, H - 12, 190, 22, 0, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.fillStyle = "#110a08";
   ctx.beginPath();
   ctx.moveTo(cx - 75, H - 5);
   ctx.quadraticCurveTo(cx - 30 + sw, H - 120, cx - 25 + sw, cy + 40);
-  ctx.quadraticCurveTo(cx - 130 + sw*2, cy - 70, cx - 200 + sw*2, cy - 120);
+  ctx.quadraticCurveTo(cx - 130 + sw * 2, cy - 70, cx - 200 + sw * 2, cy - 120);
   ctx.quadraticCurveTo(cx - 100 + sw, cy - 30, cx - 5 + sw, cy + 20);
-  ctx.quadraticCurveTo(cx - 70 + sw*1.5, cy - 110, cx - 90 + sw*1.5, cy - 180);
+  ctx.quadraticCurveTo(cx - 70 + sw * 1.5, cy - 110, cx - 90 + sw * 1.5, cy - 180);
   ctx.quadraticCurveTo(cx - 30 + sw, cy - 50, cx + 10 + sw, cy + 10);
-  ctx.quadraticCurveTo(cx + 90 + sw*1.5, cy - 130, cx + 120 + sw*1.5, cy - 190);
+  ctx.quadraticCurveTo(cx + 90 + sw * 1.5, cy - 130, cx + 120 + sw * 1.5, cy - 190);
   ctx.quadraticCurveTo(cx + 40 + sw, cy - 60, cx + 25 + sw, cy + 15);
-  ctx.quadraticCurveTo(cx + 150 + sw*2, cy - 60, cx + 250 + sw*2, cy - 100);
+  ctx.quadraticCurveTo(cx + 150 + sw * 2, cy - 60, cx + 250 + sw * 2, cy - 100);
   ctx.quadraticCurveTo(cx + 80 + sw, cy - 10, cx + 45 + sw, cy + 60);
   ctx.quadraticCurveTo(cx + 55, H - 120, cx + 90, H - 5);
   ctx.fill();
 
-  const B = (sx,sy,tx,ty,w) => {
+  const B = (sx, sy, tx, ty, w) => {
     ctx.globalAlpha = 0.9; ctx.strokeStyle = "#110a08"; ctx.lineWidth = w; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(sx,sy);
-    ctx.bezierCurveTo(sx+(tx-sx)*0.4,sy-20, sx+(tx-sx)*0.6,ty+20, tx,ty);
+    ctx.beginPath(); ctx.moveTo(sx, sy);
+    ctx.bezierCurveTo(sx + (tx - sx) * 0.4, sy - 20, sx + (tx - sx) * 0.6, ty + 20, tx, ty);
     ctx.stroke();
   };
 
-  B(cx-170+sw*2, cy-100, cx-280+sw*2, cy-130, 4.5);
-  B(cx-80+sw*1.5, cy-160, cx-140+sw*1.5, cy-220, 3.5);
-  B(cx-10+sw, cy-130, cx-40+sw, cy-240, 3.5);
-  B(cx+100+sw*1.5, cy-170, cx+160+sw*1.5, cy-230, 4);
-  B(cx+210+sw*2, cy-85, cx+320+sw*2, cy-110, 4.5);
+  B(cx - 170 + sw * 2, cy - 100, cx - 280 + sw * 2, cy - 130, 4.5);
+  B(cx - 80 + sw * 1.5, cy - 160, cx - 140 + sw * 1.5, cy - 220, 3.5);
+  B(cx - 10 + sw, cy - 130, cx - 40 + sw, cy - 240, 3.5);
+  B(cx + 100 + sw * 1.5, cy - 170, cx + 160 + sw * 1.5, cy - 230, 4);
+  B(cx + 210 + sw * 2, cy - 85, cx + 320 + sw * 2, cy - 110, 4.5);
 
   ctx.globalAlpha = 0.15;
   ctx.strokeStyle = "rgba(255,255,255,0.4)";
   ctx.lineWidth = 1;
-  for(let i=0; i<3; i++) {
+  for (let i = 0; i < 3; i++) {
     ctx.beginPath();
-    ctx.moveTo(cx - 20 + i*15, H - 10);
-    ctx.quadraticCurveTo(cx - 5 + i*10 + sw, H - 150, cx + 10 + i*5 + sw, cy + 50);
+    ctx.moveTo(cx - 20 + i * 15, H - 10);
+    ctx.quadraticCurveTo(cx - 5 + i * 10 + sw, H - 150, cx + 10 + i * 5 + sw, cy + 50);
     ctx.stroke();
   }
   ctx.restore();
@@ -188,32 +188,32 @@ function drawTrunk(ctx, t, W, H, cx, cy) {
 
 function randomPositions(n) {
   const pool = [
-    { x:`${2+Math.random()*3}%`,  y:`${6+Math.random()*18}%`  },
-    { x:`${2+Math.random()*3}%`,  y:`${44+Math.random()*18}%` },
-    { x:`${80+Math.random()*3}%`, y:`${6+Math.random()*18}%`  },
-    { x:`${80+Math.random()*3}%`, y:`${44+Math.random()*18}%` },
-    { x:`${20+Math.random()*12}%`,y:`${4+Math.random()*10}%`  },
-    { x:`${58+Math.random()*12}%`,y:`${4+Math.random()*10}%`  },
+    { x: `${2 + Math.random() * 3}%`, y: `${6 + Math.random() * 18}%` },
+    { x: `${2 + Math.random() * 3}%`, y: `${44 + Math.random() * 18}%` },
+    { x: `${80 + Math.random() * 3}%`, y: `${6 + Math.random() * 18}%` },
+    { x: `${80 + Math.random() * 3}%`, y: `${44 + Math.random() * 18}%` },
+    { x: `${20 + Math.random() * 12}%`, y: `${4 + Math.random() * 10}%` },
+    { x: `${58 + Math.random() * 12}%`, y: `${4 + Math.random() * 10}%` },
   ];
-  return [...pool].sort(()=>Math.random()-.5).slice(0,n);
+  return [...pool].sort(() => Math.random() - .5).slice(0, n);
 }
 
 export default function TreeCanvas() {
-  const canvasRef     = useRef(null);
-  const containerRef  = useRef(null);
-  const rafRef        = useRef(null);
-  const frameRef      = useRef(0);
-  const mouseRef      = useRef({ x: null, y: null });
-  const hoverRef      = useRef(false);
-  const particlesRef  = useRef([]);
-  const matchedRef    = useRef("");
-  const timerRef      = useRef(null);
-  const bloomRef      = useRef(false);
+  const canvasRef = useRef(null);
+  const containerRef = useRef(null);
+  const rafRef = useRef(null);
+  const frameRef = useRef(0);
+  const mouseRef = useRef({ x: null, y: null });
+  const hoverRef = useRef(false);
+  const particlesRef = useRef([]);
+  const matchedRef = useRef("");
+  const timerRef = useRef(null);
+  const bloomRef = useRef(false);
 
-  const [artworks,    setArtworks]    = useState([]);
-  const [showCards,   setShowCards]   = useState(false);
-  const [cards,       setCards]       = useState([]);
-  const [positions,   setPositions]   = useState([]);
+  const [artworks, setArtworks] = useState([]);
+  const [showCards, setShowCards] = useState(false);
+  const [cards, setCards] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [hoveredCardId, setHoveredCardId] = useState(null);
 
   useEffect(() => {
@@ -257,7 +257,7 @@ export default function TreeCanvas() {
 
     // Optimization: Skip loop if match set hasn't changed
     const idStr = [...idSet].sort().join(",");
-    if (idStr === matchedRef.current) return; 
+    if (idStr === matchedRef.current) return;
     matchedRef.current = idStr;
 
     for (let i = 0; i < len; i++) {
@@ -298,11 +298,11 @@ export default function TreeCanvas() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx    = canvas.getContext("2d", { alpha: false }); // Perf: Opaque canvas
+    const ctx = canvas.getContext("2d", { alpha: false }); // Perf: Opaque canvas
     let W, H, cx, cy;
 
     const resize = () => {
-      W = canvas.width  = containerRef.current.offsetWidth;
+      W = canvas.width = containerRef.current.offsetWidth;
       H = canvas.height = containerRef.current.offsetHeight;
       cx = W / 2; cy = H * 0.52;
       // Slightly reduced count to 2500 for better mobile/low-end performance while maintaining density
@@ -318,11 +318,11 @@ export default function TreeCanvas() {
 
     const loop = (t) => {
       frameRef.current++;
-      
+
       // Perf: Only clear and redraw at 60fps
       ctx.fillStyle = "#fff";
       ctx.fillRect(0, 0, W, H);
-      
+
       drawTrunk(ctx, t, W, H, cx, cy);
 
       // ⚠️ THROTTLE: Only check hover every 4 frames (approx 15 times/sec)
@@ -369,18 +369,18 @@ export default function TreeCanvas() {
   return (
     <section className="w-full py-24 bg-white flex flex-col items-center">
       <div className="max-w-4xl w-full px-6 text-center mb-16">
-        <motion.p initial={{ opacity:0, y:10 }} whileInView={{ opacity:1, y:0 }}
+        <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
           className="text-[10px] tracking-[0.6em] uppercase text-black/40 font-bold mb-3">
           Living Masterpiece
         </motion.p>
-        <motion.h2 initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
-          transition={{ delay:0.1 }}
+        <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
           className="text-4xl md:text-5xl font-serif text-black tracking-tight italic">
           The Breathing Canopy
         </motion.h2>
-        <motion.div initial={{ width:0 }} whileInView={{ width:80 }}
+        <motion.div initial={{ width: 0 }} whileInView={{ width: 80 }}
           className="h-[1px] bg-black/10 mx-auto mt-8" />
-        <motion.p initial={{ opacity:0 }} whileInView={{ opacity:1 }} transition={{ delay:0.4 }}
+        <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.4 }}
           className="mt-5 text-[11px] text-black/30 tracking-[0.35em] uppercase">
           Hover over the canopy — discover artworks by color
         </motion.p>
@@ -388,7 +388,7 @@ export default function TreeCanvas() {
 
       <div className="relative container mx-auto px-6">
         <motion.div ref={containerRef}
-          initial={{ opacity:0 }} whileInView={{ opacity:1 }} transition={{ duration:1.5 }}
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1.5 }}
           className="relative w-full h-[550px] md:h-[750px]"
           onMouseMove={onMove}
           onMouseEnter={() => { hoverRef.current = true; }}
@@ -397,7 +397,7 @@ export default function TreeCanvas() {
           <canvas ref={canvasRef} className="w-full h-full" />
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none">
-            <motion.p animate={{ opacity:[0.2,0.5,0.2] }} transition={{ repeat:Infinity, duration:3.5 }}
+            <motion.p animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ repeat: Infinity, duration: 3.5 }}
               className="text-[9px] tracking-[0.4em] uppercase text-black/25 whitespace-nowrap">
               move cursor through the colors
             </motion.p>
@@ -408,11 +408,11 @@ export default function TreeCanvas() {
           {showCards && cards.map((art, i) => {
             if (hoveredCardId && hoveredCardId !== art._id) return null;
 
-            const pos = positions[i] || { x:"50%", y:"10%" };
+            const pos = positions[i] || { x: "50%", y: "10%" };
             return (
               <div key={`c-${art._id}`}
                 className="absolute z-40 pointer-events-auto animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-200 ease-out fill-mode-both"
-                style={{ left:pos.x, top:pos.y, animationDelay: hoveredCardId ? "0ms" : `${i * 30}ms` }}
+                style={{ left: pos.x, top: pos.y, animationDelay: hoveredCardId ? "0ms" : `${i * 30}ms` }}
                 onMouseEnter={() => {
                   setHoveredCardId(art._id);
                   clearTimeout(timerRef.current);
@@ -431,12 +431,12 @@ export default function TreeCanvas() {
               >
                 <Link href={`/products/${art._id}`}>
                   <div className="group w-28 md:w-36 bg-white p-2 cursor-pointer hover:scale-105 transition-transform duration-300"
-                    style={{ boxShadow:`0 8px 32px ${art.colorConcept[0]}40, 0 2px 8px rgba(0,0,0,0.14)` }}>
+                    style={{ boxShadow: `0 8px 32px ${art.colorConcept[0]}40, 0 2px 8px rgba(0,0,0,0.14)` }}>
 
                     <div className="flex gap-1 mb-2">
-                      {art.colorConcept.slice(0,5).map((c,ci) => (
+                      {art.colorConcept.slice(0, 5).map((c, ci) => (
                         <div key={ci} className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                          style={{ backgroundColor:c }} />
+                          style={{ backgroundColor: c }} />
                       ))}
                     </div>
 
@@ -445,7 +445,7 @@ export default function TreeCanvas() {
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                         unoptimized />
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                        style={{ background:`linear-gradient(to top, ${art.colorConcept[0]}50, transparent)` }} />
+                        style={{ background: `linear-gradient(to top, ${art.colorConcept[0]}50, transparent)` }} />
                     </div>
 
                     <div className="mt-2 px-0.5">

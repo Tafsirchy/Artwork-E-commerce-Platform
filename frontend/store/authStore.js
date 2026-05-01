@@ -9,6 +9,11 @@ const useAuthStore = create(
       token: null,
       isLoading: false,
       error: null,
+      // Tracks whether Zustand has finished rehydrating from localStorage.
+      // Use this in components to avoid flashing null-state on first render.
+      _hasHydrated: false,
+
+      setHasHydrated: (state) => set({ _hasHydrated: state }),
 
       login: async (email, password) => {
         set({ isLoading: true, error: null });
@@ -23,6 +28,13 @@ const useAuthStore = create(
           });
           throw error;
         }
+      },
+
+      updateUser: (userData) => {
+        // Sync API headers if token changed (though usually profile update returns same token)
+        const newToken = userData.token || get().token;
+        setAuthToken(newToken);
+        set({ user: userData, token: newToken });
       },
 
       register: async (name, email, password, phone) => {
@@ -53,11 +65,15 @@ const useAuthStore = create(
         token: persistedState?.token ?? null,
         isLoading: false,
         error: null,
+        _hasHydrated: false,
       }),
       onRehydrateStorage: () => (state) => {
         if (state?.token) {
           setAuthToken(state.token);
         }
+        // Mark hydration as complete — components can now safely read `user`
+        // without assuming null means "logged out".
+        state?.setHasHydrated(true);
       },
     }
   )

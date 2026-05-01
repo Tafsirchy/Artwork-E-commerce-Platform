@@ -18,20 +18,26 @@ import api from "@/lib/api";
 import ProfileAside from "@/components/dashboard/ProfileAside";
 import OrderTracking from "@/components/orders/OrderTracking";
 import TrackingModal from "@/components/orders/TrackingModal";
+import DashboardSkeleton from "@/components/ui/DashboardSkeleton";
 
 export default function CustomerDashboard() {
-  const { user } = useAuthStore();
+  const { user, _hasHydrated } = useAuthStore();
   const { items: wishlistItems } = useWishlistStore();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 3;
 
   useEffect(() => {
     if (user) {
       fetchMyOrders();
+    } else if (_hasHydrated && !user) {
+      // Hydrated but no user — stop the loading spinner
+      setLoading(false);
     }
-  }, [user]);
+  }, [user, _hasHydrated]);
 
   const fetchMyOrders = async () => {
     try {
@@ -50,13 +56,17 @@ export default function CustomerDashboard() {
     { label: "Account Status", value: user?.role === 'admin' ? "Admin" : "Verified", icon: <Shield size={20} /> },
   ];
 
-  const recentOrders = orders
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 3);
+  const sortedOrders = orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const totalPages = Math.ceil(sortedOrders.length / ordersPerPage);
+  const recentOrders = sortedOrders.slice((currentPage - 1) * ordersPerPage, currentPage * ordersPerPage);
+
+  // Show skeleton until Zustand has rehydrated from localStorage.
+  // Without this guard, `user` is null for ~100ms and pages flash empty.
+  if (!_hasHydrated) return <DashboardSkeleton />;
 
   return (
     <section className="bg-gallery-bg min-h-screen py-24">
-      <div className="container mx-auto px-6 max-w-[1600px] flex flex-col lg:flex-row gap-12">
+      <div className="container mx-auto px-6 max-w-[1600px] flex flex-col lg:flex-row items-start gap-12">
         
         {/* Sidebar Profile */}
         <ProfileAside />
@@ -146,8 +156,8 @@ export default function CustomerDashboard() {
                     <div className="flex flex-col md:flex-row items-center gap-4">
                       <div className="text-center md:text-right">
                         <p className="text-lg font-light text-gallery-text mb-1">${order.totalPrice.toFixed(2)}</p>
-                        <span className={`text-[9px] tracking-[0.2em] uppercase font-bold px-3 py-1 border ${order.isDelivered ? 'border-green-200 text-green-600 bg-green-50' : 'border-gallery-gold/20 text-gallery-gold bg-gallery-gold/5'}`}>
-                          {order.isDelivered ? "Delivered" : "Processing"}
+                        <span className={`text-[9px] tracking-[0.2em] uppercase font-bold px-3 py-1 border ${order.isDelivered ? 'border-green-200 text-green-600 bg-green-50' : order.isTransit ? 'border-amber-200 text-amber-600 bg-amber-50' : 'border-gallery-gold/20 text-gallery-gold bg-gallery-gold/5'}`}>
+                          {order.isDelivered ? "Delivered" : order.isTransit ? "In Transit" : "Processing"}
                         </span>
                       </div>
                       <button 
@@ -168,6 +178,29 @@ export default function CustomerDashboard() {
                   </div>
                 )}
               </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 pt-4">
+                  <button
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="p-2 border border-gallery-border hover:border-gallery-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  >
+                    <ArrowRight size={14} className="rotate-180" />
+                  </button>
+                  <span className="text-[10px] tracking-[0.3em] uppercase font-bold text-gallery-muted">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="p-2 border border-gallery-border hover:border-gallery-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  >
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+              )}
             </motion.div>
 
             {/* Quick Actions / Shortcuts */}
@@ -175,7 +208,7 @@ export default function CustomerDashboard() {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="space-y-8"
+              className="space-y-8 lg:sticky lg:top-28 h-fit self-start"
             >
               <h2 className="text-xs tracking-[0.6em] uppercase text-gallery-text font-bold border-b border-gallery-border pb-6">Shortcuts</h2>
               

@@ -46,10 +46,21 @@ export default function MainGallery() {
 
   const visibleProducts = Array.isArray(filteredProducts) ? filteredProducts : [];
 
+  // Ghost/Skeleton loading state to prevent layout jumps
   if (loading) return (
-    <div className="h-96 flex items-center justify-center">
-      <div className="w-12 h-12 border-2 border-gallery-gold border-t-transparent rounded-full animate-spin" />
-    </div>
+    <section className="py-28 bg-gallery-bg">
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-20 opacity-30">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="aspect-[3/4] bg-gallery-soft mb-6" />
+              <div className="h-4 bg-gallery-soft w-1/2 mx-auto mb-2" />
+              <div className="h-4 bg-gallery-soft w-1/3 mx-auto" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 
   return (

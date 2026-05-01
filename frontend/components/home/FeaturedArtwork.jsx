@@ -105,10 +105,8 @@ export default function FeaturedArtwork() {
     fetchFeatured();
   }, []);
 
-  if (featuredItems.length < 4) return null;
-
   return (
-    <section className="py-28 bg-white">
+    <section className={`py-28 bg-gallery-bg transition-opacity duration-700 ${(featuredItems.length < 4) ? "opacity-0 min-h-[500px]" : "opacity-100"}`}>
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-10">
           <div className="overflow-hidden">
@@ -200,8 +198,8 @@ export default function FeaturedArtwork() {
 
           {/* Left Col: 2 Stacked Cards */}
           <div className="flex flex-col justify-between gap-8 relative z-10 h-full">
-            <ArtworkCard item={featuredItems[0]} index={0} aspectClass="aspect-[3/2]" className="" onImageClick={setActiveImage} />
-            <ArtworkCard item={featuredItems[1]} index={1} aspectClass="aspect-[2/1]" className="" onImageClick={setActiveImage} />
+            {featuredItems[0] && <ArtworkCard item={featuredItems[0]} index={0} aspectClass="aspect-[3/2]" className="" onImageClick={setActiveImage} />}
+            {featuredItems[1] && <ArtworkCard item={featuredItems[1]} index={1} aspectClass="aspect-[2/1]" className="" onImageClick={setActiveImage} />}
           </div>
 
           {/* Middle Col: Text + 1 Card */}
@@ -219,12 +217,12 @@ export default function FeaturedArtwork() {
 
               <AnimatedButton onClick={() => setIsModalOpen(true)} text="See the beauty" delay={0.8} />
             </div>
-            <ArtworkCard item={featuredItems[2]} index={2} aspectClass="aspect-[2/1]" className="" onImageClick={setActiveImage} />
+            {featuredItems[2] && <ArtworkCard item={featuredItems[2]} index={2} aspectClass="aspect-[2/1]" className="" onImageClick={setActiveImage} />}
           </div>
 
           {/* Right Col: 1 Tall Card */}
           <div className="flex flex-col relative z-10 h-full">
-            <ArtworkCard item={featuredItems[3]} index={3} aspectClass="flex-1 min-h-0" className="h-full flex flex-col" onImageClick={setActiveImage} />
+            {featuredItems[3] && <ArtworkCard item={featuredItems[3]} index={3} aspectClass="flex-1 min-h-0" className="h-full flex flex-col" onImageClick={setActiveImage} />}
           </div>
 
         </motion.div>
@@ -247,7 +245,7 @@ export default function FeaturedArtwork() {
             </button>
 
             {/* Cross/Plus Layout */}
-            <div className="w-full max-w-5xl flex items-center justify-center gap-4 md:gap-8">
+            <div className="w-full  flex items-center justify-center gap-4 md:gap-8">
 
               {/* Left Column (1 Portrait) */}
               <motion.div
@@ -256,12 +254,14 @@ export default function FeaturedArtwork() {
                 transition={{ delay: 0.2, duration: 0.8 }}
                 className="w-1/3 md:w-1/4"
               >
-                <div className="relative aspect-[4/5] bg-white p-2 md:p-4 shadow-2xl">
-                  <div className="relative w-full h-full">
-                    <Image src={featuredItems[0].imageUrl} alt={featuredItems[0].title} fill className="object-cover" />
+                {featuredItems[0] && (
+                  <div className="relative aspect-[4/5] bg-white p-2 md:p-4 shadow-2xl">
+                    <div className="relative w-full h-full">
+                      <Image src={featuredItems[0].imageUrl} alt={featuredItems[0].title} fill className="object-cover" />
+                    </div>
+                    <p className="absolute -bottom-8 md:-bottom-12 left-0 w-full text-center text-white/70 text-[8px] md:text-[10px] tracking-widest uppercase">{featuredItems[0].title}</p>
                   </div>
-                  <p className="absolute -bottom-8 md:-bottom-12 left-0 w-full text-center text-white/70 text-[8px] md:text-[10px] tracking-widest uppercase">{featuredItems[0].title}</p>
-                </div>
+                )}
               </motion.div>
 
               {/* Middle Column (2 Landscapes) */}
@@ -272,9 +272,11 @@ export default function FeaturedArtwork() {
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="relative aspect-[5/4] bg-white p-2 md:p-4 shadow-2xl"
                 >
-                  <div className="relative w-full h-full">
-                    <Image src={featuredItems[1].imageUrl} alt={featuredItems[1].title} fill className="object-cover" />
-                  </div>
+                  {featuredItems[1] && (
+                    <div className="relative w-full h-full">
+                      <Image src={featuredItems[1].imageUrl} alt={featuredItems[1].title} fill className="object-cover" />
+                    </div>
+                  )}
                 </motion.div>
 
                 <motion.div
@@ -283,9 +285,11 @@ export default function FeaturedArtwork() {
                   transition={{ delay: 0.5, duration: 0.8 }}
                   className="relative aspect-[5/4] bg-white p-2 md:p-4 shadow-2xl"
                 >
-                  <div className="relative w-full h-full">
-                    <Image src={featuredItems[2].imageUrl} alt={featuredItems[2].title} fill className="object-cover" />
-                  </div>
+                  {featuredItems[2] && (
+                    <div className="relative w-full h-full">
+                      <Image src={featuredItems[2].imageUrl} alt={featuredItems[2].title} fill className="object-cover" />
+                    </div>
+                  )}
                 </motion.div>
               </div>
 
@@ -296,12 +300,14 @@ export default function FeaturedArtwork() {
                 transition={{ delay: 0.3, duration: 0.8 }}
                 className="w-1/3 md:w-1/4"
               >
-                <div className="relative aspect-[4/5] bg-white p-2 md:p-4 shadow-2xl">
-                  <div className="relative w-full h-full">
-                    <Image src={featuredItems[3].imageUrl} alt={featuredItems[3].title} fill className="object-cover" />
+                {featuredItems[3] && (
+                  <div className="relative aspect-[4/5] bg-white p-2 md:p-4 shadow-2xl">
+                    <div className="relative w-full h-full">
+                      <Image src={featuredItems[3].imageUrl} alt={featuredItems[3].title} fill className="object-cover" />
+                    </div>
+                    <p className="absolute -bottom-8 md:-bottom-12 left-0 w-full text-center text-white/70 text-[8px] md:text-[10px] tracking-widest uppercase">{featuredItems[3].title}</p>
                   </div>
-                  <p className="absolute -bottom-8 md:-bottom-12 left-0 w-full text-center text-white/70 text-[8px] md:text-[10px] tracking-widest uppercase">{featuredItems[3].title}</p>
-                </div>
+                )}
               </motion.div>
 
             </div>
@@ -331,44 +337,44 @@ export default function FeaturedArtwork() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative max-w-6xl w-full flex flex-col md:flex-row items-stretch bg-[#1a1a1a] shadow-2xl overflow-hidden rounded-sm"
+              className="relative max-w-4xl w-full flex flex-col md:flex-row items-stretch bg-[#1a1a1a] shadow-2xl overflow-hidden rounded-sm mx-4"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Image Section */}
-              <div className="relative w-full md:w-2/3 min-h-[50vh] md:min-h-[70vh] bg-black/40">
+              <div className="relative w-full md:w-3/5 min-h-[40vh] md:min-h-[60vh] bg-black/40">
                 <Image
                   src={activeImage.imageUrl}
                   alt={activeImage.title}
                   fill
-                  className="object-contain p-4 md:p-12"
+                  className="object-contain p-6 md:p-10"
                 />
               </div>
 
               {/* Details Section */}
-              <div className="w-full md:w-1/3 p-8 md:p-16 flex flex-col justify-center border-l border-white/5">
-                <span className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-4 block">
+              <div className="w-full md:w-2/5 p-8 md:p-10 flex flex-col justify-center border-l border-white/5">
+                <span className="text-[9px] tracking-[0.3em] uppercase text-white/40 mb-3 block">
                   {activeImage.category}
                 </span>
-                <h2 className="text-3xl md:text-5xl font-light text-white mb-4 font-serif">
+                <h2 className="text-2xl md:text-3xl font-light text-white mb-3 font-serif">
                   {activeImage.title}
                 </h2>
-                <p className="text-sm tracking-widest text-[#9c9a87] italic mb-10">
+                <p className="text-sm tracking-widest text-[#9c9a87] italic mb-6">
                   By {activeImage.creator}
                 </p>
 
-                <div className="text-3xl font-light text-white mb-12">
+                <div className="text-2xl font-light text-white mb-8">
                   ${activeImage.price?.toLocaleString()}
                 </div>
 
-                <div className="space-y-4 w-full">
+                <div className="space-y-3 w-full">
                   <AnimatedButton
                     text="Acquire Piece"
                     containerClass="w-full mt-0"
-                    buttonClass="border-white/30 hover:border-white w-full"
-                    textClass="text-white group-hover:text-black"
+                    buttonClass="border-white/30 hover:border-white w-full py-4"
+                    textClass="text-white group-hover:text-black text-[9px]"
                     fillClass="bg-white"
                   />
-                  <button className="w-full py-3 text-[10px] tracking-[0.3em] uppercase text-white/50 hover:text-white transition-colors border border-transparent hover:border-white/10">
+                  <button className="w-full py-2 text-[9px] tracking-[0.3em] uppercase text-white/50 hover:text-white transition-colors border border-transparent hover:border-white/10">
                     View in Room
                   </button>
                 </div>

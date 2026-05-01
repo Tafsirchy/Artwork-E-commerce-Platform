@@ -38,6 +38,20 @@ const createOrder = async (req, res, next) => {
       totalPrice: Number(totalPrice || 0),
     });
 
+    // 📉 Reduce Inventory Stock
+    const Product = require("../models/Product");
+    for (const item of orderItems) {
+      const product = await Product.findById(item.product);
+      if (product) {
+        if (product.stock < item.qty) {
+          return res.status(400).json({ message: `Insufficient stock for ${product.title}` });
+        }
+        product.stock -= item.qty;
+        await product.save();
+        console.log(`DEBUG: Reduced stock for ${product.title} to ${product.stock}`);
+      }
+    }
+
     console.log("DEBUG: Saving order to database");
     const createdOrder = await order.save();
     console.log("DEBUG: Order saved successfully:", createdOrder._id);
@@ -81,12 +95,15 @@ const createOrder = async (req, res, next) => {
       }
     } else {
       console.log("DEBUG: Finalizing COD order");
-      try {
-        await createdOrder.populate("user", "email");
-        await sendOrderConfirmationEmail(createdOrder, createdOrder.user.email);
-      } catch (mailError) {
-        console.error("DEBUG: Mail non-fatal error:", mailError);
-      }
+      // Send email in the background — don't await it to avoid blocking the client response
+      createdOrder.populate("user", "email").then(populatedOrder => {
+        sendOrderConfirmationEmail(populatedOrder, populatedOrder.user.email).catch(err => {
+          console.error("DEBUG: Async mail error:", err);
+        });
+      }).catch(err => {
+        console.error("DEBUG: Async populate error:", err);
+      });
+      
       res.status(201).json({ order: createdOrder });
     }
   } catch (error) {
@@ -132,14 +149,20 @@ const downloadInvoice = async (req, res, next) => {
       throw new Error("Not authorized");
     }
     
-    const invoicePath = path.join(__dirname, "../../invoices", `invoice-${order._id}.pdf`);
+    let invoicePath = path.join(__dirname, "../../invoices", `invoice-${order._id}.pdf`);
     
-    if (fs.existsSync(invoicePath)) {
-      res.download(invoicePath);
-    } else {
-      res.status(404);
-      throw new Error("Invoice file not found. It might not be generated yet.");
+    if (!fs.existsSync(invoicePath)) {
+      // Generate it on demand if it wasn't created by the email service
+      const { generateInvoice } = require("../utils/invoiceGenerator");
+      try {
+        invoicePath = await generateInvoice(order);
+      } catch (err) {
+        res.status(500);
+        throw new Error("Failed to generate invoice document");
+      }
     }
+    
+    res.download(invoicePath);
   } catch (error) {
     next(error);
   }
@@ -204,6 +227,28 @@ const getOrders = async (req, res, next) => {
   }
 };
 
+// @desc    Update order to transit
+// @route   PUT /api/orders/:id/transit
+// @access  Private/Admin
+const updateOrderToTransit = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+      order.isTransit = true;
+      order.transitAt = Date.now();
+
+      const updatedOrder = await order.save();
+      res.json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Update order to delivered
 // @route   PUT /api/orders/:id/deliver
 // @access  Private/Admin
@@ -238,4 +283,4 @@ const getMyOrders = async (req, res, next) => {
   }
 };
 
-module.exports = { createOrder, getOrderById, downloadInvoice, stripeWebhook, getOrders, updateOrderToDelivered, getMyOrders };
+module.exports = { createOrder, getOrderById, downloadInvoice, stripeWebhook, getOrders, updateOrderToDelivered, updateOrderToTransit, getMyOrders };

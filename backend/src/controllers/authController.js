@@ -30,6 +30,8 @@ const registerUser = async (req, res, next) => {
         email: user.email,
         role: user.role,
         phone: user.phone,
+        addresses: user.addresses,
+        preferences: user.preferences,
         token: generateToken(user._id),
       });
     } else {
@@ -48,20 +50,30 @@ const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    // TEMP DEBUG - remove after fix
+    console.log(`LOGIN DEBUG: email="${email}" | password="${password}" | pass_length=${password?.length}`);
 
-    if (user && (await user.matchPassword(password))) {
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token: generateToken(user._id),
-      });
-    } else {
-      res.status(401);
-      throw new Error("Invalid email or password");
+    const user = await User.findOne({ email });
+    console.log(`LOGIN DEBUG: user found="${!!user}" | role="${user?.role}"`);
+
+    if (user) {
+      const match = await user.matchPassword(password);
+      console.log(`LOGIN DEBUG: password match="${match}"`);
+      if (match) {
+        return res.json({
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          addresses: user.addresses,
+          preferences: user.preferences,
+          token: generateToken(user._id),
+        });
+      }
     }
+
+    res.status(401);
+    throw new Error("Invalid email or password");
   } catch (error) {
     next(error);
   }
@@ -80,6 +92,8 @@ const getUserProfile = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        addresses: user.addresses,
+        preferences: user.preferences,
       });
     } else {
       res.status(404);
@@ -104,6 +118,14 @@ const updateUserProfile = async (req, res, next) => {
         user.password = req.body.password;
       }
 
+      if (req.body.addresses) {
+        user.addresses = req.body.addresses;
+      }
+
+      if (req.body.preferences) {
+        user.preferences = req.body.preferences;
+      }
+
       const updatedUser = await user.save();
 
       res.json({
@@ -111,6 +133,8 @@ const updateUserProfile = async (req, res, next) => {
         name: updatedUser.name,
         email: updatedUser.email,
         role: updatedUser.role,
+        addresses: updatedUser.addresses,
+        preferences: updatedUser.preferences,
         token: generateToken(updatedUser._id),
       });
     } else {
@@ -194,11 +218,31 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
+// @desc    Delete user profile
+// @route   DELETE /api/auth/profile
+// @access  Private
+const deleteUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      await User.deleteOne({ _id: user._id });
+      res.json({ message: "User removed" });
+    } else {
+      res.status(404);
+      throw new Error("User not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = { 
   registerUser, 
   loginUser, 
   getUserProfile, 
   updateUserProfile,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  deleteUserProfile
 };

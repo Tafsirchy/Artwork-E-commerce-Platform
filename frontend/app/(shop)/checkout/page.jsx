@@ -85,10 +85,10 @@ export default function CheckoutPage() {
     if (!user) {
       router.push("/login?redirect=/checkout");
     }
-    if (items.length === 0) {
+    if (!showSuccess && items.length === 0) {
       router.push("/cart");
     }
-  }, [user, items, router]);
+  }, [user, items, router, showSuccess]);
 
   const placeOrder = async () => {
     if (!address || !city || !postalCode || !country || !phone) {
@@ -135,7 +135,7 @@ export default function CheckoutPage() {
     setShowSuccess(true);
   };
 
-  if (items.length === 0 || !user) return null;
+  if ((!showSuccess && items.length === 0) || !user) return null;
 
   return (
     <div className="min-h-screen bg-gallery-bg py-12">

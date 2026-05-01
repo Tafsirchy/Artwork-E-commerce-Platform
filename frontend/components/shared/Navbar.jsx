@@ -3,23 +3,56 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart, User, Menu, X, Heart } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useAuthStore from "@/store/authStore";
 import useCartStore from "@/store/cartStore";
 import useWishlistStore from "@/store/wishlistStore";
 import { toast } from "react-toastify";
 
+// Defined at module scope — this array never changes, so there is no reason
+// to recreate it on every Navbar render (which happens on every pathname change).
+const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Gallery", href: "/products" },
+  { label: "About", href: "/about" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
+
 export default function Navbar() {
+  const [isVisible, setIsVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const scrollTimeout = useRef(null);
   const { user, logout } = useAuthStore();
   const { items: cartItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
   const pathname = usePathname();
   const router = useRouter();
 
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  const wishlistCount = wishlistItems.length;
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsVisible(true);
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+      scrollTimeout.current = setTimeout(() => {
+        if (window.scrollY > 100) {
+          setIsVisible(false);
+        }
+      }, 800);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    };
+  }, []);
+
+  const cartCount = useMemo(
+    () => cartItems.reduce((acc, item) => acc + item.quantity, 0),
+    [cartItems]
+  );
+  const wishlistCount = useMemo(() => wishlistItems.length, [wishlistItems]);
 
   const handleLogout = () => {
     logout();
@@ -27,16 +60,14 @@ export default function Navbar() {
     router.push("/");
   };
 
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Gallery", href: "/products" },
-    { label: "About", href: "/about" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact", href: "/contact" },
-  ];
+  const navLinks = NAV_LINKS;
 
   return (
-    <header className="sticky top-0 z-50 bg-gallery-surface/95 backdrop-blur-sm border-b border-gallery-border">
+    <header 
+      className={`fixed top-0 left-0 right-0 z-[100] bg-gallery-surface/95 backdrop-blur-sm border-b border-gallery-border transition-all duration-300 ${
+        isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+      }`}
+    >
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-xl font-light tracking-[0.4em] text-gallery-text hover:text-gallery-accent transition-all">
@@ -125,7 +156,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div 
+          <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}

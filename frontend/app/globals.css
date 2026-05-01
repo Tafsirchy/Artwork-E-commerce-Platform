@@ -140,10 +140,22 @@
   }
   html {
     @apply h-full antialiased;
+    background-color: #F5F1EB !important;
+    /* Reserve scrollbar gutter permanently — prevents the 15px width shift
+       when navigating between pages of different heights.
+       scrollbar-gutter:stable only works in Chromium; overflow-y:scroll is universal. */
+    overflow-y: scroll;
     scrollbar-gutter: stable;
   }
   body {
-    @apply bg-background text-foreground min-h-screen overflow-x-hidden;
+    @apply bg-background text-foreground min-h-screen;
+    overflow-x: clip;
+    background-color: #F5F1EB !important;
+  }
+  /* Optimization for page transition fades — avoids unnecessary layer creation 
+     that can break position: sticky. */
+  [data-framer-motion-component] {
+    will-change: opacity;
   }
 }
 

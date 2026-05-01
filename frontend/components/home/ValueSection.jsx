@@ -197,7 +197,7 @@ export default function ValueSection() {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <section className="py-24 bg-gallery-bg relative overflow-hidden">
+    <section className="py-24 bg-gallery-surface relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: `linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`, backgroundSize: '100px 100px' }}
       />

@@ -98,10 +98,14 @@ export default function ProductCard({ product }) {
               <span className="font-bold text-gallery-accent">
                 ${currentPrice.toFixed(2)}
               </span>
+              <span className={`text-[9px] uppercase tracking-widest mt-1 font-bold ${product.stock > 0 ? 'text-gallery-muted' : 'text-red-500'}`}>
+                {product.stock > 0 ? `${product.stock} available` : 'Sold Out'}
+              </span>
             </div>
             <button
               onClick={handleAddToCart}
-              className="flex items-center justify-center p-2 rounded-none bg-gallery-primary text-white hover:bg-black transition-colors"
+              disabled={product.stock <= 0}
+              className="flex items-center justify-center p-2 rounded-none bg-gallery-primary text-white hover:bg-black transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
               aria-label="Add to cart"
             >
               <ShoppingCart size={18} />

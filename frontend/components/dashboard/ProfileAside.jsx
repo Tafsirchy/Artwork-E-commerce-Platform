@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { User, Mail, Shield, Save, Edit3, LogOut, Camera, Home } from "lucide-react";
+import { User, Mail, Shield, Save, Edit3, LogOut, Camera, Home, Tag } from "lucide-react";
 import useAuthStore from "@/store/authStore";
 import api from "@/lib/api";
 import { toast } from "react-toastify";
 
 export default function ProfileAside() {
-  const { user, login, logout } = useAuthStore();
+  const { user, updateUser, logout } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState(user?.name || "");
@@ -22,7 +22,7 @@ export default function ProfileAside() {
     setLoading(true);
     try {
       const { data } = await api.put("/auth/profile", { name });
-      login(data);
+      updateUser(data);
       toast.success("Identity records updated");
       setIsEditing(false);
     } catch (error) {
@@ -35,8 +35,8 @@ export default function ProfileAside() {
   if (!user) return null;
 
   return (
-    <aside className="w-full lg:w-80 shrink-0">
-      <div className="sticky top-24 space-y-6">
+    <aside className="w-full lg:w-80 lg:sticky lg:top-32 h-fit mb-8 lg:mb-0">
+      <div className="space-y-6">
         {/* Profile Card */}
         <div className="bg-white border border-gallery-border p-8 shadow-sm overflow-hidden relative group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gallery-gold/20" />
@@ -125,8 +125,12 @@ export default function ProfileAside() {
                 <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
               <Link href="/admin/home" className="flex items-center justify-between px-6 py-4 hover:bg-gallery-soft transition-colors group">
-                <span className="text-[10px] tracking-[0.2em] uppercase font-bold text-gallery-text text-gallery-gold">Home Content</span>
-                <Home size={14} className="text-gallery-gold" />
+                <span className="text-[10px] tracking-[0.2em] uppercase font-bold text-gallery-text">Home Content</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Link>
+              <Link href="/admin/promo" className="flex items-center justify-between px-6 py-4 hover:bg-gallery-soft transition-colors group">
+                <span className="text-[10px] tracking-[0.2em] uppercase font-bold text-gallery-text text-gallery-gold">Promotions</span>
+                <Tag size={14} className="text-gallery-gold" />
               </Link>
             </>
           ) : (

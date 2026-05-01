@@ -3,26 +3,34 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
-import api from "@/lib/api";
+import api, { setAuthToken } from "@/lib/api";
 import Link from "next/link";
 import { Users, Package, ShoppingBag, TrendingUp } from "lucide-react";
 import usePromotionStore from "@/store/promotionStore";
 import ProfileAside from "@/components/dashboard/ProfileAside";
+import { toast } from "react-toastify";
 
 export default function AdminDashboard() {
-  const { user } = useAuthStore();
+  const { user, token, _hasHydrated } = useAuthStore();
   const router = useRouter();
   const [stats, setStats] = useState({ products: 0, orders: 0, users: 0, revenue: 0 });
 
   const { isSliderVisible, toggleSlider, globalDiscount, setGlobalDiscount } = usePromotionStore();
 
   useEffect(() => {
+    // Only act once hydration is complete
+    if (!_hasHydrated) return;
+
     if (!user || user.role !== "admin") {
       router.push("/");
     } else {
+      // Synchronize the API token state before fetching
+      if (token) {
+        setAuthToken(token);
+      }
       fetchStats();
     }
-  }, [user]);
+  }, [user, token, _hasHydrated]);
 
   const fetchStats = async () => {
     try {
@@ -41,6 +49,8 @@ export default function AdminDashboard() {
       });
     } catch (error) {
       console.error("Failed to fetch admin stats", error);
+      const msg = error.response?.data?.message || "Unauthorized access to curatorial records";
+      toast.error(msg);
     }
   };
 
@@ -57,44 +67,58 @@ export default function AdminDashboard() {
         <div className="flex-1">
           <h1 className="text-4xl font-light text-gallery-text mb-10 tracking-tighter uppercase">Curator Command Center</h1>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div className="bg-white p-6 border border-gallery-border shadow-sm flex items-center gap-4 group hover:border-gallery-gold transition-colors">
-              <div className="p-4 bg-gallery-soft text-gallery-primary rounded-full group-hover:bg-gallery-gold group-hover:text-white transition-colors">
-                <TrendingUp size={24} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div 
+              className="bg-white p-6 border border-gallery-border shadow-sm flex items-center gap-4 group hover:border-gallery-gold transition-colors overflow-hidden"
+              title={`Total Revenue: $${stats.revenue.toLocaleString()}`}
+            >
+              <div className="p-4 bg-gallery-soft text-gallery-primary rounded-full group-hover:bg-gallery-gold group-hover:text-white transition-colors shrink-0">
+                <TrendingUp size={20} />
               </div>
-              <div>
-                <p className="text-gallery-muted text-[10px] uppercase tracking-widest font-bold">Revenue</p>
-                <p className="text-3xl font-light text-gallery-text">${stats.revenue.toFixed(2)}</p>
+              <div className="min-w-0">
+                <p className="text-gallery-muted text-[10px] uppercase tracking-widest font-bold truncate">Revenue</p>
+                <p className="text-2xl font-light text-gallery-text truncate tracking-tight">
+                  ${stats.revenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
               </div>
             </div>
             
-            <div className="bg-white p-6 border border-gallery-border shadow-sm flex items-center gap-4 group hover:border-gallery-gold transition-colors">
-              <div className="p-4 bg-gallery-soft text-gallery-primary rounded-full group-hover:bg-gallery-gold group-hover:text-white transition-colors">
-                <ShoppingBag size={24} />
+            <div 
+              className="bg-white p-6 border border-gallery-border shadow-sm flex items-center gap-4 group hover:border-gallery-gold transition-colors overflow-hidden"
+              title={`Total Orders: ${stats.orders}`}
+            >
+              <div className="p-4 bg-gallery-soft text-gallery-primary rounded-full group-hover:bg-gallery-gold group-hover:text-white transition-colors shrink-0">
+                <ShoppingBag size={20} />
               </div>
-              <div>
-                <p className="text-gallery-muted text-[10px] uppercase tracking-widest font-bold">Orders</p>
-                <p className="text-3xl font-light text-gallery-text">{stats.orders}</p>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 border border-gallery-border shadow-sm flex items-center gap-4 group hover:border-gallery-gold transition-colors">
-              <div className="p-4 bg-gallery-soft text-gallery-primary rounded-full group-hover:bg-gallery-gold group-hover:text-white transition-colors">
-                <Package size={24} />
-              </div>
-              <div>
-                <p className="text-gallery-muted text-[10px] uppercase tracking-widest font-bold">Inventory</p>
-                <p className="text-3xl font-light text-gallery-text">{stats.products}</p>
+              <div className="min-w-0">
+                <p className="text-gallery-muted text-[10px] uppercase tracking-widest font-bold truncate">Orders</p>
+                <p className="text-2xl font-light text-gallery-text">{stats.orders}</p>
               </div>
             </div>
 
-            <div className="bg-white p-6 border border-gallery-border shadow-sm flex items-center gap-4 group hover:border-gallery-gold transition-colors">
-              <div className="p-4 bg-gallery-soft text-gallery-primary rounded-full group-hover:bg-gallery-gold group-hover:text-white transition-colors">
-                <Users size={24} />
+            <div 
+              className="bg-white p-6 border border-gallery-border shadow-sm flex items-center gap-4 group hover:border-gallery-gold transition-colors overflow-hidden"
+              title={`Inventory: ${stats.products} items`}
+            >
+              <div className="p-4 bg-gallery-soft text-gallery-primary rounded-full group-hover:bg-gallery-gold group-hover:text-white transition-colors shrink-0">
+                <Package size={20} />
               </div>
-              <div>
-                <p className="text-gallery-muted text-[10px] uppercase tracking-widest font-bold">Collectors</p>
-                <p className="text-3xl font-light text-gallery-text">{stats.users}</p>
+              <div className="min-w-0">
+                <p className="text-gallery-muted text-[10px] uppercase tracking-widest font-bold truncate">Inventory</p>
+                <p className="text-2xl font-light text-gallery-text">{stats.products}</p>
+              </div>
+            </div>
+
+            <div 
+              className="bg-white p-6 border border-gallery-border shadow-sm flex items-center gap-4 group hover:border-gallery-gold transition-colors overflow-hidden"
+              title={`Active Collectors: ${stats.users}`}
+            >
+              <div className="p-4 bg-gallery-soft text-gallery-primary rounded-full group-hover:bg-gallery-gold group-hover:text-white transition-colors shrink-0">
+                <Users size={20} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-gallery-muted text-[10px] uppercase tracking-widest font-bold truncate">Collectors</p>
+                <p className="text-2xl font-light text-gallery-text">{stats.users}</p>
               </div>
             </div>
           </div>

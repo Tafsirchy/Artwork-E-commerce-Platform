@@ -14,7 +14,7 @@ export default function OrderTracking({ order }) {
   // Determine current step index
   let currentStep = 0;
   if (order.isPaid || order.paymentMethod === "COD") currentStep = 1;
-  if (order.isShipped) currentStep = 2; // Assuming you add isShipped later
+  if (order.isTransit) currentStep = 2;
   if (order.isDelivered) currentStep = 3;
 
   return (

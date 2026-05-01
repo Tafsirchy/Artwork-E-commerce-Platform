@@ -1,10 +1,10 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Quote, Eye } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import api from "@/lib/api";
 
-const TestimonialCard = ({ item, onHover }) => (
+const TestimonialCard = memo(({ item, onHover }) => (
   <div
     className="flex-shrink-0 w-[350px] px-3"
     onMouseEnter={() => onHover(item)}
@@ -12,7 +12,7 @@ const TestimonialCard = ({ item, onHover }) => (
   >
     <motion.div
       whileHover={{ y: -8, scale: 1.02 }}
-      className="bg-white/40 backdrop-blur-xl p-8 rounded-none border border-black/5 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] relative group overflow-hidden h-[220px] flex flex-col justify-between cursor-pointer"
+      className="bg-white/90 p-8 rounded-none border border-black/5 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] relative group overflow-hidden h-[220px] flex flex-col justify-between cursor-pointer transform-gpu will-change-transform"
     >
       {/* Decorative Quote Background */}
       <div className="absolute top-4 right-6 text-black/[0.03] group-hover:text-gallery-gold/10 transition-colors duration-700">
@@ -48,9 +48,9 @@ const TestimonialCard = ({ item, onHover }) => (
       </div>
     </motion.div>
   </div>
-);
+));
 
-const MarqueeRow = ({ items, direction = "left", onHover }) => {
+const MarqueeRow = memo(({ items, direction = "left", onHover }) => {
   return (
     <div className="flex overflow-hidden group">
       <motion.div
@@ -65,7 +65,7 @@ const MarqueeRow = ({ items, direction = "left", onHover }) => {
             ease: "linear",
           },
         }}
-        className="flex whitespace-nowrap group-hover:[animation-play-state:paused]"
+        className="flex whitespace-nowrap group-hover:[animation-play-state:paused] transform-gpu will-change-transform"
       >
         {/* Duplicate items for seamless loop */}
         {[...items, ...items, ...items].map((item, i) => (
@@ -74,7 +74,7 @@ const MarqueeRow = ({ items, direction = "left", onHover }) => {
       </motion.div>
     </div>
   );
-};
+});
 
 export default function Testimonials() {
   const [hasMounted, setHasMounted] = useState(false);
@@ -94,18 +94,21 @@ export default function Testimonials() {
     fetchReviews();
   }, []);
 
-  if (!hasMounted || reviews.length === 0) return null;
+  const handleHover = useCallback((item) => {
+    setHoveredArt(item);
+  }, []);
 
   return (
-    <section className="py-28 bg-gallery-soft/30 relative overflow-hidden">
+    <section className={`py-28 bg-gallery-soft/30 relative overflow-hidden transition-opacity duration-700 ${(!hasMounted || reviews.length === 0) ? "opacity-0 min-h-[600px]" : "opacity-100"}`}>
       {/* Art Preview Modal/Overlay */}
       <AnimatePresence>
         {hoveredArt && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+            initial={{ opacity: 0, scale: 0.95, rotate: -2 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            exit={{ opacity: 0, scale: 0.8, rotate: 5 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] pointer-events-none"
+            exit={{ opacity: 0, scale: 0.95, rotate: 2 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] pointer-events-none will-change-transform"
           >
             <div className="relative p-4 bg-white shadow-2xl border-8 border-white group">
               <motion.img
@@ -125,8 +128,9 @@ export default function Testimonials() {
 
       {/* Backdrop Dim when art is hovered */}
       <motion.div
-        animate={{ opacity: hoveredArt ? 0.4 : 0 }}
-        className="fixed inset-0 bg-black z-50 pointer-events-none"
+        animate={{ opacity: hoveredArt ? 0.6 : 0 }}
+        transition={{ duration: 0.2 }}
+        className="fixed inset-0 bg-black/50 z-50 pointer-events-none will-change-opacity"
       />
 
       {/* Abstract Background Decor */}
@@ -153,8 +157,8 @@ export default function Testimonials() {
 
         {/* Marquee Rows */}
         <div className="space-y-4">
-          <MarqueeRow items={reviews} direction="left" onHover={setHoveredArt} />
-          <MarqueeRow items={reviews.slice().reverse()} direction="right" onHover={setHoveredArt} />
+          <MarqueeRow items={reviews} direction="left" onHover={handleHover} />
+          <MarqueeRow items={reviews.slice().reverse()} direction="right" onHover={handleHover} />
         </div>
 
         {/* Bottom Detail */}

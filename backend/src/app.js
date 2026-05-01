@@ -51,6 +51,7 @@ app.use(express.json());
 // API Routes
 app.use("/api/auth", authLimiter, require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/products/:id/reviews", require("./routes/productReviewRoutes"));
 app.use("/api/cart", require("./routes/cartRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/promotions", require("./routes/promotionRoutes"));

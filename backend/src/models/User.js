@@ -24,6 +24,21 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
     },
+    addresses: [
+      {
+        street: String,
+        city: String,
+        state: String,
+        zipCode: String,
+        country: String,
+        isDefault: { type: Boolean, default: false }
+      }
+    ],
+    preferences: {
+      exhibitions: { type: Boolean, default: true },
+      receipts: { type: Boolean, default: true },
+      curated: { type: Boolean, default: false }
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },
@@ -38,12 +53,16 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 // Middleware to hash password before saving
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
   if (!this.isModified("password")) {
-    next();
+    return;
   }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  } catch (error) {
+    throw error;
+  }
 });
 
 module.exports = mongoose.model("User", userSchema);

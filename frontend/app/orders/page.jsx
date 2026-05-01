@@ -6,17 +6,25 @@ import { Package, Search, ChevronRight, FileText, ExternalLink } from "lucide-re
 import Link from "next/link";
 import api from "@/lib/api";
 import useAuthStore from "@/store/authStore";
+import OrdersSkeleton from "@/components/ui/OrdersSkeleton";
+import { toast } from "react-toastify";
 
 export default function UserOrdersPage() {
-  const { user } = useAuthStore();
+  const { user, _hasHydrated } = useAuthStore();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all");
+  const [searchId, setSearchId] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 5;
 
   useEffect(() => {
     if (user) {
       fetchMyOrders();
+    } else if (_hasHydrated && !user) {
+      setLoading(false);
     }
-  }, [user]);
+  }, [user, _hasHydrated]);
 
   const fetchMyOrders = async () => {
     try {
@@ -28,6 +36,60 @@ export default function UserOrdersPage() {
       setLoading(false);
     }
   };
+
+  const handleDownloadInvoice = async (orderId) => {
+    try {
+      const response = await api.get(`/orders/${orderId}/invoice`, { responseType: 'blob' });
+      
+      // Ensure the browser knows this is a PDF, otherwise it might fail to load.
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `invoice-${orderId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      setTimeout(() => window.URL.revokeObjectURL(url), 100);
+    } catch (error) {
+      console.error("Invoice Download Error:", error);
+      toast.error("Invoice not available yet");
+    }
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, searchId]);
+
+  const filteredOrders = orders.filter((order) => {
+    // In Transit: Must be paid AND not delivered
+    if (filter === "transit") {
+      return order.isPaid && !order.isDelivered;
+    }
+    // Processing: Not paid yet (and not delivered)
+    if (filter === "processing") {
+      return !order.isPaid && !order.isDelivered;
+    }
+    // Delivered: Must be delivered
+    if (filter === "delivered") {
+      return order.isDelivered;
+    }
+    
+    if (searchId && !order._id.toLowerCase().includes(searchId.toLowerCase())) return false;
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1) * ordersPerPage,
+    currentPage * ordersPerPage
+  );
+
+  // Render skeleton until Zustand has finished reading localStorage
+  if (!_hasHydrated) return <OrdersSkeleton />;
 
   return (
     <main className="bg-gallery-bg min-h-screen py-20 pb-32">
@@ -44,18 +106,41 @@ export default function UserOrdersPage() {
           <p className="text-gallery-muted text-sm mt-2 font-light">A chronological record of your artistic journey.</p>
         </div>
 
-        {/* Filter Bar Placeholder */}
+        {/* Filter Bar */}
         <div className="flex justify-between items-center mb-8 border-b border-gallery-border pb-6">
           <div className="flex gap-8">
-            <button className="text-[10px] tracking-widest uppercase font-bold text-gallery-accent border-b border-gallery-accent pb-1">All Orders</button>
-            <button className="text-[10px] tracking-widest uppercase font-bold text-gallery-muted hover:text-gallery-text transition-colors">In Transit</button>
-            <button className="text-[10px] tracking-widest uppercase font-bold text-gallery-muted hover:text-gallery-text transition-colors">Delivered</button>
+            <button 
+              onClick={() => setFilter("all")} 
+              className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${filter === "all" ? "text-gallery-accent border-b border-gallery-accent pb-1" : "text-gallery-muted hover:text-gallery-text"}`}
+            >
+              All Orders
+            </button>
+            <button 
+              onClick={() => setFilter("processing")} 
+              className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${filter === "processing" ? "text-gallery-accent border-b border-gallery-accent pb-1" : "text-gallery-muted hover:text-gallery-text"}`}
+            >
+              Processing
+            </button>
+            <button 
+              onClick={() => setFilter("transit")} 
+              className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${filter === "transit" ? "text-gallery-accent border-b border-gallery-accent pb-1" : "text-gallery-muted hover:text-gallery-text"}`}
+            >
+              In Transit
+            </button>
+            <button 
+              onClick={() => setFilter("delivered")} 
+              className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${filter === "delivered" ? "text-gallery-accent border-b border-gallery-accent pb-1" : "text-gallery-muted hover:text-gallery-text"}`}
+            >
+              Delivered
+            </button>
           </div>
           <div className="relative hidden md:block">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gallery-muted" />
             <input 
               type="text" 
               placeholder="Search ID..." 
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
               className="pl-10 pr-4 py-2 bg-white border border-gallery-border text-[10px] tracking-widest uppercase focus:outline-none focus:border-gallery-gold w-64"
             />
           </div>
@@ -65,8 +150,8 @@ export default function UserOrdersPage() {
         <div className="space-y-6">
           {loading ? (
             <div className="py-20 text-center uppercase tracking-[0.5em] text-gallery-muted text-xs">Accessing Archives...</div>
-          ) : orders.length > 0 ? (
-            orders.map((order) => (
+          ) : filteredOrders.length > 0 ? (
+            paginatedOrders.map((order) => (
               <motion.div 
                 key={order._id}
                 initial={{ opacity: 0, y: 20 }}
@@ -89,14 +174,14 @@ export default function UserOrdersPage() {
                   {/* Items Preview */}
                   <div className="md:w-1/3 flex items-center">
                     <div className="flex -space-x-4">
-                      {order.orderItems.map((item, idx) => (
+                      {order.orderItems.slice(0, 4).map((item, idx) => (
                         <div key={idx} className="w-16 h-16 border-2 border-white bg-gallery-soft shadow-sm grayscale group-hover:grayscale-0 transition-all overflow-hidden relative">
-                          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                          <img src={item.image || item.imageUrl} alt={item.name || item.title} className="w-full h-full object-cover" />
                         </div>
                       ))}
-                      {order.orderItems.length > 3 && (
+                      {order.orderItems.length > 4 && (
                         <div className="w-16 h-16 border-2 border-white bg-gallery-primary text-white flex items-center justify-center text-xs font-bold relative z-10">
-                          +{order.orderItems.length - 3}
+                          +{order.orderItems.length - 4}
                         </div>
                       )}
                     </div>
@@ -116,10 +201,13 @@ export default function UserOrdersPage() {
                     </div>
                     
                     <div className="flex gap-4 w-full md:w-auto">
-                      <button className="flex-1 md:flex-none px-6 py-3 border border-gallery-border text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-gallery-soft transition-all flex items-center justify-center gap-2">
+                      <button 
+                        onClick={() => handleDownloadInvoice(order._id)}
+                        className="flex-1 md:flex-none px-6 py-3 border border-gallery-border text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-gallery-soft transition-all flex items-center justify-center gap-2"
+                      >
                         <FileText size={14} /> Invoice
                       </button>
-                      <Link href={`/orders/${order._id}`} className="flex-1 md:flex-none px-6 py-3 bg-gallery-primary text-white text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-gallery-gold transition-all flex items-center justify-center gap-2">
+                      <Link href={`/orders/${order._id}`} className="flex-1 md:flex-none px-6 py-3 bg-gallery-primary text-white text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-gold transition-all flex items-center justify-center gap-2">
                         Details <ChevronRight size={14} />
                       </Link>
                     </div>
@@ -130,14 +218,45 @@ export default function UserOrdersPage() {
           ) : (
             <div className="py-32 bg-white border border-gallery-border text-center">
               <Package size={48} className="mx-auto text-gallery-soft mb-6" />
-              <h2 className="text-xl font-light text-gallery-text uppercase tracking-widest mb-2">No Acquisitions Yet</h2>
-              <p className="text-gallery-muted text-sm font-light mb-8 italic">Your journey through the gallery has not yet begun.</p>
+              <h2 className="text-xl font-light text-gallery-text uppercase tracking-widest mb-2">No Acquisitions Found</h2>
+              <p className="text-gallery-muted text-sm font-light mb-8 italic">No orders match your current filters.</p>
               <Link href="/products" className="inline-block px-12 py-4 border border-gallery-gold text-gallery-gold text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-gallery-gold hover:text-white transition-all">
                 Explore Collection
               </Link>
             </div>
           )}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-12">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="p-3 border border-gallery-border hover:border-gallery-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronRight size={18} className="rotate-180" />
+            </button>
+            <div className="flex gap-2">
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-10 h-10 text-[10px] font-bold uppercase tracking-widest border transition-all ${currentPage === i + 1 ? 'bg-gallery-primary text-white border-gallery-primary' : 'bg-white text-gallery-muted border-gallery-border hover:border-gallery-gold'}`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="p-3 border border-gallery-border hover:border-gallery-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );

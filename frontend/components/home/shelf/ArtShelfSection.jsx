@@ -126,12 +126,13 @@ export default function ArtShelfSection() {
   const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [isRaining, setIsRaining] = useState(false);
   const closeTimer = useRef(null);
+  const openTimer = useRef(null);
 
   useEffect(() => {
     const fetchArtworks = async () => {
       try {
         const { data } = await api.get("/products");
-        
+
         // 1. Get unique categories present in the database (limit to 6 for the tree layout)
         const dbCategoryNames = [...new Set(data.map(p => p.category))].slice(0, 6);
 
@@ -140,7 +141,7 @@ export default function ArtShelfSection() {
           // Use the layout configuration (position, color, etc.) from initialShelfData
           const layout = initialShelfData[index];
           const categoryProducts = data.filter(p => p.category === catName);
-          
+
           return {
             ...layout,
             name: catName, // Use the real category name from DB
@@ -165,6 +166,7 @@ export default function ArtShelfSection() {
 
   const cancelClose = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
+    if (openTimer.current) clearTimeout(openTimer.current);
   }, []);
 
   const scheduleClose = useCallback(() => {
@@ -176,7 +178,10 @@ export default function ArtShelfSection() {
 
   const handleShelfEnter = useCallback((cat) => {
     cancelClose();
-    setActiveCategory(cat);
+    // 🎨 2-second delay for a meditative experience
+    openTimer.current = setTimeout(() => {
+      setActiveCategory(cat);
+    }, 1200);
   }, [cancelClose]);
 
   const containerRef = useRef(null);
@@ -185,12 +190,10 @@ export default function ArtShelfSection() {
     offset: ["start end", "end start"]
   });
 
-  const treeY = useTransform(scrollYProgress, [0, 1], [40, -40]);
-  const treeRotate = useTransform(scrollYProgress, [0, 1], [-1.5, 1.5]);
-  const treeScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.96, 1, 0.96]);
-
-  const smoothY = useSpring(treeY, { stiffness: 100, damping: 30 });
-  const smoothRotate = useSpring(treeRotate, { stiffness: 100, damping: 30 });
+  // Static values instead of scroll transforms
+  const smoothY = 0;
+  const smoothRotate = 0;
+  const treeScale = 1;
 
   return (
     <section className="relative py-28 overflow-hidden transition-colors duration-1000" style={{ backgroundColor: isRaining ? "#202836" : "#f8f6f2" }}>
