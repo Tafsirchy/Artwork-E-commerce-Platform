@@ -29,6 +29,34 @@ export default function UserOrdersPage() {
     }
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("All");
+
+  const filteredOrders = orders
+    .filter(order => {
+      const matchesSearch = order._id.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = 
+        filterStatus === "All" || 
+        (filterStatus === "Delivered" && order.isDelivered) || 
+        (filterStatus === "In Transit" && !order.isDelivered && (order.isPaid || order.paymentMethod === "COD"));
+      return matchesSearch && matchesFilter;
+    })
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const downloadInvoice = async (orderId) => {
+    try {
+      const response = await api.get(`/orders/${orderId}/invoice`, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `invoice-${orderId.slice(-8)}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error("Failed to download invoice", error);
+    }
+  };
+
   return (
     <main className="bg-gallery-bg min-h-screen py-20 pb-32">
       <div className="container mx-auto px-6">
@@ -44,19 +72,29 @@ export default function UserOrdersPage() {
           <p className="text-gallery-muted text-sm mt-2 font-light">A chronological record of your artistic journey.</p>
         </div>
 
-        {/* Filter Bar Placeholder */}
-        <div className="flex justify-between items-center mb-8 border-b border-gallery-border pb-6">
+        {/* Filter Bar */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-12 border-b border-gallery-border pb-6 gap-6">
           <div className="flex gap-8">
-            <button className="text-[10px] tracking-widest uppercase font-bold text-gallery-accent border-b border-gallery-accent pb-1">All Orders</button>
-            <button className="text-[10px] tracking-widest uppercase font-bold text-gallery-muted hover:text-gallery-text transition-colors">In Transit</button>
-            <button className="text-[10px] tracking-widest uppercase font-bold text-gallery-muted hover:text-gallery-text transition-colors">Delivered</button>
+            {["All", "In Transit", "Delivered"].map((status) => (
+              <button 
+                key={status}
+                onClick={() => setFilterStatus(status)}
+                className={`text-[10px] tracking-widest uppercase font-bold transition-all border-b pb-1 ${
+                  filterStatus === status ? "text-gallery-accent border-gallery-accent" : "text-gallery-muted border-transparent hover:text-gallery-text"
+                }`}
+              >
+                {status}
+              </button>
+            ))}
           </div>
-          <div className="relative hidden md:block">
+          <div className="relative w-full md:w-64">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gallery-muted" />
             <input 
               type="text" 
               placeholder="Search ID..." 
-              className="pl-10 pr-4 py-2 bg-white border border-gallery-border text-[10px] tracking-widest uppercase focus:outline-none focus:border-gallery-gold w-64"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-white border border-gallery-border text-[10px] tracking-widest uppercase focus:outline-none focus:border-gallery-gold"
             />
           </div>
         </div>
@@ -65,8 +103,8 @@ export default function UserOrdersPage() {
         <div className="space-y-6">
           {loading ? (
             <div className="py-20 text-center uppercase tracking-[0.5em] text-gallery-muted text-xs">Accessing Archives...</div>
-          ) : orders.length > 0 ? (
-            orders.map((order) => (
+          ) : filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
               <motion.div 
                 key={order._id}
                 initial={{ opacity: 0, y: 20 }}
@@ -89,19 +127,21 @@ export default function UserOrdersPage() {
                   {/* Items Preview */}
                   <div className="md:w-1/3 flex items-center">
                     <div className="flex -space-x-4">
-                      {order.orderItems.map((item, idx) => (
+                      {order.orderItems.slice(0, 4).map((item, idx) => (
                         <div key={idx} className="w-16 h-16 border-2 border-white bg-gallery-soft shadow-sm grayscale group-hover:grayscale-0 transition-all overflow-hidden relative">
-                          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                          <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                         </div>
                       ))}
-                      {order.orderItems.length > 3 && (
+                      {order.orderItems.reduce((sum, i) => sum + i.quantity, 0) > order.orderItems.slice(0, 4).length && (
                         <div className="w-16 h-16 border-2 border-white bg-gallery-primary text-white flex items-center justify-center text-xs font-bold relative z-10">
-                          +{order.orderItems.length - 3}
+                          +{order.orderItems.reduce((sum, i) => sum + i.quantity, 0) - order.orderItems.slice(0, 4).length}
                         </div>
                       )}
                     </div>
                     <div className="ml-8">
-                      <p className="text-[10px] tracking-widest uppercase font-bold text-gallery-text">{order.orderItems.length} {order.orderItems.length === 1 ? 'Artwork' : 'Artworks'}</p>
+                      <p className="text-[10px] tracking-widest uppercase font-bold text-gallery-text">
+                        {order.orderItems.reduce((sum, i) => sum + i.quantity, 0)} {order.orderItems.reduce((sum, i) => sum + i.quantity, 0) === 1 ? 'Artwork' : 'Artworks'}
+                      </p>
                       <p className="text-xs text-gallery-muted font-light">Investment: ${order.totalPrice.toFixed(2)}</p>
                     </div>
                   </div>
@@ -116,11 +156,14 @@ export default function UserOrdersPage() {
                     </div>
                     
                     <div className="flex gap-4 w-full md:w-auto">
-                      <button className="flex-1 md:flex-none px-6 py-3 border border-gallery-border text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-gallery-soft transition-all flex items-center justify-center gap-2">
+                      <button 
+                        onClick={() => downloadInvoice(order._id)}
+                        className="flex-1 md:flex-none px-6 py-3 border border-gallery-border text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-gallery-soft transition-all flex items-center justify-center gap-2"
+                      >
                         <FileText size={14} /> Invoice
                       </button>
-                      <Link href={`/orders/${order._id}`} className="flex-1 md:flex-none px-6 py-3 bg-gallery-primary text-white text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-gallery-gold transition-all flex items-center justify-center gap-2">
-                        Details <ChevronRight size={14} />
+                      <Link href={`/dashboard?track=${order._id}`} className="flex-1 md:flex-none px-6 py-3 bg-gallery-primary text-white text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-gallery-gold transition-all flex items-center justify-center gap-2">
+                        Track <ChevronRight size={14} />
                       </Link>
                     </div>
                   </div>

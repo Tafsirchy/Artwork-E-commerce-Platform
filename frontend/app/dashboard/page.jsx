@@ -18,6 +18,7 @@ import api from "@/lib/api";
 import ProfileAside from "@/components/dashboard/ProfileAside";
 import OrderTracking from "@/components/orders/OrderTracking";
 import TrackingModal from "@/components/orders/TrackingModal";
+import { useSearchParams } from "next/navigation";
 
 export default function CustomerDashboard() {
   const { user } = useAuthStore();
@@ -26,6 +27,7 @@ export default function CustomerDashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (user) {
@@ -43,6 +45,17 @@ export default function CustomerDashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const trackId = searchParams.get("track");
+    if (trackId && orders.length > 0) {
+      const order = orders.find(o => o._id === trackId);
+      if (order) {
+        setSelectedOrder(order);
+        setIsTrackingOpen(true);
+      }
+    }
+  }, [searchParams, orders]);
 
   const stats = [
     { label: "Total Orders", value: orders.length.toString(), icon: <Package size={20} /> },

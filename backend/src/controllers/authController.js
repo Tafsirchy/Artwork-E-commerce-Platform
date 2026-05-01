@@ -103,6 +103,17 @@ const updateUserProfile = async (req, res, next) => {
       if (req.body.password) {
         user.password = req.body.password;
       }
+      
+      if (req.body.address) {
+        user.address = {
+          street: req.body.address.street || user.address?.street,
+          city: req.body.address.city || user.address?.city,
+          postalCode: req.body.address.postalCode || user.address?.postalCode,
+          country: req.body.address.country || user.address?.country,
+        };
+      }
+      
+      user.phone = req.body.phone || user.phone;
 
       const updatedUser = await user.save();
 
@@ -194,11 +205,31 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
+// @desc    Delete user profile
+// @route   DELETE /api/auth/profile
+// @access  Private
+const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      await User.findByIdAndDelete(req.user._id);
+      res.json({ message: "Identity erased from archives" });
+    } else {
+      res.status(404);
+      throw new Error("User not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = { 
   registerUser, 
   loginUser, 
   getUserProfile, 
   updateUserProfile,
+  deleteUser,
   forgotPassword,
   resetPassword
 };

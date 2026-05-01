@@ -2,15 +2,28 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
 import { Check, ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export default function SuccessModal({ isOpen, orderId, onClose }) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = React.useState(false);
 
-  return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+  React.useEffect(() => {
+    setMounted(true);
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isOpen]);
+
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
+    <AnimatePresence mode="wait">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6">
         {/* Backdrop */}
         <motion.div 
           initial={{ opacity: 0 }}
@@ -83,6 +96,7 @@ export default function SuccessModal({ isOpen, orderId, onClose }) {
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
