@@ -74,7 +74,7 @@ const WelcomingDoraemon = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setHearts(prev => [...prev.slice(-10), { id: Date.now(), x: Math.random() * 40 - 20 }]);
+      setHearts(prev => [...prev.slice(-10), { id: `dora-${Date.now()}-${Math.random()}`, x: Math.random() * 40 - 20 }]);
     }, 1500);
     return () => clearInterval(interval);
   }, []);
@@ -170,7 +170,7 @@ const KissingCat = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setHearts(prev => [...prev.slice(-10), { id: Date.now(), x: Math.random() * 40 - 20 }]);
+      setHearts(prev => [...prev.slice(-10), { id: `kiss-${Date.now()}-${Math.random()}`, x: Math.random() * 40 - 20 }]);
     }, 1200);
     return () => clearInterval(interval);
   }, []);
@@ -295,7 +295,7 @@ export default function CTA() {
         {/* Floating Particles - Client Side Only to prevent hydration mismatch */}
         {hasMounted && Array.from({ length: 20 }).map((_, i) => (
           <motion.div
-            key={i}
+            key={`particle-${i}`}
             animate={{
               y: [0, -100],
               opacity: [0, 0.4, 0]
@@ -315,7 +315,7 @@ export default function CTA() {
         {/* Global Butterfly Swarm */}
         {hasMounted && Array.from({ length: 10 }).map((_, i) => (
           <Butterfly
-            key={i}
+            key={`butterfly-${i}`}
             startX={`${Math.random() * 100}%`}
             startY={`${Math.random() * 100}%`}
             delay={i * 1.5}
@@ -348,7 +348,7 @@ export default function CTA() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-10">
             <Link
               href="/products"
-              className="relative group/link px-20 py-7 bg-white text-gallery-primary text-xs tracking-[0.5em] uppercase overflow-hidden rounded-full shadow-2xl"
+              className="relative group/link px-20 py-7 bg-white text-gallery-primary text-xs tracking-[0.5em] uppercase overflow-hidden rounded-none shadow-2xl"
             >
               <span className="relative z-10 flex items-center gap-4 font-bold">
                 Enter Gallery <MoveUpRight size={20} strokeWidth={2} />

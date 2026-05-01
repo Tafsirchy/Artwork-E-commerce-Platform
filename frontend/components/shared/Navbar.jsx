@@ -28,8 +28,11 @@ export default function Navbar() {
   };
 
   const navLinks = [
+    { label: "Home", href: "/" },
     { label: "Gallery", href: "/products" },
     { label: "About", href: "/about" },
+    { label: "Blog", href: "/blog" },
+    { label: "Contact", href: "/contact" },
   ];
 
   return (
@@ -81,6 +84,9 @@ export default function Navbar() {
           {/* User / Auth */}
           {user ? (
             <div className="hidden md:flex items-center gap-4 border-l border-gallery-border pl-6 ml-2">
+              <Link href="/dashboard" className="text-sm text-gallery-muted hover:text-gallery-text tracking-wider uppercase transition-colors">
+                Dashboard
+              </Link>
               {user.role === "admin" && (
                 <Link href="/admin/dashboard" className="text-sm text-gallery-muted hover:text-gallery-text tracking-wider uppercase transition-colors">
                   Admin
@@ -98,8 +104,9 @@ export default function Navbar() {
               <Link href="/login" className="text-sm text-gallery-muted hover:text-gallery-text tracking-wider uppercase transition-colors">
                 Login
               </Link>
-              <Link href="/register" className="text-sm px-4 py-2 bg-gallery-primary text-white rounded-full hover:bg-black transition-colors tracking-wider uppercase">
-                Join
+              <Link href="/register" className="group relative text-sm px-6 py-2 bg-gallery-primary text-white rounded-none overflow-hidden transition-all tracking-wider uppercase">
+                <span className="relative z-10">Join</span>
+                <div className="absolute inset-0 bg-gallery-accent translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               </Link>
             </div>
           )}
@@ -143,6 +150,9 @@ export default function Navbar() {
             </Link>
             {user ? (
               <>
+                <Link href="/dashboard" className="text-gallery-muted text-sm tracking-[0.3em] uppercase hover:text-gallery-text" onClick={() => setMobileOpen(false)}>
+                  My Dashboard
+                </Link>
                 {user.role === "admin" && (
                   <Link href="/admin/dashboard" className="text-gallery-muted text-sm tracking-[0.3em] uppercase hover:text-gallery-text" onClick={() => setMobileOpen(false)}>
                     Admin Panel

@@ -266,7 +266,7 @@ const LivePencilSketch = () => {
                       e.stopPropagation();
                       setActiveBrush(b);
                     }}
-                    className={`text-[9px] py-2 px-3 rounded-lg border transition-all duration-300 text-left ${activeBrush.name === b.name ? 'bg-gallery-text text-white border-gallery-text shadow-md' : 'bg-white/50 text-gallery-text border-transparent hover:border-gallery-gold/30'}`}
+                    className={`text-[9px] py-2 px-3 rounded-none border transition-all duration-300 text-left ${activeBrush.name === b.name ? 'bg-gallery-text text-white border-gallery-text shadow-md' : 'bg-white/50 text-gallery-text border-transparent hover:border-gallery-gold/30'}`}
                   >
                     {b.name.split(' ')[1] || b.name}
                   </motion.button>
@@ -375,7 +375,7 @@ const LivePencilSketch = () => {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group flex items-center gap-6 bg-gallery-text text-white px-8 py-5 rounded-full hover:bg-gallery-primary transition-all duration-500 shadow-xl"
+                  className="group flex items-center gap-6 bg-gallery-text text-white px-8 py-5 rounded-none hover:bg-gallery-primary transition-all duration-500 shadow-xl"
                 >
                   <span className="text-xs tracking-[0.4em] uppercase font-bold">Acquire Original</span>
                   <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-500" />

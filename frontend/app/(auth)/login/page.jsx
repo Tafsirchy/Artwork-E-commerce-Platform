@@ -25,7 +25,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gallery-bg">
-      <div className="w-full max-w-md p-8 bg-gallery-surface rounded-lg border border-gallery-border shadow-lg">
+      <div className="w-full max-w-md p-8 bg-gallery-surface rounded-none border border-gallery-border shadow-lg">
         <h2 className="text-3xl font-light text-center text-gallery-text mb-6">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -33,7 +33,7 @@ export default function LoginPage() {
             <input
               type="email"
               required
-              className="w-full px-4 py-2 border border-gallery-border rounded focus:outline-none focus:ring-1 focus:ring-gallery-gold"
+              className="w-full px-4 py-2 border border-gallery-border rounded-none focus:outline-none focus:ring-1 focus:ring-gallery-gold"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -43,7 +43,7 @@ export default function LoginPage() {
             <input
               type="password"
               required
-              className="w-full px-4 py-2 border border-gallery-border rounded focus:outline-none focus:ring-1 focus:ring-gallery-gold"
+              className="w-full px-4 py-2 border border-gallery-border rounded-none focus:outline-none focus:ring-1 focus:ring-gallery-gold"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -51,7 +51,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-gallery-primary text-white rounded transition-colors hover:bg-black disabled:opacity-50"
+            className="w-full py-3 px-4 bg-gallery-primary text-white rounded-none transition-colors hover:bg-black disabled:opacity-50"
           >
             {isLoading ? "Signing in..." : "Sign In"}
           </button>

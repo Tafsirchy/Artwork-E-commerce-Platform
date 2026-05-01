@@ -50,6 +50,7 @@ app.use("/api/auth", authLimiter, require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/cart", require("./routes/cartRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
+app.use("/api/promotions", require("./routes/promotionRoutes"));
 
 // Serve static files (uploads)
 app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));

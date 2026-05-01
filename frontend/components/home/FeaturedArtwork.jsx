@@ -44,8 +44,8 @@ const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => (
     whileInView={{ opacity: 1, scale: 1, y: 0, rotateX: 0, rotateY: 0 }}
     viewport={{ once: true, margin: "-50px" }}
     transition={{
-      duration: 1.2,
-      delay: 0.6 + index * 0.2,
+      duration: 0.6,
+      delay: 0.2 + index * 0.1,
       ease: [0.16, 1, 0.3, 1]
     }}
     className={`relative group cursor-none bg-white p-5 pb-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2)] hover:shadow-[0_45px_90px_-20px_rgba(0,0,0,0.3)] transition-shadow duration-700 ${className || ''}`}
@@ -55,14 +55,14 @@ const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => (
       initial={{ opacity: 0, scale: 1.3, y: -20, rotate: index % 2 === 0 ? -2 : 2 }}
       whileInView={{ opacity: 1, scale: 1, y: 0, rotate: index % 2 === 0 ? -2 : 2 }}
       viewport={{ once: true }}
-      transition={{ delay: 1.4 + index * 0.2, duration: 0.6, type: "spring", stiffness: 200 }}
+      transition={{ delay: 0.6 + index * 0.1, duration: 0.4, type: "spring", stiffness: 200 }}
       className="absolute -top-4 left-1/2 -translate-x-1/2 w-28 h-8 bg-[#8e8b76]/90 backdrop-blur-sm shadow-sm z-30"
     />
     <motion.div
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
-      transition={{ delay: 1.5 + index * 0.2 }}
+      transition={{ delay: 0.7 + index * 0.1 }}
       className="absolute -top-4 left-1/2 -translate-x-1/2 w-28 h-8 bg-black/10 translate-y-1 blur-[3px] z-20"
     />
 
@@ -131,14 +131,13 @@ export default function FeaturedArtwork() {
             <motion.div
               initial={{ opacity: 0, y: 100 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
               <motion.p
                 initial={{ opacity: 0, letterSpacing: "0.1em" }}
                 whileInView={{ opacity: 1, letterSpacing: "0.5em" }}
                 viewport={{ once: true }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
                 className="text-gallery-accent text-sm uppercase mb-6"
               >
                 🧩 The Curator's Eye
@@ -150,7 +149,7 @@ export default function FeaturedArtwork() {
                     initial={{ opacity: 0, filter: "blur(10px)", y: 20 }}
                     whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: i * 0.1 }}
+                    transition={{ duration: 0.4, delay: i * 0.05 }}
                     className="inline-block mr-4"
                   >
                     {word}
@@ -161,7 +160,7 @@ export default function FeaturedArtwork() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1, delay: 0.6 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
                   className="inline-block mr-4"
                 >
                   to
@@ -170,7 +169,7 @@ export default function FeaturedArtwork() {
                   initial={{ opacity: 0, x: -20, rotateY: 90 }}
                   whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1.2, delay: 0.8, ease: "easeOut" }}
+                  transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
                   className="font-serif text-gallery-gold font-light inline-block"
                 >
                   Hidden Beauty
@@ -183,7 +182,7 @@ export default function FeaturedArtwork() {
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.2, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
             className="text-right"
           >
             <p className="text-gallery-muted max-w-sm ml-auto mb-8 text-lg font-light leading-relaxed">
@@ -199,8 +198,7 @@ export default function FeaturedArtwork() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 50, rotateX: 5 }}
           whileInView={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="bg-[#9c9a87] py-12 px-6 md:px-12 lg:px-24 rounded-sm shadow-[inset_0_0_100px_rgba(0,0,0,0.1)] grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-stretch relative overflow-hidden"
           style={{ perspective: "1200px" }}
         >
@@ -209,7 +207,7 @@ export default function FeaturedArtwork() {
             initial={{ scaleX: 1 }}
             whileInView={{ scaleX: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.5, ease: [0.77, 0, 0.175, 1], delay: 0.5 }}
+            transition={{ duration: 0.8, ease: [0.77, 0, 0.175, 1], delay: 0.2 }}
             className="absolute inset-0 bg-[#1c1c1c] z-[60] origin-left pointer-events-none"
           />
 
@@ -235,7 +233,7 @@ export default function FeaturedArtwork() {
                 Allow your eyes to wander. The beauty lies not in the center, but in the unseen corners of the canvas.
               </p>
 
-              <AnimatedButton onClick={() => setIsModalOpen(true)} text="See the beauty" delay={1.8} />
+              <AnimatedButton onClick={() => setIsModalOpen(true)} text="See the beauty" delay={0.8} />
             </div>
             <ArtworkCard item={featuredItems[2]} index={2} aspectClass="aspect-[2/1]" className="" onImageClick={setActiveImage} />
           </div>

@@ -1,8 +1,10 @@
 "use client";
 
 import Hero from "@/components/home/Hero";
+import OfferSlider from "@/components/home/OfferSlider";
 import FeaturedArtwork from "@/components/home/FeaturedArtwork";
 import LivePencilSketch from "@/components/home/LivePencilSketch";
+import TreeCanvas from "@/components/home/TreeCanvas";
 import ArtShelfSection from "@/components/home/shelf/ArtShelfSection";
 import ArtistStory from "@/components/home/ArtistStory";
 import ValueSection from "@/components/home/ValueSection";
@@ -16,11 +18,17 @@ export default function HomePage() {
       {/* 🖼️ 1. Hero Section — “Gallery Entrance” */}
       <Hero />
 
+      {/* 🎟️ 1.5 Offer Slider — "Promotional Marquee" */}
+      <OfferSlider />
+
       {/* 🧩 2. Featured Artwork (Curated Picks) */}
       <FeaturedArtwork />
 
       {/* ✏️ 2.5 Live Pencil Sketch — "The Living Artwork" */}
       <LivePencilSketch />
+
+      {/* 🌳 2.8 Generative Tree — "The Breathing Canopy" */}
+      <TreeCanvas />
 
       {/* 🌳 3. Artistic Shelf — "Explore the Collection" */}
       <ArtShelfSection />

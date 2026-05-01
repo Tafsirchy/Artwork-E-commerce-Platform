@@ -135,12 +135,15 @@ export default function Hero() {
             const tl = gsap.timeline();
 
             // 🏛️ Hide Normal Content
-            tl.to([titleRef.current, ".left-side-container"], {
-              opacity: 0,
-              visibility: "hidden",
-              duration: 0.1,
-              ease: "power2.inOut"
-            });
+            const hideTargets = [titleRef.current, ".left-side-container"].filter(Boolean);
+            if (hideTargets.length > 0) {
+              tl.to(hideTargets, {
+                opacity: 0,
+                visibility: "hidden",
+                duration: 0.1,
+                ease: "power2.inOut"
+              });
+            }
 
             gsap.set(".collection-frame", { zIndex: 999, visibility: "visible" });
 
@@ -150,6 +153,7 @@ export default function Hero() {
               x: () => {
                 const hero = heroRef.current;
                 const frame = document.querySelector(".collection-frame");
+                if (!hero || !frame) return 0;
                 const hRect = hero.getBoundingClientRect();
                 const fRect = frame.getBoundingClientRect();
                 return "+=" + ((hRect.left + hRect.width / 2) - (fRect.left + fRect.width / 2));
@@ -157,6 +161,7 @@ export default function Hero() {
               y: () => {
                 const hero = heroRef.current;
                 const frame = document.querySelector(".collection-frame");
+                if (!hero || !frame) return 0;
                 const hRect = hero.getBoundingClientRect();
                 const fRect = frame.getBoundingClientRect();
                 return "+=" + ((hRect.top + hRect.height / 2) - (fRect.top + fRect.height / 2));
@@ -168,11 +173,14 @@ export default function Hero() {
             }, "-=0.05");
 
             // 🖋️ Fade in Art Thoughts
-            tl.fromTo([thoughtBoxTR.current, thoughtBoxBL.current, thoughtBoxTL.current, thoughtBoxBR.current],
-              { opacity: 0, scale: 0.8, filter: "blur(10px)" },
-              { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.8, ease: "power2.out", stagger: 0.1 },
-              "-=0.2"
-            );
+            const thoughtTargets = [thoughtBoxTR.current, thoughtBoxBL.current, thoughtBoxTL.current, thoughtBoxBR.current].filter(Boolean);
+            if (thoughtTargets.length > 0) {
+              tl.fromTo(thoughtTargets,
+                { opacity: 0, scale: 0.8, filter: "blur(10px)" },
+                { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.8, ease: "power2.out", stagger: 0.1 },
+                "-=0.2"
+              );
+            }
 
             // 🏛️ BALLOON INFLATION
             tl.to(".collection-frame", {
@@ -184,13 +192,16 @@ export default function Hero() {
                 gsap.set(".collection-frame", { overflow: "visible" });
 
                 // 💥 BURST ART THOUGHTS
-                blastTl.to([thoughtBoxTR.current, thoughtBoxBL.current, thoughtBoxTL.current, thoughtBoxBR.current], {
-                  opacity: 0,
-                  scale: 1.5,
-                  filter: "blur(20px)",
-                  duration: 0.2,
-                  ease: "power4.in"
-                });
+                const thoughtTargetsBurst = [thoughtBoxTR.current, thoughtBoxBL.current, thoughtBoxTL.current, thoughtBoxBR.current].filter(Boolean);
+                if (thoughtTargetsBurst.length > 0) {
+                  blastTl.to(thoughtTargetsBurst, {
+                    opacity: 0,
+                    scale: 1.5,
+                    filter: "blur(20px)",
+                    duration: 0.2,
+                    ease: "power4.in"
+                  });
+                }
 
                 blastTl.to(".modal-target-shard", {
                   x: (i) => {
@@ -217,21 +228,24 @@ export default function Hero() {
                   ease: "power2.in"
                 }, "-=0.15");
 
-                blastTl.to([titleRef.current, ".left-side-container"], {
-                  opacity: 1,
-                  visibility: "visible",
-                  duration: 0.2,
-                  ease: "power2.inOut",
-                  onComplete: () => {
-                    gsap.set(".collection-frame", { clearProps: "transform,boxShadow", zIndex: 0, opacity: 0.5, overflow: "hidden" });
-                    gsap.set(".modal-target-shard", { clearProps: "transform", opacity: 0 });
-                    gsap.set([thoughtBoxTR.current, thoughtBoxBL.current, thoughtBoxTL.current, thoughtBoxBR.current], { opacity: 0, scale: 0.8 });
-                    setCollectedShards([]);
-                    setIsCompleted(false);
-                    setTargetImage(galleryImages[Math.floor(Math.random() * galleryImages.length)]);
-                    setCurrentThoughts(artThoughts[Math.floor(Math.random() * artThoughts.length)]);
-                  }
-                }, "-=0.05");
+                const finalShowTargets = [titleRef.current, ".left-side-container"].filter(Boolean);
+                if (finalShowTargets.length > 0) {
+                  blastTl.to(finalShowTargets, {
+                    opacity: 1,
+                    visibility: "visible",
+                    duration: 0.2,
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                      gsap.set(".collection-frame", { clearProps: "transform,boxShadow", zIndex: 0, opacity: 0.5, overflow: "hidden" });
+                      gsap.set(".modal-target-shard", { clearProps: "transform", opacity: 0 });
+                      gsap.set([thoughtBoxTR.current, thoughtBoxBL.current, thoughtBoxTL.current, thoughtBoxBR.current].filter(Boolean), { opacity: 0, scale: 0.8 });
+                      setCollectedShards([]);
+                      setIsCompleted(false);
+                      setTargetImage(galleryImages[Math.floor(Math.random() * galleryImages.length)]);
+                      setCurrentThoughts(artThoughts[Math.floor(Math.random() * artThoughts.length)]);
+                    }
+                  }, "-=0.05");
+                }
               }
             });
           }, 500);
@@ -258,7 +272,9 @@ export default function Hero() {
     document.addEventListener("visibilitychange", handleVisibility);
 
     const ctx = gsap.context(() => {
-      gsap.to(clusterRef.current, { y: -80, scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: 1 } });
+      if (clusterRef.current && heroRef.current) {
+        gsap.to(clusterRef.current, { y: -80, scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: 1 } });
+      }
     }, heroRef);
 
     return () => {
@@ -370,14 +386,14 @@ export default function Hero() {
 
           {/* 🖋️ TEXT CONTENT */}
           <div ref={titleRef} className="relative z-10 flex flex-col items-end text-right w-full">
-            <div className="title-line mb-6 inline-flex items-center gap-3 px-6 py-2 border border-gallery-gold/20 rounded-full bg-white/20 backdrop-blur-xl shadow-inner">
+            <div className="title-line mb-6 inline-flex items-center gap-3 px-6 py-2 border border-gallery-gold/20 rounded-none bg-white/20 backdrop-blur-xl shadow-inner">
               <Sparkles size={14} className="text-gallery-gold animate-pulse" />
               <span className="text-[9px] tracking-[0.6em] uppercase text-gallery-text font-medium">The Living Canvas • Series I</span>
             </div>
 
             <h1 className="text-6xl md:text-[5.2rem] font-extralight text-gallery-text leading-[0.9] mb-6 tracking-tighter">
               <span className="title-line block">Echoes of the</span>
-              <span className="title-line block italic text-gallery-accent font-serif mt-2">Unseen.</span>
+              <span className="title-line block text-gallery-accent font-serif mt-2">Unseen.</span>
             </h1>
 
             <p className="title-line text-gallery-muted text-lg font-light leading-relaxed mb-10 max-w-lg border-r-2 border-gallery-gold/20 pr-8">
@@ -385,8 +401,9 @@ export default function Hero() {
             </p>
 
             <div className="title-line flex flex-col sm:flex-row items-center gap-10">
-              <Link href="/products" className="group relative px-12 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-full block shadow-2xl">
-                ENTER THE GALLERY
+              <Link href="/products" className="group relative px-12 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-none block shadow-2xl transition-all duration-500 hover:shadow-gallery-gold/20">
+                <span className="relative z-10 transition-transform duration-500 group-hover:translate-x-2 block">ENTER THE GALLERY</span>
+                <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               </Link>
             </div>
           </div>

@@ -43,7 +43,10 @@ export default function Footer() {
           <div>
             <h4 className="text-xs tracking-[0.3em] uppercase text-gallery-text font-semibold mb-8">Information</h4>
             <ul className="space-y-4 text-sm text-gallery-muted">
+              <li><Link href="/" className="hover:text-gallery-text transition-colors">Home</Link></li>
               <li><Link href="/about" className="hover:text-gallery-text transition-colors">About the Gallery</Link></li>
+              <li><Link href="/blog" className="hover:text-gallery-text transition-colors">The Chronicle (Blog)</Link></li>
+              <li><Link href="/contact" className="hover:text-gallery-text transition-colors">Contact Us</Link></li>
               <li><Link href="/shipping" className="hover:text-gallery-text transition-colors">Shipping & Returns</Link></li>
               <li><Link href="/terms" className="hover:text-gallery-text transition-colors">Terms of Service</Link></li>
               <li><Link href="/privacy" className="hover:text-gallery-text transition-colors">Privacy Policy</Link></li>

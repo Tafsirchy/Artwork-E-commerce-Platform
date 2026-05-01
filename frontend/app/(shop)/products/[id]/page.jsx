@@ -6,13 +6,23 @@ import api from "@/lib/api";
 import useCartStore from "@/store/cartStore";
 import { getValidImageSrc } from "@/lib/utils";
 import { toast } from "react-toastify";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Palette } from "lucide-react";
+import { motion } from "framer-motion";
+
+// ─── Color name map (closest named color utility) ────────────────
+function getLuminance(hex) {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
 
 export default function ProductDetailsPage({ params }) {
-  // Use React.use() to unwrap params in Next.js 15
   const resolvedParams = use(params);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeColor, setActiveColor] = useState(null);
   const { addToCart } = useCartStore();
 
   useEffect(() => {
@@ -20,13 +30,13 @@ export default function ProductDetailsPage({ params }) {
       try {
         const { data } = await api.get(`/products/${resolvedParams.id}`);
         setProduct(data);
+        if (data.colorConcept?.length) setActiveColor(data.colorConcept[0]);
       } catch (error) {
         console.error("Failed to fetch product:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [resolvedParams.id]);
 
@@ -56,6 +66,7 @@ export default function ProductDetailsPage({ params }) {
   }
 
   const imageSrc = getValidImageSrc(product.imageUrl);
+  const colors = product.colorConcept || [];
 
   return (
     <div className="min-h-screen bg-gallery-bg py-16 px-6 md:px-12">
@@ -80,9 +91,86 @@ export default function ProductDetailsPage({ params }) {
 
           <div className="h-px w-16 bg-gallery-gold mb-8"></div>
 
-          <p className="text-gallery-muted leading-relaxed mb-10">
-            {product.description}
-          </p>
+          <p className="text-gallery-muted leading-relaxed mb-10">{product.description}</p>
+
+          {/* 🎨 Color Concept Section */}
+          {colors.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mb-10"
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Palette size={14} className="text-gallery-muted" />
+                <p className="text-[10px] tracking-[0.45em] uppercase font-bold text-gallery-muted">
+                  Color Concept
+                </p>
+              </div>
+
+              {/* Full-width gradient palette bar */}
+              <div
+                className="w-full h-3 rounded-full mb-5 shadow-inner"
+                style={{
+                  background: `linear-gradient(to right, ${colors.join(", ")})`,
+                }}
+              />
+
+              {/* Individual swatches */}
+              <div className="flex flex-wrap gap-3">
+                {colors.map((color, i) => {
+                  const isLight = getLuminance(color) > 0.5;
+                  const isActive = activeColor === color;
+                  return (
+                    <motion.button
+                      key={i}
+                      onClick={() => setActiveColor(color)}
+                      whileHover={{ scale: 1.12 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="group relative flex flex-col items-center gap-1.5 transition-all"
+                    >
+                      <div
+                        className="w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-md"
+                        style={{
+                          backgroundColor: color,
+                          borderColor: isActive ? color : "transparent",
+                          boxShadow: isActive
+                            ? `0 0 0 3px white, 0 0 0 5px ${color}`
+                            : "0 2px 8px rgba(0,0,0,0.15)",
+                        }}
+                      />
+                      <span className="text-[9px] font-mono tracking-wider text-gallery-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                        {color.toUpperCase()}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+
+              {/* Active color detail */}
+              {activeColor && (
+                <motion.div
+                  key={activeColor}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="mt-4 flex items-center gap-3 p-3 border border-gallery-border rounded-sm"
+                >
+                  <div
+                    className="w-8 h-8 rounded-sm flex-shrink-0 shadow"
+                    style={{ backgroundColor: activeColor }}
+                  />
+                  <div>
+                    <p className="text-[10px] font-mono tracking-widest text-gallery-text">
+                      {activeColor.toUpperCase()}
+                    </p>
+                    <p className="text-[9px] text-gallery-muted mt-0.5">
+                      Dominant hue used in this composition
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
 
           <div className="mt-auto">
             <p className="text-3xl font-bold text-gallery-accent mb-6">${product.price.toFixed(2)}</p>
