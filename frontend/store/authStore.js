@@ -40,6 +40,10 @@ const useAuthStore = create(
         }
       },
 
+      updateUser: (userData) => {
+        set({ user: { ...get().user, ...userData } });
+      },
+
       logout: () => {
         setAuthToken(null);
         set({ user: null, token: null, error: null });

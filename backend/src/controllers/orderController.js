@@ -134,11 +134,16 @@ const downloadInvoice = async (req, res, next) => {
     
     const invoicePath = path.join(__dirname, "../../invoices", `invoice-${order._id}.pdf`);
     
+    if (!fs.existsSync(invoicePath)) {
+      const { generateInvoice } = require("../utils/invoiceGenerator");
+      await generateInvoice(order);
+    }
+    
     if (fs.existsSync(invoicePath)) {
       res.download(invoicePath);
     } else {
       res.status(404);
-      throw new Error("Invoice file not found. It might not be generated yet.");
+      throw new Error("Invoice file could not be generated.");
     }
   } catch (error) {
     next(error);

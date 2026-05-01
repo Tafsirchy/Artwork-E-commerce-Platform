@@ -9,7 +9,7 @@ import api from "@/lib/api";
 import { toast } from "react-toastify";
 
 export default function SettingsPage() {
-  const { user, login } = useAuthStore();
+  const { user, updateUser, logout } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -47,8 +47,8 @@ export default function SettingsPage() {
         password: formData.password || undefined,
       });
       
-      // Update local storage and store state
-      login(data); 
+      // Update store state
+      updateUser(data); 
       toast.success("Identity records updated successfully");
       
       // Clear password fields
@@ -65,6 +65,7 @@ export default function SettingsPage() {
     { id: "security", label: "Security", icon: <Shield size={16} /> },
     { id: "notifications", label: "Journal", icon: <Bell size={16} /> },
     { id: "billing", label: "Payments", icon: <CreditCard size={16} /> },
+    { id: "danger", label: "Protocol", icon: <Shield size={16} className="text-red-500" /> },
   ];
 
   const [activeSection, setActiveSection] = useState("profile");
@@ -233,6 +234,44 @@ export default function SettingsPage() {
                   <CreditCard size={40} className="mx-auto text-gallery-soft mb-6" />
                   <p className="text-[10px] tracking-widest uppercase font-bold text-gallery-muted">Vault Billing Methods Coming Soon</p>
                 </div>
+              )}
+
+              {activeSection === "danger" && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="max-w-xl relative z-10"
+                >
+                  <h2 className="text-xl font-light text-red-600 uppercase tracking-widest mb-10 border-b border-red-100 pb-6">Danger Protocol</h2>
+                  
+                  <div className="p-8 bg-red-50 border border-red-100 mb-10">
+                    <p className="text-sm text-red-800 font-medium mb-4 uppercase tracking-tighter">Immediate Account Termination</p>
+                    <p className="text-xs text-red-600/70 leading-relaxed font-light mb-6 tracking-wide">
+                      Initiating this protocol will permanently erase your collector status, purchase history, and private gallery access. This action is irreversible.
+                    </p>
+                    
+                    <button 
+                      onClick={async () => {
+                        if (window.confirm("ARE YOU ABSOLUTELY SURE? Your private collection access will be PERMANENTLY lost.")) {
+                          try {
+                            await api.delete("/auth/profile");
+                            toast.success("Identity erased successfully");
+                            logout();
+                          } catch (err) {
+                            toast.error("Protocol failed: " + (err.response?.data?.message || "Internal error"));
+                          }
+                        }
+                      }}
+                      className="px-8 py-4 bg-red-600 text-white text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-black transition-all"
+                    >
+                      Initialize Erasure
+                    </button>
+                  </div>
+
+                  <p className="text-[10px] text-gallery-muted italic tracking-widest">
+                    * By initializing, you waive all rights to current subscriptions and digital certificates.
+                  </p>
+                </motion.div>
               )}
             </div>
           </div>
