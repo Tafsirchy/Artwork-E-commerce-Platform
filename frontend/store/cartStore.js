@@ -23,6 +23,27 @@ const useCartStore = create(
         }
       },
 
+      addMultipleToCart: async (products) => {
+        const currentItems = get().items;
+        let newItems = [...currentItems];
+
+        products.forEach(product => {
+          const existingItem = newItems.find(item => item.product._id === product._id);
+          if (existingItem) {
+            newItems = newItems.map(item => 
+              item.product._id === product._id 
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            );
+          } else {
+            newItems.push({ product, quantity: 1 });
+          }
+        });
+
+        set({ items: newItems });
+        await get().syncCart(newItems);
+      },
+
       addToCart: async (product, quantity = 1) => {
         const currentItems = get().items;
         const existingItem = currentItems.find(item => item.product._id === product._id);

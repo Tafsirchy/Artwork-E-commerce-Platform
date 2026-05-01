@@ -143,7 +143,7 @@
     scrollbar-gutter: stable;
   }
   body {
-    @apply bg-background text-foreground h-full overflow-x-hidden;
+    @apply bg-background text-foreground min-h-screen overflow-x-hidden;
   }
 }
 

@@ -10,16 +10,16 @@ import { toast } from "react-toastify";
 
 export default function WishlistPage() {
   const { items, removeFromWishlist, clearWishlist } = useWishlistStore();
-  const { addToCart } = useCartStore();
+  const { addMultipleToCart, addToCart } = useCartStore();
   const router = useRouter();
 
-  const handleCheckoutSingle = (product) => {
-    addToCart(product);
+  const handleCheckoutSingle = async (product) => {
+    await addToCart(product);
     router.push("/checkout");
   };
 
-  const handleCheckoutAll = () => {
-    items.forEach(item => addToCart(item));
+  const handleCheckoutAll = async () => {
+    await addMultipleToCart(items);
     router.push("/checkout");
   };
 

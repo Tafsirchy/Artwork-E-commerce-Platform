@@ -13,6 +13,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
+// Create custom gold icon
+const goldIcon = L.divIcon({
+  className: 'custom-div-icon',
+  html: `<div style="background-color: #C8A96A; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #1c1c1c; box-shadow: 0 0 10px rgba(0,0,0,0.3);"></div>`,
+  iconSize: [12, 12],
+  iconAnchor: [6, 6]
+});
+
 function LocationMarker({ position, setPosition }) {
   useMapEvents({
     click(e) {
@@ -21,12 +29,12 @@ function LocationMarker({ position, setPosition }) {
   });
 
   return position === null ? null : (
-    <Marker position={position}></Marker>
+    <Marker position={position} icon={goldIcon}></Marker>
   );
 }
 
 export default function MapComponent({ onLocationSelect }) {
-  const [position, setPosition] = useState({ lat: 40.7128, lng: -74.0060 });
+  const [position, setPosition] = useState({ lat: 23.8103, lng: 90.4125 });
 
   const handleSetPosition = (pos) => {
     setPosition(pos);
@@ -36,20 +44,22 @@ export default function MapComponent({ onLocationSelect }) {
   };
 
   useEffect(() => {
-      onLocationSelect(position);
+    onLocationSelect(position);
   }, []);
 
   return (
-    <div className="h-64 w-full relative z-0">
+    <div className="h-64 w-full relative z-0 border border-gallery-border shadow-inner group overflow-hidden">
+      <div className="absolute inset-0 bg-gallery-gold/5 pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       <MapContainer 
         center={position} 
         zoom={13} 
         scrollWheelZoom={false} 
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: "100%", width: "100%", filter: "brightness(1.02) contrast(1.02) saturate(1.1)" }}
+        className="transition-all duration-700"
       >
         <TileLayer
-          attribution='&copy; OpenStreetMap'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
         />
         <LocationMarker position={position} setPosition={handleSetPosition} />
       </MapContainer>

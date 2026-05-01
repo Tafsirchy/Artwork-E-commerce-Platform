@@ -5,4 +5,6 @@ node_modules/
 dist/
 build/
 backend/uploads/
+backend/error_log.txt
+backend/invoices/
 .DS_Store

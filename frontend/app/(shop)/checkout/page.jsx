@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import useCartStore from "@/store/cartStore";
 import useAuthStore from "@/store/authStore";
 import MapPicker from "@/components/map/MapPicker";
+import SuccessModal from "@/components/checkout/SuccessModal";
 import api from "@/lib/api";
 import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 // Make sure to set NEXT_PUBLIC_STRIPE_PUBLIC_KEY in .env
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || "pk_test_dummy");
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_dummy");
 
 const CheckoutForm = ({ clientSecret, onSuccess }) => {
   const stripe = useStripe();
@@ -41,7 +42,16 @@ const CheckoutForm = ({ clientSecret, onSuccess }) => {
   return (
     <form onSubmit={handleSubmit} className="mt-6">
       <div className="p-4 border border-gallery-border bg-white mb-6">
-        <CardElement options={{ style: { base: { fontSize: '16px' } } }} />
+        <CardElement options={{
+          hidePostalCode: true,
+          style: {
+            base: {
+              fontSize: '16px',
+              color: '#1A1A1A',
+              '::placeholder': { color: '#6B7280' }
+            }
+          }
+        }} />
       </div>
       <button
         disabled={isProcessing || !stripe}
@@ -62,12 +72,14 @@ export default function CheckoutPage() {
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [country, setCountry] = useState("");
-  const [location, setLocation] = useState({ lat: 40.7128, lng: -74.0060 });
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState({ lat: 23.8103, lng: 90.4125 });
   const [paymentMethod, setPaymentMethod] = useState("Card");
 
   const [clientSecret, setClientSecret] = useState("");
   const [orderId, setOrderId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -79,8 +91,8 @@ export default function CheckoutPage() {
   }, [user, items, router]);
 
   const placeOrder = async () => {
-    if (!address || !city || !postalCode || !country) {
-      toast.error("Please fill in all address fields");
+    if (!address || !city || !postalCode || !country || !phone) {
+      toast.error("Please fill in all address and contact fields");
       return;
     }
 
@@ -94,7 +106,7 @@ export default function CheckoutPage() {
           price: i.product.price,
           imageUrl: i.product.imageUrl
         })),
-        shippingAddress: { address, city, postalCode, country, location },
+        shippingAddress: { address, city, postalCode, country, phone, location },
         paymentMethod,
         itemsPrice: getTotal(),
         shippingPrice: 0, // Free shipping
@@ -111,21 +123,27 @@ export default function CheckoutPage() {
         handleSuccess();
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error placing order");
+      const errorMsg = error.response?.data?.message || error.message || "Error placing order";
+      toast.error(errorMsg);
+      console.error("Checkout Error Details:", error.response?.data || error);
       setIsSubmitting(false);
     }
   };
 
   const handleSuccess = () => {
     clearCart();
-    toast.success("Order placed successfully!", { style: { backgroundColor: "#4CAF50", color: "#fff" } });
-    router.push("/products"); // Redirect to shop or orders list
+    setShowSuccess(true);
   };
 
   if (items.length === 0 || !user) return null;
 
   return (
-    <div className="min-h-screen bg-gallery-bg py-12 px-6 md:px-12">
+    <div className="min-h-screen bg-gallery-bg py-12">
+      <SuccessModal 
+        isOpen={showSuccess} 
+        orderId={orderId} 
+        onClose={() => router.push("/dashboard")} 
+      />
       <div className="container mx-auto px-6 flex flex-col lg:flex-row gap-12">
 
         {/* Left Col - Details */}
@@ -148,7 +166,11 @@ export default function CheckoutPage() {
               />
               <input
                 type="text" placeholder="Country" value={country} onChange={e => setCountry(e.target.value)}
-                className="col-span-1 md:col-span-2 w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
+                className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
+              />
+              <input
+                type="text" placeholder="Phone Number" value={phone} onChange={e => setPhone(e.target.value)}
+                className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
               />
             </div>
           </div>

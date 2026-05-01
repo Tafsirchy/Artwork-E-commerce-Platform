@@ -18,15 +18,14 @@ export default function PageTransition({ children }) {
   }, [pathname]);
 
   return (
-    <AnimatePresence mode="popLayout" initial={false}>
+    <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={pathname}
         variants={variants}
         initial="initial"
         animate="animate"
         exit="exit"
-        className="w-full h-full flex flex-col"
-        style={{ position: 'relative' }}
+        className="w-full flex-1 flex flex-col bg-gallery-bg"
       >
         {children}
       </motion.div>

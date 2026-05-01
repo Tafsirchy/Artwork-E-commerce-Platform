@@ -16,12 +16,16 @@ import useAuthStore from "@/store/authStore";
 import useWishlistStore from "@/store/wishlistStore";
 import api from "@/lib/api";
 import ProfileAside from "@/components/dashboard/ProfileAside";
+import OrderTracking from "@/components/orders/OrderTracking";
+import TrackingModal from "@/components/orders/TrackingModal";
 
 export default function CustomerDashboard() {
   const { user } = useAuthStore();
   const { items: wishlistItems } = useWishlistStore();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isTrackingOpen, setIsTrackingOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -51,7 +55,7 @@ export default function CustomerDashboard() {
     .slice(0, 3);
 
   return (
-    <main className="bg-gallery-bg min-h-screen py-24">
+    <section className="bg-gallery-bg min-h-screen py-24">
       <div className="container mx-auto px-6 max-w-[1600px] flex flex-col lg:flex-row gap-12">
         
         {/* Sidebar Profile */}
@@ -111,6 +115,14 @@ export default function CustomerDashboard() {
                 </Link>
               </div>
               
+              {/* Latest Order Tracking */}
+              {recentOrders.length > 0 && (
+                <div className="bg-white border border-gallery-border p-8 pb-16">
+                  <h3 className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-bold mb-8">Latest Order Journey</h3>
+                  <OrderTracking order={recentOrders[0]} />
+                </div>
+              )}
+              
               <div className="space-y-4">
                 {loading ? (
                    <div className="p-10 text-center uppercase tracking-widest text-gallery-muted text-[10px]">Accessing Records...</div>
@@ -131,11 +143,22 @@ export default function CustomerDashboard() {
                       </div>
                     </div>
                     
-                    <div className="text-center md:text-right">
-                      <p className="text-lg font-light text-gallery-text mb-1">${order.totalPrice.toFixed(2)}</p>
-                      <span className={`text-[9px] tracking-[0.2em] uppercase font-bold px-3 py-1 border ${order.isDelivered ? 'border-green-200 text-green-600 bg-green-50' : 'border-gallery-gold/20 text-gallery-gold bg-gallery-gold/5'}`}>
-                        {order.isDelivered ? "Delivered" : "Processing"}
-                      </span>
+                    <div className="flex flex-col md:flex-row items-center gap-4">
+                      <div className="text-center md:text-right">
+                        <p className="text-lg font-light text-gallery-text mb-1">${order.totalPrice.toFixed(2)}</p>
+                        <span className={`text-[9px] tracking-[0.2em] uppercase font-bold px-3 py-1 border ${order.isDelivered ? 'border-green-200 text-green-600 bg-green-50' : 'border-gallery-gold/20 text-gallery-gold bg-gallery-gold/5'}`}>
+                          {order.isDelivered ? "Delivered" : "Processing"}
+                        </span>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setIsTrackingOpen(true);
+                        }}
+                        className="px-6 py-3 border border-gallery-text text-gallery-text text-[8px] tracking-[0.3em] uppercase font-bold hover:bg-gallery-primary hover:text-white transition-all group-hover:border-gallery-gold group-hover:text-gallery-gold"
+                      >
+                        Track
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -185,6 +208,12 @@ export default function CustomerDashboard() {
           </div>
         </div>
       </div>
-    </main>
+
+      <TrackingModal 
+        isOpen={isTrackingOpen} 
+        onClose={() => setIsTrackingOpen(false)} 
+        order={selectedOrder} 
+      />
+    </section>
   );
 }
