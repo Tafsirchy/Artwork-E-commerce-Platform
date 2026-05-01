@@ -1,7 +1,5 @@
 import { Outfit, Monsieur_La_Doulaise } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/shared/Navbar";
-import Footer from "@/components/shared/Footer";
 import PageTransition from "@/components/ui/PageTransition";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,17 +22,17 @@ export const metadata = {
   description: "A quiet gallery space where the walls disappear and the art becomes the focus.",
 };
 
+import ConditionalShell from "@/components/ui/ConditionalShell";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${outfit.variable} ${signatureFont.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-gallery-bg font-outfit">
-        <Navbar />
-        <main className="flex-1">
+        <ConditionalShell>
           <PageTransition>
             {children}
           </PageTransition>
-        </main>
-        <Footer />
+        </ConditionalShell>
         <ToastContainer 
           position="top-right"
           autoClose={3000}

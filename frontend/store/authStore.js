@@ -25,10 +25,10 @@ const useAuthStore = create(
         }
       },
 
-      register: async (name, email, password) => {
+      register: async (name, email, password, phone) => {
         set({ isLoading: true, error: null });
         try {
-          const { data } = await api.post("/auth/register", { name, email, password });
+          const { data } = await api.post("/auth/register", { name, email, password, phone });
           setAuthToken(data.token);
           set({ user: data, token: data.token, isLoading: false });
         } catch (error) {
