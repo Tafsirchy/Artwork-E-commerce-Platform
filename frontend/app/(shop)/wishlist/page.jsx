@@ -25,7 +25,7 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-24">
-      <div className="container mx-auto px-6 max-w-6xl">
+      <div className="container mx-auto px-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
           <div>
@@ -33,7 +33,7 @@ export default function WishlistPage() {
             <p className="text-gallery-muted tracking-[0.2em] uppercase text-[10px] font-bold">Your Private Selection of Masterpieces</p>
           </div>
           {items.length > 0 && (
-            <button 
+            <button
               onClick={handleCheckoutAll}
               className="px-10 py-5 bg-gallery-primary text-white text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-gallery-gold transition-all rounded-none flex items-center gap-3 shadow-lg"
             >
@@ -57,12 +57,12 @@ export default function WishlistPage() {
                 >
                   {/* Image Container */}
                   <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 border border-gallery-border overflow-hidden bg-gallery-soft relative">
-                    <img 
-                      src={product.imageUrl} 
-                      alt={product.title} 
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
+                    <img
+                      src={product.imageUrl}
+                      alt={product.title}
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                     />
-                    <button 
+                    <button
                       onClick={() => removeFromWishlist(product._id)}
                       className="absolute top-2 right-2 p-2 bg-white/90 text-gallery-muted hover:text-red-500 transition-colors border border-gallery-border"
                       title="Remove from wishlist"
@@ -80,13 +80,13 @@ export default function WishlistPage() {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-3 w-full md:w-auto">
-                    <button 
+                    <button
                       onClick={() => handleCheckoutSingle(product)}
                       className="px-8 py-4 bg-gallery-text text-white text-[9px] tracking-[0.3em] uppercase font-bold hover:bg-gallery-gold transition-all rounded-none"
                     >
                       Instant Acquisition
                     </button>
-                    <button 
+                    <button
                       onClick={() => {
                         addToCart(product);
                         toast.success(`${product.title} moved to cart`);
@@ -101,7 +101,7 @@ export default function WishlistPage() {
             </AnimatePresence>
           </div>
         ) : (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-2xl mx-auto text-center py-32 bg-white border border-gallery-border rounded-none px-10 relative overflow-hidden"
@@ -112,8 +112,8 @@ export default function WishlistPage() {
             <Heart size={48} className="mx-auto text-gallery-gold/30 mb-8" />
             <h2 className="text-3xl font-light text-gallery-text mb-4 uppercase tracking-widest">The Sanctuary is Empty</h2>
             <p className="text-gallery-muted mb-12 leading-relaxed font-light tracking-wide">Your curated list of favorites awaits its first masterpiece.</p>
-            <Link 
-              href="/products" 
+            <Link
+              href="/products"
               className="inline-flex items-center gap-4 px-12 py-5 bg-gallery-primary text-white text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-gallery-gold transition-all rounded-none shadow-lg"
             >
               <ArrowLeft size={14} />

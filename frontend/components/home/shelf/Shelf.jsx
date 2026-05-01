@@ -87,7 +87,7 @@ export default function Shelf({ category, onSelect, onDeselect }) {
       {/* Shelf Board + Miniature Images */}
       <div className="relative flex items-end justify-center gap-[3px] pb-1">
         {/* Miniature Paintings (standing on shelf) */}
-        {category.artworks.map((art, i) => (
+        {category.artworks.slice(0, 5).map((art, i) => (
           <motion.div
             key={art.id}
             initial={{ opacity: 0, y: 40, scale: 0.5, rotate: ROTATIONS[i % ROTATIONS.length] - 20 }}

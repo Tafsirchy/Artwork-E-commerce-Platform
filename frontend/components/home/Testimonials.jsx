@@ -1,53 +1,8 @@
 "use client";
-
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Quote, Eye } from "lucide-react";
 import { useEffect, useState } from "react";
-
-const testimonials = [
-  {
-    name: "Jonathan Vance",
-    role: "Art Collector",
-    content: "The delivery process was impeccable. The painting arrived in perfect condition and the tracking was incredibly accurate.",
-    stars: 5,
-    artImage: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=600"
-  },
-  {
-    name: "Sarah Jenkins",
-    role: "Interior Designer",
-    content: "Bristiii is my go-to for original pieces. The curation is world-class and the checkout experience is the smoothest I've used.",
-    stars: 5,
-    artImage: "https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&q=80&w=600"
-  },
-  {
-    name: "Marcus Thorne",
-    role: "First-time Buyer",
-    content: "I was nervous about buying art online, but the certificate of authenticity and the detailed artist stories gave me full confidence.",
-    stars: 5,
-    artImage: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&q=80&w=600"
-  },
-  {
-    name: "Eleanor Rigby",
-    role: "Gallerist",
-    content: "The lighting and presentation of the digital gallery are stunning. It captures the soul of the work better than any other platform.",
-    stars: 5,
-    artImage: "https://images.unsplash.com/photo-1576769267415-9642010aa962?auto=format&fit=crop&q=80&w=600"
-  },
-  {
-    name: "Julian Estebán",
-    role: "Private Investor",
-    content: "An investment in beauty that appreciates. The advisory team helped me secure a piece that has already grown in value.",
-    stars: 5,
-    artImage: "https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&q=80&w=600"
-  },
-  {
-    name: "Clara Oswald",
-    role: "Creative Director",
-    content: "Finally, an art platform that understands the intersection of technology and fine art. Purely sophisticated.",
-    stars: 5,
-    artImage: "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&q=80&w=600"
-  }
-];
+import api from "@/lib/api";
 
 const TestimonialCard = ({ item, onHover }) => (
   <div
@@ -67,7 +22,7 @@ const TestimonialCard = ({ item, onHover }) => (
       <div>
         <div className="flex justify-between items-start mb-4">
           <div className="flex gap-1">
-            {Array.from({ length: item.stars }).map((_, s) => (
+            {Array.from({ length: item.stars || 5 }).map((_, s) => (
               <Star key={s} size={10} fill="#C8A96A" color="#C8A96A" />
             ))}
           </div>
@@ -106,7 +61,7 @@ const MarqueeRow = ({ items, direction = "left", onHover }) => {
           x: {
             repeat: Infinity,
             repeatType: "loop",
-            duration: 60,
+            duration: 120,
             ease: "linear",
           },
         }}
@@ -124,12 +79,22 @@ const MarqueeRow = ({ items, direction = "left", onHover }) => {
 export default function Testimonials() {
   const [hasMounted, setHasMounted] = useState(false);
   const [hoveredArt, setHoveredArt] = useState(null);
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     setHasMounted(true);
+    const fetchReviews = async () => {
+      try {
+        const { data } = await api.get("/reviews");
+        setReviews(data);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+      }
+    };
+    fetchReviews();
   }, []);
 
-  if (!hasMounted) return null;
+  if (!hasMounted || reviews.length === 0) return null;
 
   return (
     <section className="py-28 bg-gallery-soft/30 relative overflow-hidden">
@@ -188,8 +153,8 @@ export default function Testimonials() {
 
         {/* Marquee Rows */}
         <div className="space-y-4">
-          <MarqueeRow items={testimonials} direction="left" onHover={setHoveredArt} />
-          <MarqueeRow items={testimonials.slice().reverse()} direction="right" onHover={setHoveredArt} />
+          <MarqueeRow items={reviews} direction="left" onHover={setHoveredArt} />
+          <MarqueeRow items={reviews.slice().reverse()} direction="right" onHover={setHoveredArt} />
         </div>
 
         {/* Bottom Detail */}

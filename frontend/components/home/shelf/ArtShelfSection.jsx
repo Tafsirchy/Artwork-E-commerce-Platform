@@ -1,8 +1,9 @@
 "use client";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import { CloudRain } from "lucide-react";
-import { shelfCategories } from "./shelfData";
+import api from "@/lib/api";
+import { shelfCategories as initialShelfData } from "./shelfData";
 import Shelf from "./Shelf";
 import CategoryModal from "./CategoryModal";
 import WeatherSystem from "./WeatherSystem";
@@ -120,10 +121,47 @@ function TreeSVG() {
 
 /* ─── Main Section ─────────────────────────────────────────────── */
 export default function ArtShelfSection() {
+  const [shelfCategories, setShelfCategories] = useState(initialShelfData);
   const [activeCategory, setActiveCategory] = useState(null);
   const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [isRaining, setIsRaining] = useState(false);
   const closeTimer = useRef(null);
+
+  useEffect(() => {
+    const fetchArtworks = async () => {
+      try {
+        const { data } = await api.get("/products");
+        
+        // 1. Get unique categories present in the database (limit to 6 for the tree layout)
+        const dbCategoryNames = [...new Set(data.map(p => p.category))].slice(0, 6);
+
+        // 2. Map these DB categories to our 6 available layout slots
+        const updated = dbCategoryNames.map((catName, index) => {
+          // Use the layout configuration (position, color, etc.) from initialShelfData
+          const layout = initialShelfData[index];
+          const categoryProducts = data.filter(p => p.category === catName);
+          
+          return {
+            ...layout,
+            name: catName, // Use the real category name from DB
+            artworks: categoryProducts.map(p => ({
+              id: p._id,
+              title: p.title,
+              artist: p.creator,
+              price: `$${p.price.toLocaleString()}`,
+              image: p.imageUrl,
+              description: p.description
+            }))
+          };
+        });
+
+        setShelfCategories(updated);
+      } catch (error) {
+        console.error("Failed to fetch shelf artworks:", error);
+      }
+    };
+    fetchArtworks();
+  }, []);
 
   const cancelClose = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);

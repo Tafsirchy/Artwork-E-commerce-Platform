@@ -1,33 +1,60 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, Shield, Bell, CreditCard, Save, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Shield, Bell, CreditCard, Save, Eye, EyeOff, Settings } from "lucide-react";
 import Link from "next/link";
 import useAuthStore from "@/store/authStore";
+import api from "@/lib/api";
 import { toast } from "react-toastify";
 
 export default function SettingsPage() {
-  const { user } = useAuthStore();
+  const { user, login } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: user?.name || "",
-    email: user?.email || "",
-    currentPassword: "",
-    newPassword: "",
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (formData.password && formData.password !== formData.confirmPassword) {
+      toast.error("Access keyphrases do not match");
+      return;
+    }
+
     setLoading(true);
     try {
-      // Mock update
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success("Profile records updated successfully");
+      const { data } = await api.put("/auth/profile", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password || undefined,
+      });
+      
+      // Update local storage and store state
+      login(data); 
+      toast.success("Identity records updated successfully");
+      
+      // Clear password fields
+      setFormData(prev => ({ ...prev, password: "", confirmPassword: "" }));
     } catch (error) {
-      toast.error("Failed to update profile");
+      toast.error(error.response?.data?.message || "Failed to update records");
     } finally {
       setLoading(false);
     }
@@ -41,6 +68,8 @@ export default function SettingsPage() {
   ];
 
   const [activeSection, setActiveSection] = useState("profile");
+
+  if (!user) return null;
 
   return (
     <main className="bg-gallery-bg min-h-screen py-20 pb-32">
@@ -99,6 +128,7 @@ export default function SettingsPage() {
                           <div className="px-4 text-gallery-soft border-r border-gallery-border"><User size={16} /></div>
                           <input 
                             type="text" 
+                            required
                             value={formData.name}
                             onChange={(e) => setFormData({...formData, name: e.target.value})}
                             className="w-full px-6 py-4 bg-transparent text-sm font-light focus:outline-none"
@@ -113,6 +143,7 @@ export default function SettingsPage() {
                           <div className="px-4 text-gallery-soft border-r border-gallery-border"><Mail size={16} /></div>
                           <input 
                             type="email" 
+                            required
                             value={formData.email}
                             onChange={(e) => setFormData({...formData, email: e.target.value})}
                             className="w-full px-6 py-4 bg-transparent text-sm font-light focus:outline-none"
@@ -141,19 +172,21 @@ export default function SettingsPage() {
                 >
                   <h2 className="text-xl font-light text-gallery-text uppercase tracking-widest mb-10 border-b border-gallery-border pb-6">Secure Access</h2>
                   
-                  <div className="space-y-8">
+                  <form onSubmit={handleSubmit} className="space-y-8">
                     <p className="text-sm text-gallery-muted font-light leading-relaxed mb-8 italic">
-                      Enhance your vault protection by rotating your access credentials periodically.
+                      Enhance your vault protection by rotating your access credentials periodically. Leave blank if you don't wish to change.
                     </p>
 
                     <div className="space-y-6">
                       <div className="relative group">
-                        <label className="block text-[9px] tracking-[0.2em] uppercase text-gallery-muted font-bold mb-3">Current Keyphrase</label>
-                        <div className="flex items-center border border-gallery-border">
+                        <label className="block text-[9px] tracking-[0.2em] uppercase text-gallery-muted font-bold mb-3">New Keyphrase</label>
+                        <div className="flex items-center border border-gallery-border focus-within:border-gallery-gold transition-colors">
                           <input 
                             type={showPassword ? "text" : "password"} 
+                            value={formData.password}
+                            onChange={(e) => setFormData({...formData, password: e.target.value})}
                             className="w-full px-6 py-4 bg-transparent text-sm font-light focus:outline-none"
-                            placeholder="••••••••••••"
+                            placeholder="Minimum 6 characters"
                           />
                           <button 
                             type="button" 
@@ -166,19 +199,25 @@ export default function SettingsPage() {
                       </div>
 
                       <div className="relative group">
-                        <label className="block text-[9px] tracking-[0.2em] uppercase text-gallery-muted font-bold mb-3">New Keyphrase</label>
+                        <label className="block text-[9px] tracking-[0.2em] uppercase text-gallery-muted font-bold mb-3">Confirm New Keyphrase</label>
                         <input 
                           type="password" 
+                          value={formData.confirmPassword}
+                          onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                           className="w-full px-6 py-4 bg-transparent border border-gallery-border focus:border-gallery-gold text-sm font-light focus:outline-none"
-                          placeholder="••••••••••••"
+                          placeholder="Re-type keyphrase"
                         />
                       </div>
                     </div>
 
-                    <button className="px-10 py-4 border border-gallery-text text-gallery-text text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-gallery-primary hover:text-white transition-all rounded-none">
+                    <button 
+                      type="submit"
+                      disabled={loading || !formData.password}
+                      className="px-10 py-4 border border-gallery-text text-gallery-text text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-gallery-primary hover:text-white transition-all rounded-none disabled:opacity-50"
+                    >
                       Rotate Access Key
                     </button>
-                  </div>
+                  </form>
                 </motion.div>
               )}
 

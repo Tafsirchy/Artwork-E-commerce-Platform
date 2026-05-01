@@ -163,4 +163,38 @@ const getOrders = async (req, res, next) => {
   }
 };
 
-module.exports = { createOrder, getOrderById, downloadInvoice, stripeWebhook, getOrders };
+// @desc    Update order to delivered
+// @route   PUT /api/orders/:id/deliver
+// @access  Private/Admin
+const updateOrderToDelivered = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+      order.isDelivered = true;
+      order.deliveredAt = Date.now();
+
+      const updatedOrder = await order.save();
+      res.json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get logged in user orders
+// @route   GET /api/orders/myorders
+// @access  Private
+const getMyOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find({ user: req.user._id });
+    res.json(orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createOrder, getOrderById, downloadInvoice, stripeWebhook, getOrders, updateOrderToDelivered, getMyOrders };

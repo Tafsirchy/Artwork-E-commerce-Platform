@@ -1,42 +1,11 @@
 "use client";
-
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus, Eye, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import api from "@/lib/api";
 import AnimatedButton from "../shared/AnimatedButton";
-
-const featuredItems = [
-  {
-    title: "Celestial Bloom",
-    artist: "Elias Vance",
-    price: "$2,400",
-    image: "https://images.unsplash.com/photo-1557933488-c8daa2a5772c?auto=format&fit=crop&w=800&q=80",
-    category: "Abstract"
-  },
-  {
-    title: "The Silent Canvas",
-    artist: "Sarah Thorne",
-    price: "$1,850",
-    image: "https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?auto=format&fit=crop&w=800&q=80",
-    category: "Minimalism"
-  },
-  {
-    title: "Golden Hour",
-    artist: "Julian Reed",
-    price: "$3,100",
-    image: "https://images.unsplash.com/photo-1614519679749-3189ec5687d9?auto=format&fit=crop&w=800&q=80",
-    category: "Expressionism"
-  },
-  {
-    title: "Midnight Whisper",
-    artist: "Clara Bell",
-    price: "$4,200",
-    image: "https://images.unsplash.com/photo-1740510294148-2b8f82471496?auto=format&fit=crop&w=800&q=80",
-    category: "Modern"
-  }
-];
 
 const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => (
   <motion.div
@@ -72,7 +41,7 @@ const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => (
       onClick={() => onImageClick && onImageClick(item)}
     >
       <Image
-        src={item.image}
+        src={item.imageUrl}
         alt={item.title}
         fill
         className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -106,11 +75,11 @@ const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => (
           {item.title}
         </h3>
         <p className="text-gallery-muted text-[10px] tracking-widest uppercase italic">
-          By {item.artist}
+          By {item.creator}
         </p>
       </div>
       <div className="text-right">
-        <p className="text-lg font-light text-gallery-gold mb-2">{item.price}</p>
+        <p className="text-lg font-light text-gallery-gold mb-2">${item.price?.toLocaleString()}</p>
         <button className="w-8 h-8 bg-gallery-soft flex items-center justify-center rounded-full hover:bg-gallery-primary hover:text-white transition-colors ml-auto">
           <Plus size={16} strokeWidth={1.5} />
         </button>
@@ -122,6 +91,21 @@ const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => (
 export default function FeaturedArtwork() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeImage, setActiveImage] = useState(null);
+  const [featuredItems, setFeaturedItems] = useState([]);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const { data } = await api.get("/home-config/featured");
+        setFeaturedItems(data.productIds);
+      } catch (error) {
+        console.error("Failed to fetch featured selection:", error);
+      }
+    };
+    fetchFeatured();
+  }, []);
+
+  if (featuredItems.length < 4) return null;
 
   return (
     <section className="py-28 bg-white">
@@ -274,7 +258,7 @@ export default function FeaturedArtwork() {
               >
                 <div className="relative aspect-[4/5] bg-white p-2 md:p-4 shadow-2xl">
                   <div className="relative w-full h-full">
-                    <Image src={featuredItems[0].image} alt={featuredItems[0].title} fill className="object-cover" />
+                    <Image src={featuredItems[0].imageUrl} alt={featuredItems[0].title} fill className="object-cover" />
                   </div>
                   <p className="absolute -bottom-8 md:-bottom-12 left-0 w-full text-center text-white/70 text-[8px] md:text-[10px] tracking-widest uppercase">{featuredItems[0].title}</p>
                 </div>
@@ -289,7 +273,7 @@ export default function FeaturedArtwork() {
                   className="relative aspect-[5/4] bg-white p-2 md:p-4 shadow-2xl"
                 >
                   <div className="relative w-full h-full">
-                    <Image src={featuredItems[1].image} alt={featuredItems[1].title} fill className="object-cover" />
+                    <Image src={featuredItems[1].imageUrl} alt={featuredItems[1].title} fill className="object-cover" />
                   </div>
                 </motion.div>
 
@@ -300,7 +284,7 @@ export default function FeaturedArtwork() {
                   className="relative aspect-[5/4] bg-white p-2 md:p-4 shadow-2xl"
                 >
                   <div className="relative w-full h-full">
-                    <Image src={featuredItems[2].image} alt={featuredItems[2].title} fill className="object-cover" />
+                    <Image src={featuredItems[2].imageUrl} alt={featuredItems[2].title} fill className="object-cover" />
                   </div>
                 </motion.div>
               </div>
@@ -314,7 +298,7 @@ export default function FeaturedArtwork() {
               >
                 <div className="relative aspect-[4/5] bg-white p-2 md:p-4 shadow-2xl">
                   <div className="relative w-full h-full">
-                    <Image src={featuredItems[3].image} alt={featuredItems[3].title} fill className="object-cover" />
+                    <Image src={featuredItems[3].imageUrl} alt={featuredItems[3].title} fill className="object-cover" />
                   </div>
                   <p className="absolute -bottom-8 md:-bottom-12 left-0 w-full text-center text-white/70 text-[8px] md:text-[10px] tracking-widest uppercase">{featuredItems[3].title}</p>
                 </div>
@@ -353,7 +337,7 @@ export default function FeaturedArtwork() {
               {/* Image Section */}
               <div className="relative w-full md:w-2/3 min-h-[50vh] md:min-h-[70vh] bg-black/40">
                 <Image
-                  src={activeImage.image}
+                  src={activeImage.imageUrl}
                   alt={activeImage.title}
                   fill
                   className="object-contain p-4 md:p-12"
@@ -369,11 +353,11 @@ export default function FeaturedArtwork() {
                   {activeImage.title}
                 </h2>
                 <p className="text-sm tracking-widest text-[#9c9a87] italic mb-10">
-                  By {activeImage.artist}
+                  By {activeImage.creator}
                 </p>
 
                 <div className="text-3xl font-light text-white mb-12">
-                  {activeImage.price}
+                  ${activeImage.price?.toLocaleString()}
                 </div>
 
                 <div className="space-y-4 w-full">

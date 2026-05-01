@@ -13,18 +13,22 @@ const app = express();
 
 // Security Middlewares
 app.use(helmet());
+app.use(morgan("dev"));
 
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:3001",
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === "development") {
       callback(null, true);
     } else {
+      console.error("CORS Error: Origin", origin, "not allowed");
       callback(new Error("Not allowed by CORS"));
     }
   },
@@ -43,7 +47,6 @@ const { stripeWebhook } = require("./controllers/orderController");
 app.post("/api/orders/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 
 app.use(express.json());
-app.use(morgan("dev"));
 
 // API Routes
 app.use("/api/auth", authLimiter, require("./routes/authRoutes"));
@@ -51,6 +54,8 @@ app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/cart", require("./routes/cartRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/promotions", require("./routes/promotionRoutes"));
+app.use("/api/reviews", require("./routes/reviewRoutes"));
+app.use("/api/home-config", require("./routes/homeConfigRoutes"));
 
 // Serve static files (uploads)
 app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));
