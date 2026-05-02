@@ -116,7 +116,7 @@ export default function AdminPromoManagement() {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-12 sm:py-24">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="container mx-auto px-6">
         <div className="flex flex-col lg:flex-row gap-8 sm:gap-12">
           {/* Sidebar */}
           <ProfileAside />

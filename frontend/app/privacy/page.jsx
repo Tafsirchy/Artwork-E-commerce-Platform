@@ -3,7 +3,8 @@ import React from 'react';
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-gallery-bg pt-32 pb-20 px-6 sm:px-12">
-      <div className="container mx-auto bg-white p-10 md:p-16 border border-gallery-border shadow-sm">
+      <div className="container mx-auto px-6">
+        <div className="bg-white p-10 md:p-16 border border-gallery-border shadow-sm">
         <h1 className="text-3xl md:text-5xl font-extralight text-gallery-text tracking-widest uppercase mb-12 text-center">
           Privacy <span className="font-serif text-gallery-gold">Policy</span>
         </h1>
@@ -28,6 +29,7 @@ export default function PrivacyPage() {
             <h2 className="text-sm tracking-[0.3em] uppercase text-gallery-text font-bold mb-4">4. Third-Party Disclosure</h2>
             <p>We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential.</p>
           </section>
+        </div>
         </div>
       </div>
     </div>

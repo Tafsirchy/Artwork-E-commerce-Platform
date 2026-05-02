@@ -10,7 +10,6 @@ const fs = require("fs");
 // @access  Private
 const createOrder = async (req, res, next) => {
   try {
-    console.log("DEBUG: createOrder started");
     const { 
       orderItems, 
       shippingAddress, 
@@ -23,12 +22,10 @@ const createOrder = async (req, res, next) => {
     } = req.body;
 
     if (!orderItems || !Array.isArray(orderItems) || orderItems.length === 0) {
-      console.log("DEBUG: Validation failed - No order items");
       return res.status(400).json({ message: "No order items provided or invalid format" });
     }
 
     if (!shippingAddress || !shippingAddress.address || !shippingAddress.location) {
-       console.log("DEBUG: Validation failed - Invalid shipping address");
        return res.status(400).json({ message: "Invalid shipping address or location" });
     }
 
@@ -36,7 +33,6 @@ const createOrder = async (req, res, next) => {
       return res.status(401).json({ message: "Authentication context lost. Please re-login." });
     }
 
-    console.log("DEBUG: Creating order object");
     const order = new Order({
       user: req.user._id,
       orderItems,
@@ -66,23 +62,19 @@ const createOrder = async (req, res, next) => {
       return res.status(400).json({ message: stockErr.message });
     }
 
-    console.log("DEBUG: Saving order to database");
     const createdOrder = await order.save();
-    console.log("DEBUG: Order saved successfully:", createdOrder._id);
 
     try {
-      console.log("DEBUG: Clearing user cart");
       await Cart.findOneAndUpdate(
         { user: req.user._id },
         { $set: { items: [] } }
       );
     } catch (cartErr) {
-      console.error("DEBUG: Cart clear non-fatal error:", cartErr);
+      console.error("Cart clear non-fatal error:", cartErr);
     }
 
     if (paymentMethod === "Card") {
       try {
-        console.log("DEBUG: Initializing Stripe PaymentIntent");
         const amount = Math.round(Number(totalPrice) * 100);
         if (isNaN(amount) || amount <= 0) {
             throw new Error(`Invalid payment amount: ${amount}`);
@@ -94,13 +86,12 @@ const createOrder = async (req, res, next) => {
           metadata: { orderId: createdOrder._id.toString() },
         });
 
-        console.log("DEBUG: PaymentIntent created successfully");
         res.status(201).json({
           order: createdOrder,
           clientSecret: paymentIntent.client_secret,
         });
       } catch (stripeError) {
-        console.error("DEBUG: Stripe API Error:", stripeError);
+        console.error("Stripe API Error:", stripeError);
         res.status(400).json({ 
           message: "Payment system unavailable", 
           error: stripeError.message,
@@ -108,20 +99,19 @@ const createOrder = async (req, res, next) => {
         });
       }
     } else {
-      console.log("DEBUG: Finalizing COD order");
       // Send email in the background — don't await it to avoid blocking the client response
       createdOrder.populate("user", "email").then(populatedOrder => {
         sendOrderConfirmationEmail(populatedOrder, populatedOrder.user.email).catch(err => {
-          console.error("DEBUG: Async mail error:", err);
+          console.error("Async mail error:", err);
         });
       }).catch(err => {
-        console.error("DEBUG: Async populate error:", err);
+        console.error("Async populate error:", err);
       });
       
       res.status(201).json({ order: createdOrder });
     }
   } catch (error) {
-    console.error("DEBUG: Critical Order Creation Error:", error);
+    console.error("Critical Order Creation Error:", error);
     res.status(500).json({ 
       message: "An internal error occurred while processing your order",
       error: error.message,

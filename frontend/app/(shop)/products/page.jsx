@@ -73,7 +73,7 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gallery-bg py-12 lg:py-24">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="container mx-auto px-6">
         <div className="text-center mb-8 sm:mb-12">
           <p className="text-[10px] tracking-[0.4em] uppercase text-gallery-muted mb-2 sm:mb-3">Bristiii</p>
           <h1 className="text-3xl sm:text-5xl font-light text-gallery-text tracking-tight uppercase">Art Gallery</h1>

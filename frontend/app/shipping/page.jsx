@@ -3,7 +3,8 @@ import React from 'react';
 export default function ShippingPage() {
   return (
     <div className="min-h-screen bg-gallery-bg pt-32 pb-20 px-6 sm:px-12">
-      <div className="container mx-auto bg-white p-10 md:p-16 border border-gallery-border shadow-sm">
+      <div className="container mx-auto px-6">
+        <div className="bg-white p-10 md:p-16 border border-gallery-border shadow-sm">
         <h1 className="text-3xl md:text-5xl font-extralight text-gallery-text tracking-widest uppercase mb-12 text-center">
           Shipping <span className="font-serif text-gallery-gold">& Delivery</span>
         </h1>
@@ -30,6 +31,7 @@ export default function ShippingPage() {
             <h2 className="text-sm tracking-[0.3em] uppercase text-gallery-text font-bold mb-4">Lost or Damaged Items</h2>
             <p>In the rare event that your artwork arrives damaged, please contact us within 48 hours of delivery. Keep all original packaging materials and provide photographic evidence of the damage so we can initiate a claim with our courier and arrange a replacement or refund.</p>
           </section>
+        </div>
         </div>
       </div>
     </div>

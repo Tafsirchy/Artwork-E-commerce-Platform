@@ -105,15 +105,10 @@ const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // TEMP DEBUG - remove after fix
-    console.log(`LOGIN DEBUG: email="${email}" | password="${password}" | pass_length=${password?.length}`);
-
     const user = await User.findOne({ email });
-    console.log(`LOGIN DEBUG: user found="${!!user}" | role="${user?.role}"`);
 
     if (user) {
       const match = await user.matchPassword(password);
-      console.log(`LOGIN DEBUG: password match="${match}"`);
       if (match) {
         return res.json({
           _id: user._id,

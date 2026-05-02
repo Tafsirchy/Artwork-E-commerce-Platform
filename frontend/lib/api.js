@@ -16,9 +16,6 @@ api.interceptors.request.use(
   (config) => {
     if (authToken) {
       config.headers.Authorization = `Bearer ${authToken}`;
-      console.log(`DEBUG: Requesting ${config.url} with token: ${authToken.slice(0, 10)}...`);
-    } else {
-      console.log(`DEBUG: Requesting ${config.url} WITHOUT token`);
     }
     return config;
   },
@@ -30,7 +27,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      console.error("DEBUG: 401 Unauthorized detected on", error.config.url);
       // Optional: Clear token if it's invalid
       // setAuthToken(null);
     }

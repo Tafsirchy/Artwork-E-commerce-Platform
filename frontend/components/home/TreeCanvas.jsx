@@ -413,7 +413,7 @@ export default function TreeCanvas() {
         </motion.p>
       </div>
 
-      <div className="relative container mx-auto px-4 md:px-6">
+      <div className="relative container mx-auto px-6">
         <motion.div ref={containerRef}
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1.5 }}
           className="relative w-full h-[450px] md:h-[750px] touch-none"

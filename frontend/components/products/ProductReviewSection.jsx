@@ -153,7 +153,7 @@ export default function ProductReviewSection({ productId }) {
 
   return (
     <div className="w-full border-t border-gallery-border mt-0 bg-gallery-bg">
-      <div className="container mx-auto lg:px-6 py-10 ">
+      <div className="container mx-auto px-6 py-10 ">
 
         {/* ── Section Header ── */}
         <div className="mb-8">

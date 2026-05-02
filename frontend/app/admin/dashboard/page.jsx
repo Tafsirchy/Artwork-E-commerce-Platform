@@ -61,7 +61,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gallery-bg p-6 sm:p-8 pt-12 sm:pt-20">
-      <div className="container mx-auto flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
+      <div className="container mx-auto px-6 flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
 
         {/* Sidebar Profile */}
         <ProfileAside />
