@@ -60,7 +60,7 @@ export default function AdminDashboard() {
   if (!user || user.role !== "admin") return null;
 
   return (
-    <div className="min-h-screen bg-gallery-bg p-6 sm:p-8 pt-12 sm:pt-20">
+    <div className="min-h-screen bg-gallery-bg pt-12 sm:pt-24 pb-20 sm:pb-32">
       <div className="container mx-auto px-6 flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
 
         {/* Sidebar Profile */}

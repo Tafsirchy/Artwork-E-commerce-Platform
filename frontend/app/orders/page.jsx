@@ -91,9 +91,10 @@ export default function UserOrdersPage() {
 
   // Render skeleton until Zustand has finished reading localStorage
   if (!_hasHydrated) return <OrdersSkeleton />;
+  if (!user) return null;
 
   return (
-    <main className="bg-gallery-bg min-h-screen py-20 pb-32">
+    <main className="bg-gallery-bg min-h-screen pt-12 sm:pt-24 pb-32">
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="mb-16">

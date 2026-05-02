@@ -63,9 +63,10 @@ export default function CustomerDashboard() {
   // Show skeleton until Zustand has rehydrated from localStorage.
   // Without this guard, `user` is null for ~100ms and pages flash empty.
   if (!_hasHydrated) return <DashboardSkeleton />;
+  if (!user) return null;
 
   return (
-    <section className="bg-gallery-bg min-h-screen pt-12 sm:pt-20 pb-20 sm:pb-24">
+    <section className="bg-gallery-bg min-h-screen pt-12 sm:pt-24 pb-20 sm:pb-32">
       <div className="container mx-auto px-6 flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
         
         {/* Sidebar Profile */}

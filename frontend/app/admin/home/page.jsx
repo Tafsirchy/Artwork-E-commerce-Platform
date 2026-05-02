@@ -140,6 +140,9 @@ export default function AdminHomeManagement() {
     }
   };
 
+  if (!_hasHydrated) return null;
+  if (!user || user.role !== "admin") return null;
+
   return (
     <div className="min-h-screen bg-gallery-bg py-12 sm:py-24">
       <div className="container mx-auto px-6">
@@ -153,7 +156,7 @@ export default function AdminHomeManagement() {
               <div>
                 <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-2 font-black">Home Content Management</p>
                 <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text tracking-tight uppercase leading-tight">
-                  Admin <span className="font-serif italic text-gallery-gold">Dashboard</span>
+                  Admin <span className="font-serif text-gallery-gold">Dashboard</span>
                 </h1>
               </div>
 
@@ -213,7 +216,7 @@ export default function AdminHomeManagement() {
                             </div>
                           </div>
 
-                          <p className="text-sm sm:text-base font-light italic text-gallery-text leading-relaxed mb-8">"{review.content}"</p>
+                          <p className="text-sm sm:text-base font-light text-gallery-text leading-relaxed mb-8">"{review.content}"</p>
 
                           <div className="flex items-center gap-5 pt-6 border-t border-gallery-soft">
                             <div className="w-12 h-12 bg-gallery-soft overflow-hidden border border-gallery-border rounded-full shrink-0">

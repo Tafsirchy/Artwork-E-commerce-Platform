@@ -103,8 +103,8 @@ export default function BlogFormPage() {
   if (!user || user.role !== "admin") return null;
 
   return (
-    <div className="min-h-screen bg-gallery-bg p-8 pt-20">
-      <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row items-start gap-12">
+    <div className="min-h-screen bg-gallery-bg pt-12 sm:pt-24 pb-20 sm:pb-32">
+      <div className="container mx-auto px-6 flex flex-col lg:flex-row items-start gap-12">
         <ProfileAside />
 
         <div className="flex-1">

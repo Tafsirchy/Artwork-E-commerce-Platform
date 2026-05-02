@@ -63,8 +63,8 @@ export default function MessageDetailsPage() {
   if (!user || user.role !== "admin") return null;
 
   return (
-    <div className="min-h-screen bg-gallery-bg p-4 sm:p-8 pt-12 sm:pt-24 pb-32 sm:pb-12">
-      <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
+    <div className="min-h-screen bg-gallery-bg pt-12 sm:pt-24 pb-32 sm:pb-12">
+      <div className="container mx-auto px-6 flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
         <ProfileAside />
 
         <main className="flex-1 w-full">
