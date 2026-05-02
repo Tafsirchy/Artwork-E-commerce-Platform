@@ -10,7 +10,7 @@ import ProfileAside from "@/components/dashboard/ProfileAside";
 import { motion } from "framer-motion";
 
 export default function AdminOrders() {
-  const { user } = useAuthStore();
+  const { user, _hasHydrated } = useAuthStore();
   const router = useRouter();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);

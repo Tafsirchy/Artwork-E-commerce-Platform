@@ -5,9 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash2, Edit2, Star, Quote, Search, Image as ImageIcon, Check, X, Layout, Info } from "lucide-react";
 import api from "@/lib/api";
 import { toast } from "react-toastify";
-import ProfileAside from "@/components/dashboard/ProfileAside";
+import useAuthStore from "@/store/authStore";
+import { useRouter } from "next/navigation";
 
 export default function AdminHomeManagement() {
+  const { user, _hasHydrated } = useAuthStore();
+  const router = useRouter();
   const [reviews, setReviews] = useState([]);
   const [products, setProducts] = useState([]);
   const [featuredIds, setFeaturedIds] = useState([]);
@@ -38,22 +41,27 @@ export default function AdminHomeManagement() {
   const currentProducts = products.slice((productsPage - 1) * productsPerPage, productsPage * productsPerPage);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (!_hasHydrated) return;
+    if (!user || user.role !== "admin") {
+      router.push("/");
+    } else {
+      fetchInitialData();
+    }
+  }, [user, _hasHydrated]);
 
-  const fetchData = async () => {
+  const fetchInitialData = async () => {
     try {
-      const [revRes, prodRes, featRes] = await Promise.all([
-        api.get("/reviews"),
+      setLoading(true);
+      const [revs, prods, feat] = await Promise.all([
+        api.get("/home/reviews"),
         api.get("/products"),
-        api.get("/home-config/featured")
+        api.get("/home/featured")
       ]);
-      setReviews(revRes.data);
-      setProducts(prodRes.data);
-      setFeaturedIds(featRes.data.productIds.map(p => p._id));
+      setReviews(revs.data);
+      setProducts(prods.data);
+      setFeaturedIds(feat.data.productIds || []);
     } catch (error) {
-      const msg = error.response?.data?.message || "Failed to load site data";
-      toast.error(msg);
+      toast.error("Failed to fetch archive records");
     } finally {
       setLoading(false);
     }

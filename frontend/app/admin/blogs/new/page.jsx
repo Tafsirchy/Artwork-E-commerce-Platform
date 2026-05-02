@@ -100,6 +100,7 @@ export default function BlogFormPage() {
     }
   };
 
+  if (!_hasHydrated) return null;
   if (!user || user.role !== "admin") return null;
 
   return (

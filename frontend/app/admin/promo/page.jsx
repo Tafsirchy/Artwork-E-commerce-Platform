@@ -10,7 +10,7 @@ import useAuthStore from "@/store/authStore";
 import { useRouter } from "next/navigation";
 
 export default function AdminPromoManagement() {
-  const { user } = useAuthStore();
+  const { user, _hasHydrated } = useAuthStore();
   const router = useRouter();
   const [promos, setPromos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,12 +29,16 @@ export default function AdminPromoManagement() {
   });
 
   useEffect(() => {
+    if (!_hasHydrated) return;
     if (user?.role === "admin") {
       fetchPromos();
-    } else if (user) {
+    } else {
       router.push("/");
     }
-  }, [user]);
+  }, [user, _hasHydrated]);
+
+  if (!_hasHydrated) return null;
+  if (!user || user.role !== "admin") return null;
 
   const fetchPromos = async () => {
     try {
