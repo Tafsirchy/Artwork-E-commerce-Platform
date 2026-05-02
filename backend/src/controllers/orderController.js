@@ -54,10 +54,10 @@ const createOrder = async (req, res, next) => {
     for (const item of orderItems) {
       const product = await Product.findById(item.product);
       if (product) {
-        if (product.stock < item.qty) {
+        if (product.stock < (item.quantity || item.qty)) {
           return res.status(400).json({ message: `Insufficient stock for ${product.title}` });
         }
-        product.stock -= item.qty;
+        product.stock -= (item.quantity || item.qty);
         await product.save();
         console.log(`DEBUG: Reduced stock for ${product.title} to ${product.stock}`);
       }
