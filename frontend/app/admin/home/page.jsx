@@ -7,6 +7,7 @@ import api from "@/lib/api";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
 import { useRouter } from "next/navigation";
+import ProfileAside from "@/components/dashboard/ProfileAside";
 
 export default function AdminHomeManagement() {
   const { user, _hasHydrated } = useAuthStore();
@@ -101,7 +102,7 @@ export default function AdminHomeManagement() {
         toast.success("New review added");
       }
       setIsModalOpen(false);
-      fetchData();
+      fetchInitialData();
     } catch (error) {
       toast.error("Operation failed");
     }
@@ -112,7 +113,7 @@ export default function AdminHomeManagement() {
       try {
         await api.delete(`/reviews/${id}`);
         toast.success("Review removed");
-        fetchData();
+        fetchInitialData();
       } catch (error) {
         toast.error("Deletion failed");
       }
