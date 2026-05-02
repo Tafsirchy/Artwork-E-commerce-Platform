@@ -103,8 +103,8 @@ export default function UserOrdersPage() {
           >
             ← Back to Dashboard
           </Link>
-          <h1 className="text-4xl font-light text-gallery-text tracking-tighter uppercase">My Acquisitions</h1>
-          <p className="text-gallery-muted text-sm mt-2 font-light">A chronological record of your artistic journey.</p>
+          <h1 className="text-4xl font-light text-gallery-text tracking-tighter uppercase">My Orders</h1>
+          <p className="text-gallery-muted text-sm mt-2 font-light">A list of your past orders.</p>
         </div>
 
         {/* Filter Bar */}
@@ -150,7 +150,7 @@ export default function UserOrdersPage() {
         {/* Orders List */}
         <div className="space-y-6">
           {loading ? (
-            <div className="py-20 text-center uppercase tracking-[0.5em] text-gallery-muted text-xs">Accessing Archives...</div>
+            <div className="py-20 text-center uppercase tracking-[0.5em] text-gallery-muted text-xs">Loading...</div>
           ) : filteredOrders.length > 0 ? (
             paginatedOrders.map((order) => (
               <motion.div 
@@ -163,11 +163,11 @@ export default function UserOrdersPage() {
                   {/* Order Info */}
                   <div className="space-y-4 md:w-1/3">
                     <div>
-                      <p className="text-[9px] tracking-[0.2em] uppercase text-gallery-muted font-bold mb-1">Order Identifier</p>
+                      <p className="text-[9px] tracking-[0.2em] uppercase text-gallery-muted font-bold mb-1">Order ID</p>
                       <p className="text-sm font-bold text-gallery-text">#{order._id.toUpperCase()}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] tracking-[0.2em] uppercase text-gallery-muted font-bold mb-1">Acquisition Date</p>
+                      <p className="text-[9px] tracking-[0.2em] uppercase text-gallery-muted font-bold mb-1">Order Date</p>
                       <p className="text-sm font-light text-gallery-text">{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                     </div>
                   </div>
@@ -188,7 +188,7 @@ export default function UserOrdersPage() {
                     </div>
                     <div className="ml-8">
                       <p className="text-[10px] tracking-widest uppercase font-bold text-gallery-text">{order.orderItems.length} {order.orderItems.length === 1 ? 'Artwork' : 'Artworks'}</p>
-                      <p className="text-xs text-gallery-muted font-light">Investment: ${order.totalPrice.toFixed(2)}</p>
+                      <p className="text-xs text-gallery-muted font-light">Price: ${order.totalPrice.toFixed(2)}</p>
                     </div>
                   </div>
 
@@ -197,7 +197,7 @@ export default function UserOrdersPage() {
                     <div className="flex items-center gap-3">
                       <span className={`w-2 h-2 rounded-full ${order.isPaid ? 'bg-green-400' : 'bg-red-400 animate-pulse'}`} />
                       <span className="text-[10px] tracking-[0.3em] uppercase font-bold text-gallery-text">
-                        {order.isPaid ? 'Acquisition Secured' : 'Payment Required'}
+                        {order.isPaid ? 'Payment Confirmed' : 'Payment Required'}
                       </span>
                     </div>
                     
@@ -219,10 +219,10 @@ export default function UserOrdersPage() {
           ) : (
             <div className="py-32 bg-white border border-gallery-border text-center">
               <Package size={48} className="mx-auto text-gallery-soft mb-6" />
-              <h2 className="text-xl font-light text-gallery-text uppercase tracking-widest mb-2">No Acquisitions Found</h2>
-              <p className="text-gallery-muted text-sm font-light mb-8 italic">No orders match your current filters.</p>
+              <h2 className="text-xl font-light text-gallery-text uppercase tracking-widest mb-2">No Orders Found</h2>
+              <p className="text-gallery-muted text-sm font-light mb-8 italic">We couldn't find any orders with these filters.</p>
               <Link href="/products" className="inline-block px-12 py-4 border border-gallery-gold text-gallery-gold text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-gallery-gold hover:text-white transition-all">
-                Explore Collection
+                Browse Art
               </Link>
             </div>
           )}

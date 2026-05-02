@@ -53,7 +53,7 @@ export default function LoginPage() {
         <div className="w-10 h-10 rounded-full bg-white border border-gallery-border flex items-center justify-center group-hover:border-gallery-gold transition-colors shadow-sm">
           <ArrowLeft size={16} />
         </div>
-        <span className="hidden sm:inline">Back to Gallery</span>
+        <span className="hidden sm:inline">Back to Home</span>
       </Link>
 
       <motion.div
@@ -86,7 +86,7 @@ export default function LoginPage() {
               <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
                 <Lock size={14} className="text-gallery-gold" /> Password
               </label>
-              <Link href="/forgot-password" title="Recover Identity" className="text-[10px] uppercase tracking-widest text-gallery-gold hover:text-gallery-text transition-colors font-black">
+              <Link href="/forgot-password" title="Forgot Password" className="text-[10px] uppercase tracking-widest text-gallery-gold hover:text-gallery-text transition-colors font-black">
                 Forgot?
               </Link>
             </div>

@@ -24,14 +24,14 @@ export default function BlogListClient({ initialPosts }) {
             transition={{ duration: 0.8 }}
           >
             <span className="text-[10px] tracking-[0.4em] sm:tracking-[0.8em] uppercase text-gallery-gold mb-4 sm:mb-6 block font-black">
-              The Chronicle
+              Our Blog
             </span>
             <h1 className="text-4xl sm:text-7xl font-extralight text-gallery-text tracking-tighter leading-[1.1] sm:leading-none mb-6 sm:mb-8">
-              Artistic <br />
-              <span className="font-serif text-gallery-accent">Perspectives.</span>
+              Art <br />
+              <span className="font-serif text-gallery-accent">Stories.</span>
             </h1>
             <p className="max-w-xl mx-auto text-gallery-muted text-base sm:text-lg font-light leading-relaxed">
-              Stories from the studio, insights from the gallery, and the philosophy behind every curated fragment.
+              Read stories from our artists and news about our latest art collections.
             </p>
           </motion.div>
         </div>
@@ -84,7 +84,7 @@ export default function BlogListClient({ initialPosts }) {
                     </p>
                     <div className="pt-2 sm:pt-4">
                       <span className="inline-flex items-center gap-3 text-[10px] tracking-[0.4em] uppercase font-black text-gallery-text border-b border-gallery-gold pb-1 group-hover:gap-6 transition-all active:translate-x-2">
-                        Read Journal <ArrowRight size={14} />
+                        Read Story <ArrowRight size={14} />
                       </span>
                     </div>
                   </div>
@@ -96,7 +96,7 @@ export default function BlogListClient({ initialPosts }) {
           {/* Pagination Placeholder */}
           <div className="mt-16 sm:mt-24 pt-8 sm:pt-12 border-t border-gallery-border flex justify-center">
             <button className="w-full sm:w-auto px-10 py-5 border border-gallery-border text-[10px] tracking-[0.4em] uppercase text-gallery-muted hover:text-gallery-text hover:border-gallery-text transition-all rounded-none font-black active:scale-95 shadow-sm">
-              Explore Older Archives
+              See Older Posts
             </button>
           </div>
         </div>
@@ -106,10 +106,10 @@ export default function BlogListClient({ initialPosts }) {
       <section className="py-20 sm:py-32 bg-gallery-primary text-white relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10 text-center">
           <span className="text-[10px] tracking-[0.5em] uppercase text-gallery-gold mb-8 block font-black">
-            The Exhibition Letter
+            Our Newsletter
           </span>
           <h2 className="text-3xl sm:text-5xl font-extralight mb-12 tracking-tight max-w-2xl mx-auto leading-tight">
-            Curated insights delivered to your <span className="italic font-serif text-gallery-gold">private archives.</span>
+            Get updates about our art delivered to your email.
           </h2>
           <div className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
             <input

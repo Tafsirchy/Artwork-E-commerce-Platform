@@ -350,12 +350,12 @@ export default function CTA() {
           </div>
 
           <p className="text-gallery-gold text-[10px] sm:text-xs tracking-[0.5em] sm:tracking-[0.8em] uppercase mb-6">
-            The Sanctuary of Art
+            A Home for Art
           </p>
 
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-light text-white tracking-[0.2em] sm:tracking-widest uppercase mb-12 sm:mb-20 leading-tight">
-            Begin Your <br />
-            <span className="font-serif text-gallery-gold font-light">Legacy.</span>
+            Start Your <br />
+            <span className="font-serif text-gallery-gold font-light">Collection.</span>
           </h2>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
@@ -364,7 +364,7 @@ export default function CTA() {
               className="w-full sm:w-auto relative group/link px-12 sm:px-20 py-5 sm:py-7 bg-white text-gallery-primary text-[10px] sm:text-xs tracking-[0.4em] sm:tracking-[0.5em] uppercase overflow-hidden rounded-none shadow-2xl"
             >
               <span className="relative z-10 flex items-center justify-center gap-4 font-bold">
-                Enter Gallery <MoveUpRight size={18} strokeWidth={2} />
+                See Art <MoveUpRight size={18} strokeWidth={2} />
               </span>
               <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover/link:translate-y-0 transition-transform duration-500" />
             </Link>
@@ -374,7 +374,7 @@ export default function CTA() {
               className="group/link flex flex-col items-center gap-3"
             >
               <span className="text-white text-[10px] sm:text-[12px] tracking-[0.5em] sm:tracking-[0.6em] uppercase group-hover:text-gallery-gold transition-colors font-medium">
-                Become a Member
+                Join Us
               </span>
               <div className="w-8 h-px bg-white/30 group-hover:bg-gallery-gold group-hover:w-20 sm:group-hover:w-24 transition-all duration-700" />
             </Link>
@@ -393,7 +393,7 @@ export default function CTA() {
       {/* Bottom Quote */}
       <div className="absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 text-center w-full px-6">
         <p className="text-[8px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase text-white/20 italic">
-          "Where souls find their reflection in frames"
+          "Find art that speaks to you"
         </p>
       </div>
     </section>

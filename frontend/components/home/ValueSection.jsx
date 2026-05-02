@@ -17,23 +17,23 @@ const ART_PALETTE = [
 const values = [
   {
     icon: ShieldCheck,
-    title: "Certified Authenticity",
-    desc: "Every artwork comes with a physical Certificate of Authenticity signed by the artist."
+    title: "Real Art Guarantee",
+    desc: "Every piece of art is real and signed by the artist."
   },
   {
     icon: Truck,
-    title: "Museum-Grade Art Handling",
-    desc: "Archival packaging and insured white-glove delivery, ensuring your acquisition arrives in pristine condition."
+    title: "Safe Delivery",
+    desc: "We use strong packaging and insurance to make sure your art arrives in perfect condition."
   },
   {
     icon: Sparkles,
-    title: "Curated Excellence",
-    desc: "Only 5% of submissions make it to our gallery, ensuring museum-grade quality."
+    title: "Best Quality",
+    desc: "We only pick the best art for our gallery to ensure top quality."
   },
   {
     icon: HeartHandshake,
-    title: "Collector's Support",
-    desc: "Dedicated art advisors to help you build a collection that appreciates in value."
+    title: "Help for You",
+    desc: "Our experts help you find art that grows in value over time."
   }
 ];
 
@@ -157,11 +157,11 @@ export default function ValueSection() {
         <div className="text-center mb-16">
           <div className="inline-block px-6 py-2 border border-gallery-gold/30 rounded-none mb-6 bg-white/50 backdrop-blur-sm shadow-sm">
             <p className="text-gallery-accent text-[9px] tracking-[0.6em] md:tracking-[0.8em] uppercase font-bold text-center pl-[0.6em] md:pl-[0.8em]">
-              The Standard
+              Our Promise
             </p>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4 leading-[1.1] md:leading-none">
-            Curated <br /> <span className="font-serif text-gallery-gold font-light">Perfection.</span>
+            The Best <br /> <span className="font-serif text-gallery-gold font-light">Art.</span>
           </h2>
         </div>
 
@@ -189,7 +189,7 @@ export default function ValueSection() {
         <div className="mt-20 md:mt-32 text-center">
           <div className="w-px h-16 md:h-24 bg-gradient-to-b from-gallery-gold/0 via-gallery-gold to-gallery-gold/0 mx-auto" />
           <p className="mt-8 text-[10px] md:text-[11px] tracking-[0.6em] uppercase text-gallery-muted">
-            Est. 2024 • Gallery of Souls
+            Opened in 2024 • Art for You
           </p>
         </div>
       </div>

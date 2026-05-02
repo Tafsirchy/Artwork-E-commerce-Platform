@@ -16,13 +16,13 @@ export default function AboutPage() {
   const features = [
     {
       icon: <Sparkles className="text-gallery-gold" size={24} />,
-      title: "Curated Excellence",
-      description: "Every piece in our gallery is hand-selected by experts to ensure the highest standards of artistic integrity.",
+      title: "Best Art Picks",
+      description: "We pick the best art to make sure you get high-quality work.",
     },
     {
       icon: <Shield className="text-gallery-gold" size={24} />,
-      title: "Secure Ownership",
-      description: "We provide blockchain-backed certificates of authenticity for every original acquisition.",
+      title: "Safe Buying",
+      description: "We give you a certificate to prove your art is real.",
     },
     {
       icon: <Heart className="text-gallery-gold" size={24} />,
@@ -50,11 +50,11 @@ export default function AboutPage() {
               EST. 2024
             </span>
             <h1 className="text-4xl sm:text-7xl lg:text-8xl font-extralight text-gallery-text tracking-tighter leading-[1.1] sm:leading-none mb-6 sm:mb-8">
-              The Architecture <br />
-              <span className="font-serif text-gallery-accent">of Soul.</span>
+              Art that <br />
+              <span className="font-serif text-gallery-accent">matters.</span>
             </h1>
             <p className="max-w-xl mx-auto text-gallery-muted text-base sm:text-lg font-light leading-relaxed">
-              BRISTIII is a digital sanctuary where the boundaries between creator and collector dissolve into a shared aesthetic journey.
+              BRISTIII is an online gallery where artists and art lovers come together.
             </p>
           </motion.div>
         </div>
@@ -88,8 +88,8 @@ export default function AboutPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <h2 className="text-3xl sm:text-4xl font-light text-gallery-text tracking-tight mb-6 sm:mb-8 uppercase leading-tight">
-                Crafting a <span className="font-serif text-gallery-gold">New Legacy</span> <br className="hidden sm:block" />
-                for Digital Artisans.
+                Helping modern artists <span className="font-serif text-gallery-gold">grow</span> <br className="hidden sm:block" />
+                their work.
               </h2>
               <div className="space-y-4 sm:space-y-6 text-gallery-muted font-light leading-relaxed text-base">
                 <p>
@@ -118,7 +118,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16 sm:mb-24">
             <h2 className="text-[10px] tracking-[0.4em] sm:tracking-[0.6em] uppercase text-gallery-gold font-black mb-3 sm:mb-4">Our Philosophy</h2>
-            <p className="text-2xl sm:text-3xl font-light text-gallery-text uppercase tracking-widest leading-tight">Principles of the Gallery</p>
+            <p className="text-2xl sm:text-3xl font-light text-gallery-text uppercase tracking-widest leading-tight">How we work</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-12">
@@ -163,14 +163,14 @@ export default function AboutPage() {
                 href="/products"
                 className="group relative w-full sm:w-auto px-12 py-5 bg-white text-gallery-primary text-[10px] tracking-[0.5em] uppercase font-black overflow-hidden transition-all rounded-none active:scale-95 shadow-2xl"
               >
-                <span className="relative z-10 group-hover:text-white transition-colors duration-500">View Collection</span>
+                <span className="relative z-10 group-hover:text-white transition-colors duration-500">Browse Art</span>
                 <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               </Link>
               <Link
                 href="/register"
                 className="text-[9px] sm:text-[10px] tracking-[0.5em] uppercase font-black border-b border-white/30 hover:border-gallery-gold transition-colors pb-1"
               >
-                Become a Member
+                Join Us
               </Link>
             </div>
           </motion.div>

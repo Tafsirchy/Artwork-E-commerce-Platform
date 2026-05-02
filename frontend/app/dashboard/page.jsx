@@ -80,10 +80,10 @@ export default function CustomerDashboard() {
               animate={{ opacity: 1, x: 0 }}
             >
               <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text tracking-tighter uppercase mb-2">
-                Collector Overview
+                Account Overview
               </h1>
               <p className="text-gallery-muted text-[10px] sm:text-sm tracking-[0.2em] sm:tracking-widest uppercase font-black">
-                BRISTIII Private Archive • Welcome Back, {user?.name}
+                Your Account • Welcome Back, {user?.name}
               </p>
             </motion.div>
           </div>
@@ -119,7 +119,7 @@ export default function CustomerDashboard() {
               className="xl:col-span-2 space-y-6 sm:space-y-8"
             >
               <div className="flex justify-between items-end border-b border-gallery-border pb-6">
-                <h2 className="text-[10px] sm:text-xs tracking-[0.4em] sm:tracking-[0.6em] uppercase text-gallery-text font-black">Recent Acquisitions</h2>
+                <h2 className="text-[10px] sm:text-xs tracking-[0.4em] sm:tracking-[0.6em] uppercase text-gallery-text font-black">Recent Orders</h2>
                 <Link href="/orders" className="text-xs tracking-[0.2em] uppercase text-gallery-gold font-black hover:gap-2 flex items-center gap-2 transition-all">
                   View All <ArrowRight size={12} />
                 </Link>
@@ -128,14 +128,14 @@ export default function CustomerDashboard() {
               {/* Latest Order Tracking */}
               {recentOrders.length > 0 && (
                 <div className="bg-white border border-gallery-border p-6 sm:p-8 pb-12 sm:pb-16 shadow-sm">
-                  <h3 className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-black mb-6 sm:mb-8">Latest Order Journey</h3>
+                  <h3 className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-black mb-6 sm:mb-8">Last Order Status</h3>
                   <OrderTracking order={recentOrders[0]} />
                 </div>
               )}
               
               <div className="space-y-4">
                 {loading ? (
-                   <div className="p-10 text-center uppercase tracking-widest text-gallery-muted text-xs">Accessing Records...</div>
+                   <div className="p-10 text-center uppercase tracking-widest text-gallery-muted text-xs">Loading...</div>
                 ) : recentOrders.map((order) => (
                   <div 
                     key={order._id}
@@ -174,7 +174,7 @@ export default function CustomerDashboard() {
                 ))}
                 {!loading && recentOrders.length === 0 && (
                   <div className="p-16 text-center border border-dashed border-gallery-border bg-white/50">
-                    <p className="text-xs tracking-widest uppercase text-gallery-muted">No acquisitions recorded yet.</p>
+                    <p className="text-xs tracking-widest uppercase text-gallery-muted">No orders found.</p>
                   </div>
                 )}
               </div>
@@ -219,7 +219,7 @@ export default function CustomerDashboard() {
                 </Link>
                 <Link href="/settings" className="h-20 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group px-8 shadow-sm">
                   <Settings size={20} className="text-gallery-gold group-hover:text-white transition-colors" />
-                  <span className="text-xs tracking-[0.3em] uppercase font-black">Security & Keys</span>
+                  <span className="text-xs tracking-[0.3em] uppercase font-black">Security Settings</span>
                 </Link>
                 <Link href="/contact" className="h-20 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group px-8 shadow-sm">
                   <MapPin size={20} className="text-gallery-gold group-hover:text-white transition-colors" />
@@ -228,12 +228,12 @@ export default function CustomerDashboard() {
               </div>
 
               <div className="p-8 bg-gallery-primary text-white space-y-6 shadow-2xl">
-                <h3 className="text-xs tracking-[0.3em] uppercase font-black">Need Assistance?</h3>
+                <h3 className="text-xs tracking-[0.3em] uppercase font-black">Need Help?</h3>
                 <p className="text-[11px] leading-relaxed text-white/60 tracking-wider font-light uppercase">
-                  Our VIP concierge service is available 24/7 for our distinguished collectors.
+                  Our support team is available 24/7 to help you.
                 </p>
                 <Link href="/contact" className="inline-block text-[10px] tracking-[0.3em] uppercase font-black border-b border-gallery-gold pb-1 text-gallery-gold hover:text-white hover:border-white transition-all">
-                  Contact Concierge
+                  Contact Support
                 </Link>
               </div>
             </motion.div>

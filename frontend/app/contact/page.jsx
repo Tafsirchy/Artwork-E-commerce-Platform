@@ -48,11 +48,11 @@ export default function ContactPage() {
               Inquiries
             </span>
             <h1 className="text-4xl sm:text-7xl font-extralight text-gallery-text tracking-tighter leading-[1.1] sm:leading-none mb-6 sm:mb-8">
-              Connect with <br />
-              <span className="font-serif text-gallery-accent">the Gallery.</span>
+              Contact <br />
+              <span className="font-serif text-gallery-accent">Us.</span>
             </h1>
             <p className="max-w-xl mx-auto text-gallery-muted text-base sm:text-lg font-light leading-relaxed">
-              Whether you are a collector, an artist, or an enthusiast, we are here to assist you in your aesthetic journey.
+              We are here to help you with any questions about our art.
             </p>
           </motion.div>
         </div>
@@ -72,7 +72,7 @@ export default function ContactPage() {
               className="space-y-12 sm:space-y-16 order-2 lg:order-1"
             >
               <div>
-                <h2 className="text-[10px] sm:text-xs tracking-[0.4em] uppercase text-gallery-gold font-black mb-8 sm:mb-10">Our Studios</h2>
+                <h2 className="text-[10px] sm:text-xs tracking-[0.4em] uppercase text-gallery-gold font-black mb-8 sm:mb-10">Our Locations</h2>
                 <div className="space-y-10 sm:space-y-12">
                   <div className="flex gap-6 sm:gap-8 group">
                     <div className="w-12 h-12 bg-white border border-gallery-border flex items-center justify-center shrink-0 group-hover:border-gallery-gold transition-colors duration-500 rounded-none shadow-sm">
@@ -93,7 +93,7 @@ export default function ContactPage() {
                       <Mail size={20} className="text-gallery-text" />
                     </div>
                     <div>
-                      <h3 className="text-xs sm:text-sm tracking-widest uppercase text-gallery-text mb-2 sm:mb-3 font-black">Digital Inquiries</h3>
+                      <h3 className="text-xs sm:text-sm tracking-widest uppercase text-gallery-text mb-2 sm:mb-3 font-black">Email Us</h3>
                       <p className="text-gallery-muted text-sm font-light leading-relaxed">
                         General: info@bristiii.gallery<br />
                         Artists: submissions@bristiii.gallery<br />
@@ -110,7 +110,7 @@ export default function ContactPage() {
                       <h3 className="text-xs sm:text-sm tracking-widest uppercase text-gallery-text mb-2 sm:mb-3 font-black">Direct Line</h3>
                       <p className="text-gallery-muted text-sm font-light leading-relaxed">
                         Main: +1 (555) 234-5678<br />
-                        VIP Concierge: +1 (555) 987-6543
+                        Priority Support: +1 (555) 987-6543
                       </p>
                     </div>
                   </div>
@@ -180,10 +180,10 @@ export default function ContactPage() {
                       onChange={handleChange}
                       className="w-full bg-gallery-soft/30 border border-gallery-border px-4 py-4 focus:outline-none focus:border-gallery-gold transition-colors rounded-none font-light appearance-none h-14"
                     >
-                      <option value="General Inquiry">General Inquiry</option>
-                      <option value="Art Consultation">Art Consultation</option>
-                      <option value="Exhibition Proposal">Exhibition Proposal</option>
-                      <option value="Shipping & Logistics">Shipping & Logistics</option>
+                      <option value="General Inquiry">General Question</option>
+                      <option value="Art Consultation">Art Advice</option>
+                      <option value="Exhibition Proposal">Art Submission</option>
+                      <option value="Shipping & Logistics">Shipping Help</option>
                       <option value="Other">Other</option>
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">

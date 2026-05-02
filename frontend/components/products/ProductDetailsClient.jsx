@@ -29,8 +29,8 @@ export default function ProductDetailsClient({ product }) {
     return (
       <div className="min-h-screen bg-gallery-bg flex justify-center items-center p-6 text-center">
         <div>
-          <p className="text-xl text-gallery-muted mb-4 font-serif italic">Artwork lost in the archives.</p>
-          <button onClick={() => window.history.back()} className="text-[10px] tracking-[0.3em] uppercase font-bold text-gallery-gold">Return to Collection</button>
+          <p className="text-xl text-gallery-muted mb-4 font-serif italic">Art not found.</p>
+          <button onClick={() => window.history.back()} className="text-[10px] tracking-[0.3em] uppercase font-bold text-gallery-gold">Go Back to Gallery</button>
         </div>
       </div>
     );
@@ -66,7 +66,7 @@ export default function ProductDetailsClient({ product }) {
                   className="bg-white/95 text-gallery-text p-4 rounded-full shadow-2xl active:scale-90 transition-all duration-300 flex items-center gap-2 border border-black/5"
                 >
                   <Maximize2 size={20} className="text-gallery-gold" />
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold pr-1">Expand View</span>
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold pr-1">Zoom In</span>
                 </button>
               </div>
 
@@ -81,7 +81,7 @@ export default function ProductDetailsClient({ product }) {
               <div className="w-full px-8 py-10 border-t border-gallery-border/30 bg-gallery-surface/30">
                 <div className="flex items-center gap-3 mb-6">
                   <Palette size={14} className="text-gallery-gold" />
-                  <p className="text-[10px] tracking-[0.4em] uppercase font-black text-gallery-muted">Palette Identity</p>
+                  <p className="text-[10px] tracking-[0.4em] uppercase font-black text-gallery-muted">Colors Used</p>
                 </div>
                 <div className="flex flex-wrap gap-4">
                   {colors.map((color, i) => (
@@ -125,7 +125,7 @@ export default function ProductDetailsClient({ product }) {
                 className="w-full flex items-center justify-between group"
               >
                 <h3 className="text-[11px] tracking-[0.4em] uppercase font-black text-gallery-text">
-                  Curator's Statement
+                  About this Art
                 </h3>
                 <span className={`text-gallery-gold transition-transform duration-300 ${isDescExpanded ? 'rotate-180' : ''}`}>
                   {isDescExpanded ? "—" : "+"}
@@ -151,7 +151,7 @@ export default function ProductDetailsClient({ product }) {
                 <div>
                   <p className="text-4xl font-bold text-gallery-accent">${product.price.toLocaleString()}</p>
                   <p className={`text-[9px] uppercase tracking-[0.3em] mt-2 font-black ${product.stock > 0 ? 'text-gallery-muted' : 'text-red-500'}`}>
-                    {product.stock > 0 ? `${product.stock} Original pieces in vault` : "Exhibited (Out of Stock)"}
+                    {product.stock > 0 ? `${product.stock} items in stock` : "Out of Stock"}
                   </p>
                 </div>
                 <button
@@ -159,7 +159,7 @@ export default function ProductDetailsClient({ product }) {
                   disabled={product.stock <= 0}
                   className="flex-1 min-h-[64px] flex items-center justify-center gap-4 bg-gallery-primary text-white text-[11px] tracking-[0.4em] uppercase font-black hover:bg-black transition-all shadow-xl active:scale-[0.98] disabled:bg-gray-200"
                 >
-                  <ShoppingBag size={18} /> Acquire Piece
+                  <ShoppingBag size={18} /> Add to Cart
                 </button>
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function ProductDetailsClient({ product }) {
       <div className="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-2xl border-t border-gallery-border p-5 md:hidden z-[100] shadow-[0_-15px_40px_rgba(0,0,0,0.08)]">
         <div className="max-w-md mx-auto flex items-center justify-between gap-6">
           <div>
-            <p className="text-[10px] text-gallery-muted uppercase tracking-[0.3em] font-black mb-1">Acquisition</p>
+            <p className="text-[10px] text-gallery-muted uppercase tracking-[0.3em] font-black mb-1">Price</p>
             <p className="text-2xl font-bold text-gallery-accent">${product.price.toLocaleString()}</p>
           </div>
           <button
@@ -183,7 +183,7 @@ export default function ProductDetailsClient({ product }) {
             disabled={product.stock <= 0}
             className="flex-1 h-[64px] flex items-center justify-center gap-3 bg-gallery-primary text-white text-[11px] tracking-[0.4em] uppercase font-black shadow-2xl active:scale-[0.96] transition-transform rounded-none"
           >
-            <ShoppingBag size={18} /> Acquire
+            <ShoppingBag size={18} /> Buy Now
           </button>
         </div>
       </div>

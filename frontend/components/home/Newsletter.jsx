@@ -10,7 +10,7 @@ export default function Newsletter() {
 
   const handleSubscribe = (e) => {
     e.preventDefault();
-    toast.success("Welcome to the Private Circle.", {
+    toast.success("Welcome to our Newsletter.", {
       position: "top-center",
       autoClose: 3000,
       theme: "dark"
@@ -61,13 +61,13 @@ export default function Newsletter() {
           </div>
 
           <p className="text-gallery-accent text-[10px] sm:text-xs tracking-[0.5em] sm:tracking-[0.8em] uppercase mb-8 sm:mb-12">
-            📩 Invitation to the Infinite
+            📩 Join Our Mailing List
           </p>
 
           <h2 className="text-3xl sm:text-5xl lg:text-7xl font-light text-gallery-text tracking-[0.1em] sm:tracking-widest uppercase mb-6 sm:mb-8 leading-none">
             Join Our <br />
             <span className="font-serif text-gallery-gold italic font-light lowercase sm:uppercase">
-              Private Circle
+              Newsletter
             </span>
           </h2>
 
@@ -78,7 +78,7 @@ export default function Newsletter() {
             transition={{ duration: 1.5, delay: 0.4 }}
             className="text-gallery-muted text-sm sm:text-lg max-w-xl mx-auto mb-16 leading-relaxed font-light italic"
           >
-            Become part of a global collective. Receive exclusive early access to new collections, curatorial insights, and private gallery viewings.
+            Join our community. Get early access to new art, expert tips, and private viewings.
           </motion.p>
 
           <form
@@ -92,7 +92,7 @@ export default function Newsletter() {
               <input
                 type="email"
                 required
-                placeholder="The gateway starts with your email"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 px-8 sm:px-10 py-6 bg-white/80 backdrop-blur-md border border-gallery-border focus:outline-none focus:border-gallery-gold transition-all text-gallery-text tracking-[0.1em] sm:tracking-[0.2em] text-xs sm:text-sm uppercase placeholder:text-gallery-muted/40 rounded-none"
@@ -101,7 +101,7 @@ export default function Newsletter() {
                 type="submit"
                 className="px-10 sm:px-12 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.4em] sm:tracking-[0.5em] uppercase flex items-center justify-center gap-4 hover:bg-black transition-all group/btn active:scale-[0.98]"
               >
-                Connect <Send size={14} className="group-hover/btn:translate-x-2 group-hover/btn:-translate-y-1 transition-transform duration-500" />
+                Subscribe <Send size={14} className="group-hover/btn:translate-x-2 group-hover/btn:-translate-y-1 transition-transform duration-500" />
               </button>
             </div>
           </form>
@@ -115,7 +115,7 @@ export default function Newsletter() {
           >
             <div className="w-12 h-px bg-gallery-gold/20" />
             <p className="text-[9px] text-gallery-muted uppercase tracking-[0.4em] font-medium">
-              By subscribing, you enter a commitment to artistic discovery.
+              By joining, you will receive updates about our new art collections.
             </p>
           </motion.div>
         </motion.div>

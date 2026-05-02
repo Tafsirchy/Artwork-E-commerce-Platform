@@ -33,10 +33,10 @@ const galleryImages = [
 ];
 
 const artThoughts = [
-  ["Echoes of a digital soul.", "The canvas remembers every movement.", "A symphony of scattered pixels.", "Where silence finds its shape."],
-  ["Form is the memory of light.", "A masterpiece in nine silent fragments.", "Colors bleeding into the void.", "The architecture of a dream."],
-  ["Where logic meets the unseen.", "Every shard is a silent conversation.", "Gravity loses its hold.", "A chaotic yet perfect symmetry."],
-  ["Art conspires in the details.", "Witness the rebirth of classical form.", "Time suspended in a single frame.", "An eternal breath of creativity."],
+  ["Digital art that speaks.", "Art that remembers you.", "A mix of perfect pixels.", "Where silence is seen."],
+  ["Modern light and shape.", "A masterpiece in simple pieces.", "Colors that blend beautifully.", "The structure of a dream."],
+  ["Where logic meets art.", "Every piece tells a story.", "Art that feels weightless.", "Perfect and balanced."],
+  ["Details matter most.", "See art in its new form.", "Time stops for creativity.", "A fresh breath of art."],
 ];
 
 const layoutSlots = [
@@ -420,12 +420,12 @@ export default function Hero() {
           <div ref={titleRef} className="relative z-10 flex flex-col items-center lg:items-end text-center lg:text-right w-full">
             <div className="title-line mb-6 inline-flex items-center gap-3 px-4 sm:px-6 py-2 border border-gallery-gold/20 rounded-none bg-white/20 backdrop-blur-xl shadow-inner">
               <Sparkles size={12} className="text-gallery-gold animate-pulse" />
-              <span className="text-[8px] sm:text-[9px] tracking-[0.4em] sm:tracking-[0.6em] uppercase text-gallery-text font-medium">The Living Canvas • Series I</span>
+              <span className="text-[8px] sm:text-[9px] tracking-[0.4em] sm:tracking-[0.6em] uppercase text-gallery-text font-medium">Your Living Art • Series I</span>
             </div>
 
             <h1 className="text-4xl sm:text-6xl lg:text-[5.2rem] font-extralight text-gallery-text leading-[1.1] lg:leading-[0.9] mb-6 tracking-tighter">
-              <span className="title-line block">Echoes of the</span>
-              <span className="title-line block text-gallery-accent font-serif mt-2">Unseen.</span>
+              <span className="title-line block">Hidden</span>
+              <span className="title-line block text-gallery-accent font-serif mt-2">Beauty.</span>
             </h1>
 
             <p className="title-line text-gallery-muted text-base sm:text-lg font-light leading-relaxed mb-10 max-w-lg border-b-2 lg:border-b-0 lg:border-r-2 border-gallery-gold/20 pb-6 lg:pb-0 lg:pr-8">
@@ -434,7 +434,7 @@ export default function Hero() {
 
             <div className="title-line flex flex-col sm:flex-row items-center gap-10">
               <Link href="/products" className="group relative px-10 sm:px-12 py-5 sm:py-6 bg-gallery-primary text-white text-[9px] sm:text-[10px] tracking-[0.4em] sm:tracking-[0.5em] uppercase overflow-hidden rounded-none block shadow-2xl transition-all duration-500 hover:shadow-gallery-gold/20 active:scale-95">
-                <span className="relative z-10 transition-transform duration-500 group-hover:translate-x-2 block">ENTER THE GALLERY</span>
+                <span className="relative z-10 transition-transform duration-500 group-hover:translate-x-2 block">VIEW THE ART</span>
                 <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               </Link>
             </div>
@@ -444,7 +444,7 @@ export default function Hero() {
       </div>
 
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
-        <span className="text-[8px] tracking-[0.5em] uppercase text-gallery-muted">Collection Window Active</span>
+        <span className="text-[8px] tracking-[0.5em] uppercase text-gallery-muted">Now Open</span>
         <div className="w-[1px] h-10 bg-gallery-gold/20" />
       </div>
     </section>

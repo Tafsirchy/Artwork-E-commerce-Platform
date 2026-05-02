@@ -161,10 +161,10 @@ export default function FeaturedArtwork() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="text-gallery-accent text-[10px] md:text-sm uppercase mb-6"
               >
-                🧩 The Curator's Eye
+                🧩 Our Best Picks
               </motion.p>
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4 leading-tight">
-                {"Opening the Doors".split(" ").map((word, i) => (
+                {"See Beautiful".split(" ").map((word, i) => (
                   <motion.span
                     key={i}
                     initial={{ opacity: 0, y: 10 }}
@@ -178,22 +178,13 @@ export default function FeaturedArtwork() {
                 ))}
                 <br />
                 <motion.span
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="inline-block mr-4"
-                >
-                  to
-                </motion.span>
-                <motion.span
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
                   className="font-serif text-gallery-gold font-light inline-block"
                 >
-                  Hidden Beauty
+                  Art
                 </motion.span>
               </h2>
             </motion.div>
@@ -207,10 +198,10 @@ export default function FeaturedArtwork() {
             className="text-left md:text-right"
           >
             <p className="text-gallery-muted max-w-sm ml-auto mb-8 text-base md:text-lg font-light leading-relaxed">
-              Hand-picked masterpieces that don't just occupy space—they transform it. Hover to witness the bloom.
+              We pick the best art that makes your room look amazing. Move your mouse to see more.
             </p>
             <Link href="/products" className="text-[10px] tracking-[0.3em] uppercase text-gallery-gold hover:text-gallery-text transition-colors border-b border-gallery-gold/30 pb-2">
-              View All Masterpieces
+              See All Art
             </Link>
           </motion.div>
         </div>
@@ -245,17 +236,17 @@ export default function FeaturedArtwork() {
           <div className="flex flex-col justify-between gap-8 relative z-10">
             <div className="flex flex-col items-center justify-start px-2 text-center pt-2">
               <h3 className="text-2xl lg:text-4xl font-light mb-4 font-serif italic text-[#e6e5dd] tracking-wider">
-                Curator's Notes
+                Our Thoughts
               </h3>
               <p className="text-xs lg:text-sm font-light leading-relaxed mb-4 opacity-90 text-[#e6e5dd]">
-                We don't just hang paintings; we capture moments of profound silence. Each piece on this board was selected for its ability to pause time and demand contemplation.
+                We pick art that makes you stop and think. Each piece is special and made with care.
               </p>
               <p className="text-xs lg:text-sm font-light leading-relaxed opacity-90 text-[#e6e5dd]">
-                Allow your eyes to wander. The beauty lies not in the center, but in the unseen corners of the canvas.
+                Look closely at the art. You will find beauty in every corner.
               </p>
 
               <div className="mt-4 mb-4">
-                <AnimatedButton onClick={() => setIsModalOpen(true)} text="See the beauty" delay={0.3} />
+                <AnimatedButton onClick={() => setIsModalOpen(true)} text="See more" delay={0.3} />
               </div>
             </div>
             {featuredItems[2] && <ArtworkCard item={featuredItems[2]} index={2} aspectClass="aspect-[3/2] md:aspect-[2/1]" className="" onImageClick={setActiveImage} />}
@@ -352,7 +343,7 @@ export default function FeaturedArtwork() {
 
                 <div className="space-y-3 w-full">
                   <AnimatedButton 
-                    text="Acquire Piece" 
+                    text="Add to Cart" 
                     containerClass="w-full mt-0" 
                     buttonClass="border-white/30 hover:border-white w-full py-4" 
                     textClass="text-white group-hover:text-black text-[9px]" 

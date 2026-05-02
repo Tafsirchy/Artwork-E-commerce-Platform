@@ -76,7 +76,7 @@ export default function ProductsPage() {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
           <p className="text-[10px] tracking-[0.4em] uppercase text-gallery-muted mb-2 sm:mb-3">Bristiii</p>
-          <h1 className="text-3xl sm:text-5xl font-light text-gallery-text tracking-tight uppercase">Curated Gallery</h1>
+          <h1 className="text-3xl sm:text-5xl font-light text-gallery-text tracking-tight uppercase">Art Gallery</h1>
           <div className="w-10 h-[1px] bg-gallery-gold mx-auto mt-4 sm:mt-6" />
         </div>
 
@@ -91,7 +91,7 @@ export default function ProductsPage() {
           >
             <Filter size={14} className="text-gallery-gold" />
             <span className="text-[10px] tracking-[0.3em] uppercase font-black text-gallery-text">
-              {isFilterOpen ? "Close Filters" : "Refine Collection"}
+              {isFilterOpen ? "Close Filters" : "Filter Art"}
             </span>
             <ChevronDown size={14} className={`text-gallery-muted transition-transform duration-300 ${isFilterOpen ? 'rotate-180' : ''}`} />
           </motion.button>
@@ -112,7 +112,7 @@ export default function ProductsPage() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-2">
                     <SortAsc size={14} className="text-gallery-gold" />
-                    <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Medium</span>
+                    <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Category</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {categories.map(cat => (
@@ -136,7 +136,7 @@ export default function ProductsPage() {
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 mb-2">
                     <DollarSign size={14} className="text-gallery-gold" />
-                    <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Valuation</span>
+                    <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Price</span>
                   </div>
                   <input 
                     type="range" 
@@ -157,16 +157,16 @@ export default function ProductsPage() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-2">
                     <SortAsc size={14} className="text-gallery-gold" />
-                    <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Sequence</span>
+                    <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Sort By</span>
                   </div>
                   <select 
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
                     className="w-full bg-gallery-soft/50 border border-gallery-border px-4 py-3 text-[10px] tracking-widest uppercase text-gallery-text focus:outline-none focus:border-gallery-gold transition-colors cursor-pointer appearance-none"
                   >
-                    <option value="newest">Recent Acquisitions</option>
-                    <option value="price-low">Valuation: Low to High</option>
-                    <option value="price-high">Valuation: High to Low</option>
+                    <option value="newest">Newest First</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
                   </select>
                 </div>
 
@@ -181,7 +181,7 @@ export default function ProductsPage() {
                     className="flex items-center gap-2 text-[9px] tracking-[0.5em] uppercase text-gallery-muted hover:text-red-500 transition-colors font-black"
                   >
                     <X size={12} />
-                    Reset Curation
+                    Reset Filters
                   </button>
                 </div>
               </div>
@@ -210,7 +210,7 @@ export default function ProductsPage() {
         {/* Empty State */}
         {!loading && filteredAndSortedProducts.length === 0 && (
           <div className="text-center py-20 bg-white border border-dashed border-gallery-border">
-            <p className="text-gallery-muted tracking-[0.3em] uppercase text-[10px] font-black">The archives are empty for this selection.</p>
+            <p className="text-gallery-muted tracking-[0.3em] uppercase text-[10px] font-black">No art found for these filters.</p>
             <button 
               onClick={() => {
                 setCategory("All");
@@ -219,7 +219,7 @@ export default function ProductsPage() {
               }}
               className="mt-6 text-[9px] tracking-[0.5em] uppercase text-gallery-gold border-b border-gallery-gold/30 hover:border-gallery-gold transition-all font-black"
             >
-              Reset Curation
+              Reset Filters
             </button>
           </div>
         )}
@@ -279,7 +279,7 @@ export default function ProductsPage() {
             </div>
             
             <p className="text-[9px] tracking-[0.5em] uppercase text-gallery-muted font-black">
-              Showing {startIndex + 1} - {Math.min(startIndex + itemsPerPage, filteredAndSortedProducts.length)} / {filteredAndSortedProducts.length} Pieces
+              Showing {startIndex + 1} - {Math.min(startIndex + itemsPerPage, filteredAndSortedProducts.length)} / {filteredAndSortedProducts.length} Artworks
             </p>
           </div>
         )}

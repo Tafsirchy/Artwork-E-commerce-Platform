@@ -185,7 +185,7 @@ export default function CheckoutPage() {
         <div className="w-full lg:w-2/3 space-y-6 sm:space-y-8">
 
           <div className="bg-gallery-surface border border-gallery-border p-6 sm:p-8 shadow-sm">
-            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-6 border-b border-gallery-border pb-4 uppercase tracking-widest">Shipping Sanctuary</h2>
+            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-6 border-b border-gallery-border pb-4 uppercase tracking-widest">Shipping Address</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <input
                 type="text" placeholder="STREET ADDRESS" value={address} onChange={e => setAddress(e.target.value)}
@@ -211,14 +211,14 @@ export default function CheckoutPage() {
           </div>
 
           <div className="bg-gallery-surface border border-gallery-border p-6 sm:p-8 shadow-sm">
-            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-6 border-b border-gallery-border pb-4 uppercase tracking-widest">Pin Location</h2>
+            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-6 border-b border-gallery-border pb-4 uppercase tracking-widest">Mark Location</h2>
             <div className="border border-gallery-border shadow-inner">
               <MapPicker onLocationSelect={(loc) => setLocation(loc)} />
             </div>
           </div>
 
           <div className="bg-gallery-surface border border-gallery-border p-6 sm:p-8 shadow-sm">
-            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-6 border-b border-gallery-border pb-4 uppercase tracking-widest">Payment Strategy</h2>
+            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-6 border-b border-gallery-border pb-4 uppercase tracking-widest">Payment Method</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <label className={`flex items-center justify-between p-6 border cursor-pointer transition-all ${paymentMethod === "Card" ? "border-gallery-gold bg-gallery-soft" : "border-gallery-border bg-white"}`}>
                 <div className="flex items-center gap-4">
@@ -227,7 +227,7 @@ export default function CheckoutPage() {
                     className="w-5 h-5 accent-gallery-gold"
                     disabled={clientSecret !== ""}
                   />
-                  <span className="text-xs uppercase tracking-widest font-black">Digital Vault</span>
+                  <span className="text-xs uppercase tracking-widest font-black">Pay Online</span>
                 </div>
                 <span className="text-[9px] uppercase tracking-tighter opacity-40">Card</span>
               </label>
@@ -238,7 +238,7 @@ export default function CheckoutPage() {
                     className="w-5 h-5 accent-gallery-gold"
                     disabled={clientSecret !== ""}
                   />
-                  <span className="text-xs uppercase tracking-widest font-black">Hand to Hand</span>
+                  <span className="text-xs uppercase tracking-widest font-black">Cash on Delivery</span>
                 </div>
                 <span className="text-[9px] uppercase tracking-tighter opacity-40">Cash</span>
               </label>
@@ -292,7 +292,7 @@ export default function CheckoutPage() {
                   </div>
                 )}
                 <div className="flex justify-between text-xs tracking-widest uppercase text-gallery-muted font-bold">
-                  <span>Logistics</span>
+                  <span>Shipping</span>
                   <span className="text-gallery-text font-black">Free</span>
                 </div>
               </div>
@@ -300,7 +300,7 @@ export default function CheckoutPage() {
 
             <div className="border-t border-gallery-border pt-6 mb-10">
               <div className="flex justify-between items-end">
-                <span className="text-xs uppercase tracking-[0.4em] text-gallery-muted mb-1 font-black">Final Total</span>
+                <span className="text-xs uppercase tracking-[0.4em] text-gallery-muted mb-1 font-black">Total Amount</span>
                 <span className="text-3xl font-black text-gallery-accent tracking-tighter leading-none">${getFinalTotal().toFixed(2)}</span>
               </div>
             </div>
@@ -311,7 +311,7 @@ export default function CheckoutPage() {
                 disabled={isSubmitting}
                 className="w-full h-16 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase font-black hover:bg-gallery-gold transition-all shadow-xl active:scale-95 disabled:opacity-50"
               >
-                {isSubmitting ? "Finalizing..." : "Complete Acquisition"}
+                {isSubmitting ? "Saving..." : "Place Order"}
               </button>
             ) : (
               <Elements stripe={stripePromise} options={{ clientSecret }}>

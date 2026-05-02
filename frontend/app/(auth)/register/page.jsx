@@ -78,7 +78,7 @@ export default function RegisterPage() {
         <div className="w-10 h-10 rounded-full bg-white border border-gallery-border flex items-center justify-center group-hover:border-gallery-gold transition-colors shadow-sm">
           <ArrowLeft size={16} />
         </div>
-        <span className="hidden sm:inline">Back to Gallery</span>
+        <span className="hidden sm:inline">Back to Home</span>
       </Link>
 
       <motion.div
@@ -97,7 +97,7 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-5 lg:space-y-2">
           <div className="space-y-2 lg:space-y-1">
             <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
-              <User size={14} className="text-gallery-gold" /> Personal Name
+              <User size={14} className="text-gallery-gold" /> Full Name
             </label>
             <input
               type="text" required placeholder="Elias Vance"
@@ -109,7 +109,7 @@ export default function RegisterPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-3">
             <div className="space-y-2 lg:space-y-1">
               <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
-                <Phone size={14} className="text-gallery-gold" /> Contact Number
+                <Phone size={14} className="text-gallery-gold" /> Phone Number
               </label>
               <input
                 type="tel" required placeholder="+1 234..."

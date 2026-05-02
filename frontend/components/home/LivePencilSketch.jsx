@@ -225,7 +225,7 @@ const LivePencilSketch = () => {
               {/* Desktop Sidebars (LG+) */}
               <div className="hidden lg:block">
                 <div className="absolute left-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 bg-white/80 backdrop-blur-xl p-4 rounded-2xl border border-black/5 z-20 shadow-xl">
-                  <p className="text-[8px] tracking-[0.3em] uppercase text-gallery-muted mb-2 text-center">Medium</p>
+                  <p className="text-[8px] tracking-[0.3em] uppercase text-gallery-muted mb-2 text-center">Tools</p>
                   {BRUSHES.map((b) => (
                     <button key={b.name} onClick={() => setActiveBrush(b)} className={`text-[9px] py-3 px-4 rounded-none border transition-all ${activeBrush.name === b.name ? 'bg-gallery-text text-white border-gallery-text' : 'bg-white/50 text-gallery-text border-transparent'}`}>
                       {b.name.split(' ')[1] || b.name}
@@ -234,27 +234,27 @@ const LivePencilSketch = () => {
                 </div>
 
                 <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 bg-white/80 backdrop-blur-xl p-4 rounded-2xl border border-black/5 z-20 shadow-xl">
-                  <p className="text-[8px] tracking-[0.3em] uppercase text-gallery-muted mb-2 text-center">Tints</p>
+                  <p className="text-[8px] tracking-[0.3em] uppercase text-gallery-muted mb-2 text-center">Colors</p>
                   <div className="grid grid-cols-2 gap-3">
                     {PALETTE.map((p) => (
                       <button key={p.name} onClick={() => setActiveColor(p)} className={`w-8 h-8 rounded-full border-2 ${activeColor.name === p.name ? 'border-gallery-text scale-110 shadow-lg' : 'border-transparent opacity-60'}`} style={{ backgroundColor: p.dot }} />
                     ))}
                   </div>
-                  <button onClick={() => shadingRef.current = []} className="text-[8px] tracking-[0.2em] uppercase text-red-500 mt-2">Clear</button>
+                  <button onClick={() => shadingRef.current = []} className="text-[8px] tracking-[0.2em] uppercase text-red-500 mt-2">Reset</button>
                 </div>
               </div>
 
               {/* Status Indicator */}
               <div className="absolute bottom-6 left-6 flex flex-col">
-                <span className="text-[10px] tracking-[0.4em] uppercase text-gallery-muted/60">Live Sketching</span>
-                <span className="text-[10px] font-signature text-gallery-text">Series 0.4: "The Observant"</span>
+                <span className="text-[10px] tracking-[0.4em] uppercase text-gallery-muted/60">Live Art</span>
+                <span className="text-[10px] font-signature text-gallery-text">Series 0.4: "The Watcher"</span>
               </div>
             </div>
 
             {/* Mobile Artist's Toolbox (Visible on < LG) */}
             <div className="lg:hidden flex flex-col gap-6 bg-gallery-soft/20 p-6 rounded-2xl border border-black/5">
               <div className="flex flex-col gap-3">
-                <p className="text-[8px] tracking-[0.4em] uppercase text-gallery-accent font-bold">Select Medium</p>
+                <p className="text-[8px] tracking-[0.4em] uppercase text-gallery-accent font-bold">Choose Tool</p>
                 <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                   {BRUSHES.map((b) => (
                     <button key={b.name} onClick={() => setActiveBrush(b)} className={`whitespace-nowrap text-[10px] py-4 px-6 rounded-none border transition-all ${activeBrush.name === b.name ? 'bg-gallery-text text-white' : 'bg-white text-gallery-text border-black/5'}`}>
@@ -264,13 +264,13 @@ const LivePencilSketch = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <p className="text-[8px] tracking-[0.4em] uppercase text-gallery-accent font-bold">Select Tint</p>
+                <p className="text-[8px] tracking-[0.4em] uppercase text-gallery-accent font-bold">Choose Color</p>
                 <div className="flex gap-4 items-center">
                   {PALETTE.map((p) => (
                     <button key={p.name} onClick={() => setActiveColor(p)} className={`w-12 h-12 rounded-full border-4 ${activeColor.name === p.name ? 'border-gallery-gold scale-110' : 'border-transparent'}`} style={{ backgroundColor: p.dot }} />
                   ))}
                   <div className="w-px h-8 bg-black/10 mx-2" />
-                  <button onClick={() => shadingRef.current = []} className="text-[10px] tracking-[0.2em] uppercase text-red-500 font-bold">Clear Canvas</button>
+                  <button onClick={() => shadingRef.current = []} className="text-[10px] tracking-[0.2em] uppercase text-red-500 font-bold">Reset Art</button>
                 </div>
               </div>
             </div>
@@ -281,16 +281,16 @@ const LivePencilSketch = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <div className="flex items-center gap-3 mb-6">
                 <Sparkles size={16} className="text-gallery-gold" />
-                <span className="text-[10px] tracking-[0.6em] uppercase text-gallery-accent font-medium">Generative Soul</span>
+                <span className="text-[10px] tracking-[0.6em] uppercase text-gallery-accent font-medium">Living Art</span>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-6 leading-tight">
-                Art Comes <br /> <span className="font-serif text-gallery-gold">to Life</span>
+                Art that is <br /> <span className="font-serif text-gallery-gold">Alive</span>
               </h1>
               <p className="text-gallery-muted text-base md:text-lg font-light leading-relaxed mb-10 border-l-2 border-gallery-gold/20 pl-8">
-                Experience the meditative flow of a digital graphite pencil. A living portrait that reacts to your presence, evolving with every movement.
+                Draw and see your art move. This drawing changes as you move.
               </p>
               <button className="w-full md:w-auto group flex items-center justify-center gap-6 bg-gallery-text text-white px-10 py-5 rounded-none hover:bg-gallery-primary transition-all shadow-xl active:scale-95">
-                <span className="text-xs tracking-[0.4em] uppercase font-bold">Acquire Original</span>
+                <span className="text-xs tracking-[0.4em] uppercase font-bold">Buy Now</span>
                 <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
               </button>
             </motion.div>

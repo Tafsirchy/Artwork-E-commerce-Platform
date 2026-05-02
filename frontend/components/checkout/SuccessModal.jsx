@@ -148,7 +148,7 @@ export default function SuccessModal({ isOpen, orderId, onClose }) {
               transition={{ delay: 0.3 }}
               className="text-3xl font-light text-gallery-text tracking-widest uppercase mb-2"
             >
-              Acquisition Complete
+              Order Confirmed
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0 }}
@@ -157,7 +157,7 @@ export default function SuccessModal({ isOpen, orderId, onClose }) {
               className="text-gallery-muted tracking-[0.2em] uppercase text-[9px] font-bold mb-8 flex items-center justify-center gap-3"
             >
               <Sparkles size={12} className="text-gallery-gold" />
-              A Masterpiece Joins Your Collection
+              Your Art is on its Way
               <Sparkles size={12} className="text-gallery-gold" />
             </motion.p>
 
@@ -168,7 +168,7 @@ export default function SuccessModal({ isOpen, orderId, onClose }) {
               className="bg-gallery-soft/80 backdrop-blur-sm p-6 mb-8 border border-gallery-border relative group overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-gallery-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <p className="text-[10px] tracking-widest uppercase text-gallery-muted mb-2">Authenticity ID</p>
+              <p className="text-[10px] tracking-widest uppercase text-gallery-muted mb-2">Order ID</p>
               <p className="font-mono text-sm tracking-widest text-gallery-text font-bold">#{orderId?.slice(-12).toUpperCase()}</p>
             </motion.div>
 
@@ -178,14 +178,14 @@ export default function SuccessModal({ isOpen, orderId, onClose }) {
                 className="col-span-2 py-4 bg-gallery-primary text-white text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-black transition-all flex items-center justify-center gap-3 group relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform" />
-                <span className="relative z-10">Enter Private Gallery</span>
+                <span className="relative z-10">Go to Dashboard</span>
                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform relative z-10" />
               </Link>
               <button 
                 onClick={onClose}
                 className="col-span-2 py-4 border border-gallery-border text-gallery-text text-[10px] tracking-[0.4em] uppercase hover:bg-gallery-soft transition-all"
               >
-                Continue Exploring
+                Keep Shopping
               </button>
             </div>
           </div>

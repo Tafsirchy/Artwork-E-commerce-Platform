@@ -195,7 +195,7 @@ export default function ArtShelfSection() {
       <div className="absolute top-8 right-6 md:top-32 z-[100] md:z-40 flex flex-col items-end gap-3">
         <button
           onClick={() => setIsRaining(!isRaining)}
-          aria-label={isRaining ? "Clear Skies" : "Summon Storm"}
+          aria-label={isRaining ? "Normal Mode" : "Rain Mode"}
           className="group relative flex items-center gap-2 px-6 py-4 md:px-5 md:py-2.5 rounded-full backdrop-blur-xl border shadow-2xl hover:transition-all duration-500 text-[11px] font-bold tracking-[0.2em] uppercase overflow-hidden"
           style={{
             backgroundColor: isRaining ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.8)",
@@ -205,7 +205,7 @@ export default function ArtShelfSection() {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
           <CloudRain size={20} className={`${isRaining ? "text-blue-300" : "text-gallery-gold"} transition-colors duration-500`} />
-          <span className="relative z-10 hidden sm:inline">{isRaining ? "Clear Skies" : "Summon Storm"}</span>
+          <span className="relative z-10 hidden sm:inline">{isRaining ? "Normal Mode" : "Rain Mode"}</span>
           <span className="relative z-10 sm:hidden">{isRaining ? "Clear" : "Storm"}</span>
         </button>
 
@@ -217,7 +217,7 @@ export default function ArtShelfSection() {
           <div className="text-[12px] font-black mb-1.5" style={{ color: isRaining ? "#93c5fd" : "#8b6340" }}>↑</div>
           <div className="px-3 py-1.5 rounded-sm border backdrop-blur-sm shadow-xl" style={{ backgroundColor: isRaining ? "rgba(147, 197, 253, 0.1)" : "rgba(139, 99, 64, 0.05)", borderColor: isRaining ? "rgba(147, 197, 253, 0.3)" : "rgba(139, 99, 64, 0.2)" }}>
             <span className="text-[8px] tracking-[0.6em] font-black uppercase text-center block" style={{ color: isRaining ? "#93c5fd" : "#8b6340" }}>
-              {isRaining ? "Restore Serenity" : "Experience Atmosphere"}
+              {isRaining ? "Back to Normal" : "See the Rain"}
             </span>
           </div>
         </motion.div>
@@ -235,7 +235,7 @@ export default function ArtShelfSection() {
           className="text-[9px] md:text-[10px] uppercase mb-3 tracking-[0.4em]"
           style={{ color: isRaining ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.35)" }}
         >
-          Our Living Archive
+          Our Art Archive
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -244,7 +244,7 @@ export default function ArtShelfSection() {
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4 leading-tight"
           style={{ color: isRaining ? "rgba(255,255,255,0.9)" : undefined }}
         >
-          Explore the <br /> <span className="font-serif text-gallery-gold">Collection</span>
+          Browse the <br /> <span className="font-serif text-gallery-gold">Art</span>
         </motion.h2>
       </div>
 

@@ -14,10 +14,10 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gallery-bg flex flex-col items-center justify-center px-6">
-        <h2 className="text-3xl font-light text-gallery-text mb-6">Your Collection is Empty</h2>
-        <p className="text-gallery-muted mb-8">Discover our curated artworks to start your collection.</p>
+        <h2 className="text-3xl font-light text-gallery-text mb-6">Your Cart is Empty</h2>
+        <p className="text-gallery-muted mb-8">Check out our art to start shopping.</p>
         <Link href="/products" className="px-8 py-3 bg-gallery-primary text-white rounded hover:bg-black transition-colors">
-          Explore Gallery
+          Start Shopping
         </Link>
       </div>
     );
@@ -26,7 +26,7 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-gallery-bg py-10 sm:py-16">
       <div className="container mx-auto px-6">
-        <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text mb-8 sm:mb-12 tracking-tight uppercase">Your Collection</h1>
+        <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text mb-8 sm:mb-12 tracking-tight uppercase">Your Cart</h1>
 
         <div className="flex flex-col lg:flex-row gap-8 sm:gap-12">
           {/* Cart Items */}
@@ -97,14 +97,14 @@ export default function CartPage() {
                   <span className="text-gallery-text">${getTotal().toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-xs text-gallery-muted uppercase tracking-widest">
-                  <span>Logistics</span>
+                  <span>Shipping</span>
                   <span className="italic">Calculated at checkout</span>
                 </div>
               </div>
 
               <div className="border-t border-gallery-border pt-6 mb-10">
                 <div className="flex justify-between items-end">
-                  <span className="text-xs uppercase tracking-[0.4em] text-gallery-muted mb-1 font-bold">Total Investment</span>
+                  <span className="text-xs uppercase tracking-[0.4em] text-gallery-muted mb-1 font-bold">Total Price</span>
                   <span className="text-3xl font-black text-gallery-accent tracking-tighter leading-none">${getTotal().toFixed(2)}</span>
                 </div>
               </div>
@@ -113,7 +113,7 @@ export default function CartPage() {
                 onClick={() => router.push('/checkout')}
                 className="w-full h-16 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase font-black hover:bg-gallery-gold transition-all shadow-xl active:scale-95"
               >
-                Acquisition Entry
+                Go to Checkout
               </button>
             </div>
           </div>

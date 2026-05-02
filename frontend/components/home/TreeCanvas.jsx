@@ -398,18 +398,18 @@ export default function TreeCanvas() {
       <div className="max-w-4xl w-full px-6 text-center mb-10 md:mb-16">
         <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
           className="text-[9px] md:text-[10px] tracking-[0.4em] md:tracking-[0.6em] uppercase text-black/40 font-bold mb-3">
-          Living Masterpiece
+          Living Art
         </motion.p>
         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="text-3xl md:text-5xl font-serif text-black tracking-tight italic">
-          The Breathing Canopy
+          The Moving Tree
         </motion.h2>
         <motion.div initial={{ width: 0 }} whileInView={{ width: 60 }}
           className="h-[1px] bg-black/10 mx-auto mt-6 md:mt-8" />
         <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.4 }}
           className="mt-5 text-[9px] md:text-[11px] text-black/30 tracking-[0.3em] md:tracking-[0.35em] uppercase">
-          {isTouchDevice ? "Sweep through the canopy — discover by color" : "Hover over the canopy — discover by color"}
+          {isTouchDevice ? "Move your finger to find art by color" : "Move your mouse to find art by color"}
         </motion.p>
       </div>
 
@@ -429,7 +429,7 @@ export default function TreeCanvas() {
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none">
             <motion.p animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ repeat: Infinity, duration: 3.5 }}
               className="text-[8px] md:text-[9px] tracking-[0.4em] uppercase text-black/25 whitespace-nowrap">
-              {isTouchDevice ? "swipe your finger through the colors" : "move cursor through the colors"}
+              {isTouchDevice ? "swipe to see art" : "move mouse to see art"}
             </motion.p>
           </div>
         </motion.div>
@@ -469,7 +469,7 @@ export default function TreeCanvas() {
                     </div>
                     <div className="px-1 pb-1">
                       <p className="text-[10px] font-bold tracking-widest uppercase text-black truncate">{art.title}</p>
-                      <p className="text-[8px] italic text-black/40 font-serif truncate mt-1">Explore Portrait →</p>
+                      <p className="text-[8px] italic text-black/40 font-serif truncate mt-1">View Art →</p>
                     </div>
                   </div>
                 </Link>
@@ -481,7 +481,7 @@ export default function TreeCanvas() {
 
       <div className="max-w-xl text-center px-6 mt-12 md:mt-16">
         <p className="text-[10px] md:text-[11px] tracking-[0.3em] text-black/30 uppercase leading-relaxed italic font-medium">
-          "A living painting where colors breathe, move, and respond — without losing its original artistic soul."
+          "A painting that moves and reacts to you while staying true to its art."
         </p>
       </div>
     </section>
