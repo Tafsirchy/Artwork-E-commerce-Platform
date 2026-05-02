@@ -66,7 +66,7 @@ export default function LoginPage() {
           <h2 className="text-3xl sm:text-4xl lg:text-2xl font-extralight text-gallery-text tracking-tighter uppercase mb-2">
             Sign <span className="font-serif text-gallery-gold">In</span>
           </h2>
-          <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Log in to your account</p>
+          <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Log into your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 lg:space-y-2">

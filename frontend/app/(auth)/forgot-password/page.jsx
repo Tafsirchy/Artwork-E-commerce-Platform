@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
     try {
       await api.post("/auth/forgot-password", { email });
       setSubmitted(true);
-      toast.success("Recovery link dispatched", {
+      toast.success("Recovery link sent! Check your inbox.", {
         style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
       });
     } catch (error) {
@@ -50,11 +50,11 @@ export default function ForgotPasswordPage() {
         {!submitted ? (
           <>
             <div className="text-center mb-10 sm:mb-12">
-              <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-3 font-black">Identity Recovery</p>
+              <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-3 font-black">Account Recovery</p>
               <h2 className="text-3xl sm:text-4xl font-extralight text-gallery-text tracking-tighter uppercase mb-2">
-                Lost <span className="font-serif text-gallery-gold">Identity</span>
+                Forgot <span className="font-serif text-gallery-gold">Password</span>
               </h2>
-              <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Enter your registered email to recover access</p>
+              <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Enter your email to reset your password</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
                 type="submit" disabled={isLoading}
                 className="w-full h-16 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
               >
-                {isLoading ? "Dispatching..." : <><Send size={18} /> Dispatch Recovery Link</>}
+                {isLoading ? "Sending..." : <><Send size={18} /> Send Reset Link</>}
               </button>
             </form>
           </>
@@ -86,12 +86,12 @@ export default function ForgotPasswordPage() {
             >
               <Send className="text-gallery-gold" size={32} />
             </motion.div>
-            <h2 className="text-2xl font-light text-gallery-text tracking-widest uppercase mb-4">Dispatched</h2>
-            <p className="text-sm text-gallery-muted leading-relaxed mb-8 font-light italic">
-              A recovery transmission has been sent to <span className="text-gallery-text font-black not-italic">{email}</span>. Please verify your inbox to proceed.
+            <h2 className="text-2xl font-light text-gallery-text tracking-widest uppercase mb-4">Email Sent!</h2>
+            <p className="text-sm text-gallery-muted leading-relaxed mb-8 font-light">
+              A password reset link has been sent to <span className="text-gallery-text font-black">{email}</span>. Please check your inbox and follow the instructions.
             </p>
             <Link href="/login" className="inline-block h-14 px-10 border border-gallery-border text-[10px] uppercase tracking-widest font-black flex items-center justify-center gap-3 hover:bg-gallery-soft/30 transition-all active:scale-95 mx-auto">
-              Return to Authentication
+              Back to Login
             </Link>
           </div>
         )}
@@ -99,7 +99,7 @@ export default function ForgotPasswordPage() {
         {!submitted && (
           <div className="mt-12 pt-6 border-t border-gallery-border text-center">
             <Link href="/login" className="text-xs tracking-[0.2em] uppercase text-gallery-muted hover:text-gallery-gold transition-colors flex items-center justify-center gap-3 font-black">
-              <ArrowLeft size={14} /> Remembered? Authenticate
+              <ArrowLeft size={14} /> Remembered? Login
             </Link>
           </div>
         )}

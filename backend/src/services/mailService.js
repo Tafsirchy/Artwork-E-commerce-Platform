@@ -19,7 +19,7 @@ const sendOrderConfirmationEmail = async (order, userEmail) => {
     };
 
     await transporter.sendMail(mailOptions);
-    
+
     console.log(`Email sent successfully to ${userEmail}`);
   } catch (error) {
     console.error("Email Sending Error:", error);
@@ -35,7 +35,7 @@ const sendResetPasswordEmail = async (userEmail, resetToken) => {
       subject: "Password Reset Request",
       html: `
         <div style="font-family: 'Outfit', sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #eee;">
-          <h2 style="color: #1a1a1a; text-transform: uppercase; letter-spacing: 2px;">Identity Recovery</h2>
+          <h2 style="color: #1a1a1a; text-transform: uppercase; letter-spacing: 2px;">Account Recovery</h2>
           <p style="color: #666; line-height: 1.6;">We received a request to reset the password for your Bristiii account. If this wasn't you, please ignore this email.</p>
           <div style="margin: 40px 0;">
             <a href="${resetUrl}" style="background-color: #1a1a1a; color: #fff; padding: 15px 30px; text-decoration: none; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; font-weight: bold;">Reset Password</a>

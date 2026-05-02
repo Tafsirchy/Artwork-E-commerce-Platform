@@ -34,7 +34,7 @@ export default function ResetPasswordPage() {
     setIsLoading(true);
     try {
       await api.post(`/auth/reset-password/${token}`, { password });
-      toast.success("Cipher updated. Identity restored.");
+      toast.success("Password updated successfully!");
       router.push("/login");
     } catch (error) {
       toast.error(error.response?.data?.message || "Reset failed");
@@ -63,14 +63,14 @@ export default function ResetPasswordPage() {
 
       <div className="w-full max-w-sm bg-white p-8 border border-gallery-border shadow-2xl relative">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-light text-gallery-text tracking-tight uppercase mb-1">New <span className="font-serif italic text-gallery-gold">Cipher</span></h2>
-          <p className="text-gallery-muted text-[8px] tracking-[0.3em] uppercase">Secure your identity access</p>
+          <h2 className="text-3xl font-light text-gallery-text tracking-tight uppercase mb-1">New <span className="font-serif italic text-gallery-gold">Password</span></h2>
+          <p className="text-gallery-muted text-[8px] tracking-[0.3em] uppercase">Choose a strong new password</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-1">
             <label className="text-[9px] uppercase tracking-widest font-bold text-gallery-muted flex items-center gap-2">
-              <Lock size={10} /> New Cipher
+              <Lock size={10} /> New Password
             </label>
             <input
               type="password" required
@@ -88,7 +88,7 @@ export default function ResetPasswordPage() {
 
           <div className="space-y-1">
             <label className="text-[9px] uppercase tracking-widest font-bold text-gallery-muted flex items-center gap-2">
-              <ShieldCheck size={10} /> Confirm Cipher
+              <ShieldCheck size={10} /> Confirm Password
             </label>
             <input
               type="password" required
@@ -101,7 +101,7 @@ export default function ResetPasswordPage() {
             type="submit" disabled={isLoading}
             className="w-full py-3 bg-gallery-primary text-white text-[9px] uppercase tracking-[0.3em] font-bold hover:bg-black transition-all shadow-lg disabled:opacity-50"
           >
-            {isLoading ? "Updating..." : "Inscribe Cipher"}
+            {isLoading ? "Saving..." : "Save New Password"}
           </button>
         </form>
       </div>

@@ -91,7 +91,7 @@ export default function RegisterPage() {
           <h2 className="text-3xl sm:text-4xl lg:text-2xl font-extralight text-gallery-text tracking-tighter uppercase mb-2">
             Sign <span className="font-serif text-gallery-gold">Up</span>
           </h2>
-          <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Create your free account today</p>
+          <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Create Your Account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 lg:space-y-2">
