@@ -66,7 +66,7 @@ export default function CustomerDashboard() {
 
   return (
     <section className="bg-gallery-bg min-h-screen pt-12 sm:pt-20 pb-20 sm:pb-24">
-      <div className="container mx-auto px-6 max-w-[1600px] flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
+      <div className="container mx-auto px-6 flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
         
         {/* Sidebar Profile */}
         <ProfileAside />

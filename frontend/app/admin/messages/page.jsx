@@ -52,7 +52,7 @@ export default function AdminMessagesPage() {
 
   return (
     <div className="min-h-screen bg-gallery-bg p-6 sm:p-8 pt-12 sm:pt-20">
-      <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
+      <div className="container mx-auto flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
         <ProfileAside />
 
         <div className="flex-1 w-full">

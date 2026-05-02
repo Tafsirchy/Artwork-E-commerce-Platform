@@ -13,7 +13,7 @@ export default function BlogDetailsSkeleton() {
             <div className="h-3 bg-gallery-soft rounded w-48" />
             <div className="h-16 bg-gallery-soft rounded w-full sm:w-3/4" />
             <div className="h-6 bg-gallery-soft rounded w-1/2" />
-            
+
             <div className="flex items-center gap-6 border-y border-gallery-border py-8">
               <div className="w-12 h-12 bg-gallery-soft rounded-none" />
               <div className="space-y-2">
@@ -33,7 +33,7 @@ export default function BlogDetailsSkeleton() {
       </section>
 
       {/* Content Placeholder */}
-      <section className="container mx-auto px-6 max-w-4xl">
+      <section className="container mx-auto px-6 ">
         <div className="space-y-8">
           <div className="h-4 bg-gallery-soft rounded w-full" />
           <div className="h-4 bg-gallery-soft rounded w-full" />

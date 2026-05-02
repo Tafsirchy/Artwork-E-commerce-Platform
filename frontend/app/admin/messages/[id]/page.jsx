@@ -145,7 +145,7 @@ export default function MessageDetailsPage() {
                 </div>
 
                 {/* Message Narrative Body */}
-                <article className="max-w-4xl mx-auto sm:mx-0">
+                <article className=" mx-auto sm:mx-0">
                   <div className="flex items-center gap-6 mb-12">
                     <div className="h-px bg-gallery-gold/30 flex-1" />
                     <div className="flex items-center gap-3">

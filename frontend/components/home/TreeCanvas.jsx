@@ -395,7 +395,7 @@ export default function TreeCanvas() {
 
   return (
     <section className="w-full py-16 md:py-24 bg-white flex flex-col items-center">
-      <div className="max-w-4xl w-full px-6 text-center mb-10 md:mb-16">
+      <div className=" w-full px-6 text-center mb-10 md:mb-16">
         <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
           className="text-[9px] md:text-[10px] tracking-[0.4em] md:tracking-[0.6em] uppercase text-black/40 font-bold mb-3">
           Living Art

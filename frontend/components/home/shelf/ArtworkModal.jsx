@@ -27,7 +27,7 @@ export default function ArtworkModal({ artwork, onClose }) {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.88, opacity: 0, y: 30 }}
           transition={{ type: "spring", damping: 22, stiffness: 280 }}
-          className="relative z-10 w-full max-w-4xl flex flex-col md:flex-row bg-[#0e0e0e] shadow-2xl overflow-hidden"
+          className="relative z-10 w-full  flex flex-col md:flex-row bg-[#0e0e0e] shadow-2xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Image */}

@@ -326,7 +326,7 @@ export default function FeaturedArtwork() {
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.98, opacity: 0, y: 20 }}
                     transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                    className="relative max-w-4xl w-full flex flex-col md:flex-row items-stretch bg-[#1a1a1a] shadow-2xl overflow-hidden rounded-sm mx-4"
+                    className="relative  w-full flex flex-col md:flex-row items-stretch bg-[#1a1a1a] shadow-2xl overflow-hidden rounded-sm mx-4"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {/* Image Section */}
