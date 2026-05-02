@@ -19,9 +19,7 @@ export default function LoginPage() {
   const handleGoogleSuccess = async (tokenId) => {
     try {
       await googleLogin(tokenId);
-      toast.success("Logged in with Google!", {
-        style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
-      });
+      toast.success("Logged in with Google!");
       router.push("/");
     } catch (error) {
       toast.error(error.message || "Google verification failed");
@@ -32,9 +30,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await login(email, password);
-      toast.success("Logged in successfully!", {
-        style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
-      });
+      toast.success("Logged in successfully!");
       router.push("/");
     } catch (error) {
       toast.error(error.message || "Verification failed");

@@ -74,6 +74,11 @@ app.get("/", (req, res) => {
   res.send("Bristiii Artwork Gallery API is running...");
 });
 
+// 🩺 Health Check (No DB)
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "alive", timestamp: new Date().toISOString() });
+});
+
 // Error Handlers
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 app.use(notFound);

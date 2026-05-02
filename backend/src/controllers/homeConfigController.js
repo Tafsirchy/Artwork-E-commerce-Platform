@@ -1,4 +1,5 @@
 const HomeConfig = require("../models/HomeConfig");
+const Product = require("../models/Product"); // Ensure Product model is registered for population
 
 // @desc    Get home config by section
 // @route   GET /api/home-config/:section

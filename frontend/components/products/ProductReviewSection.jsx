@@ -208,7 +208,7 @@ export default function ProductReviewSection({ productId }) {
                 <div className="text-center py-8">
                   <p className="text-[11px] tracking-widest uppercase text-gallery-muted mb-4">Sign in to share your perspective</p>
                   <a href="/login" className="inline-block px-6 py-2 bg-gallery-primary text-white text-[9px] uppercase tracking-widest font-bold hover:bg-black transition-all">
-                    Access Gallery
+                    Login
                   </a>
                 </div>
               ) : myReview ? (

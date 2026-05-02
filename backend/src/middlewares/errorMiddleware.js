@@ -4,19 +4,21 @@ const notFound = (req, res, next) => {
   next(error);
 };
 
-const fs = require("fs");
-const path = require("path");
+
 
 const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   
-  // Log to file for AI diagnosis
-  const logMsg = `\n[${new Date().toISOString()}] ${req.method} ${req.originalUrl}\nError: ${err.message}\nStack: ${err.stack}\nBody: ${JSON.stringify(req.body)}\n`;
-  fs.appendFileSync(path.join(__dirname, "../../error_log.txt"), logMsg);
+  // Log to console for Vercel logging
+  console.error(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  console.error(`Error: ${err.message}`);
+  if (process.env.NODE_ENV !== "production") {
+    console.error(`Stack: ${err.stack}`);
+  }
 
   res.status(statusCode).json({
     message: err.message,
-    stack: process.env.NODE_ENV === "production" ? undefined : err.stack,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
 };
 

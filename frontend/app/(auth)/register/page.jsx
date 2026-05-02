@@ -24,9 +24,7 @@ export default function RegisterPage() {
   const handleGoogleSuccess = async (tokenId) => {
     try {
       await googleLogin(tokenId);
-      toast.success("Account created with Google!", {
-        style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
-      });
+      toast.success("Account created with Google!");
       router.push("/");
     } catch (error) {
       toast.error(error.message || "Google registration failed");
@@ -50,9 +48,7 @@ export default function RegisterPage() {
     }
     try {
       await register(name, email, password, phone);
-      toast.success("Account created successfully!", {
-        style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
-      });
+      toast.success("Account created successfully!");
       router.push("/");
     } catch (error) {
       toast.error(error.message || "Registration failed");

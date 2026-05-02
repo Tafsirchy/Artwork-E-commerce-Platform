@@ -272,14 +272,14 @@ export default function Navbar() {
                     className="flex items-center justify-center h-14 border border-gallery-border text-gallery-text text-sm tracking-[0.3em] uppercase font-black active:bg-gallery-soft transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
-                    Access Gallery
+                    Login
                   </Link>
                   <Link
                     href="/register"
                     className="flex items-center justify-center h-14 bg-gallery-primary text-white text-sm tracking-[0.3em] uppercase font-black shadow-xl active:scale-95 transition-all"
                     onClick={() => setMobileOpen(false)}
                   >
-                    Join the Circle
+                    Signup
                   </Link>
                 </div>
               )}

@@ -202,3 +202,70 @@
   animation: shimmer 2s infinite linear;
 }
 
+
+/* --- Premium Gallery Notification Theme --- */
+.Toastify__toast-container {
+  width: 380px !important;
+  padding: 0 !important;
+}
+
+.Toastify__toast {
+  border-radius: 0 !important;
+  font-family: var(--font-outfit), sans-serif !important;
+  background-color: #1C1C1C !important; /* gallery-primary */
+  color: #FFFFFF !important;
+  padding: 20px 24px !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+  border: 1px solid rgba(255,255,255,0.05) !important;
+  margin-bottom: 12px !important;
+}
+
+/* Success State: Gold on Black */
+.Toastify__toast--success {
+  border-left: 4px solid #C8A96A !important; /* gallery-gold */
+}
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: #C8A96A !important;
+}
+.Toastify__toast--success .Toastify__toast-body {
+  color: #C8A96A !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  font-size: 11px !important;
+}
+
+/* Error/General State: White on Black */
+.Toastify__toast--error, .Toastify__toast--info, .Toastify__toast--warning {
+  border-left: 4px solid #FFFFFF !important;
+}
+.Toastify__toast--error .Toastify__toast-icon svg,
+.Toastify__toast--info .Toastify__toast-icon svg {
+  fill: #FFFFFF !important;
+}
+.Toastify__toast--error .Toastify__toast-body,
+.Toastify__toast--info .Toastify__toast-body {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  font-size: 11px !important;
+}
+
+.Toastify__progress-bar {
+  height: 2px !important;
+}
+.Toastify__progress-bar--success {
+  background: #C8A96A !important;
+}
+.Toastify__progress-bar--error, .Toastify__progress-bar--info {
+  background: #FFFFFF !important;
+}
+
+.Toastify__close-button {
+  color: #FFFFFF !important;
+  opacity: 0.3 !important;
+}
+.Toastify__close-button:hover {
+  opacity: 1 !important;
+}
