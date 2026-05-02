@@ -98,12 +98,14 @@ const createProduct = async (req, res, next) => {
     }
 
     const imageUrl = imgbbRes.data.data.url;
+    const thumbnailUrl = imgbbRes.data.data.thumb?.url || imageUrl;
 
     const product = new Product({
       title,
       description,
       price,
       imageUrl,
+      thumbnailUrl,
       stock,
       creator,
       category,
@@ -151,6 +153,7 @@ const updateProduct = async (req, res, next) => {
           formData
         );
         product.imageUrl = imgbbRes.data.data.url;
+        product.thumbnailUrl = imgbbRes.data.data.thumb?.url || product.imageUrl;
       }
 
       const updatedProduct = await product.save();

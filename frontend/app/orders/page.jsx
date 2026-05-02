@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Package, Search, ChevronRight, FileText, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import api from "@/lib/api";
 import useAuthStore from "@/store/authStore";
 import OrdersSkeleton from "@/components/ui/OrdersSkeleton";
@@ -176,7 +177,7 @@ export default function UserOrdersPage() {
                     <div className="flex -space-x-4">
                       {order.orderItems.slice(0, 4).map((item, idx) => (
                         <div key={idx} className="w-16 h-16 border-2 border-white bg-gallery-soft shadow-sm grayscale group-hover:grayscale-0 transition-all overflow-hidden relative">
-                          <img src={item.image || item.imageUrl} alt={item.name || item.title} className="w-full h-full object-cover" />
+                          <Image src={item.image || item.imageUrl} alt={item.name || item.title} fill className="object-cover" sizes="64px" />
                         </div>
                       ))}
                       {order.orderItems.length > 4 && (

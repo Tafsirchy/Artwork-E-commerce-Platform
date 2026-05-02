@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import api from "@/lib/api";
 import Image from "next/image";
+import BlogDetailsSkeleton from "@/components/ui/BlogDetailsSkeleton";
 
 export default function BlogDetailsPage() {
   const { id } = useParams();
@@ -31,11 +32,7 @@ export default function BlogDetailsPage() {
   }, [id]);
 
   if (loading) {
-    return (
-      <main className="bg-white min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-gallery-gold border-t-transparent rounded-full animate-spin"></div>
-      </main>
-    );
+    return <BlogDetailsSkeleton />;
   }
 
   if (!post) {
@@ -78,11 +75,13 @@ export default function BlogDetailsPage() {
             </p>
 
             <div className="flex items-center gap-4 sm:gap-6 border-y border-gallery-border py-6 sm:py-8">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gallery-soft rounded-none flex items-center justify-center border border-gallery-border overflow-hidden">
-                <img 
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 bg-gallery-soft rounded-none flex items-center justify-center border border-gallery-border overflow-hidden">
+                <Image 
                   src={`https://ui-avatars.com/api/?name=${post.author}&background=f8f8f8&color=1a1a1a`} 
                   alt={post.author} 
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 40px, 48px"
                 />
               </div>
               <div>

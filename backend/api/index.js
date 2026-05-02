@@ -9,7 +9,7 @@ const path = require("path");
 // Load env vars
 dotenv.config();
 
-const connectDB = require("./config/db");
+const connectDB = require("../src/config/db");
 // 🚀 Vercel optimization: Connect to DB immediately
 connectDB();
 
@@ -47,22 +47,22 @@ const authLimiter = rateLimit({
 });
 
 // Stripe Webhook (Must be before express.json)
-const { stripeWebhook } = require("./controllers/orderController");
+const { stripeWebhook } = require("../src/controllers/orderController");
 app.post("/api/orders/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 
 app.use(express.json());
 
 // API Routes
-app.use("/api/auth", authLimiter, require("./routes/authRoutes"));
-app.use("/api/products", require("./routes/productRoutes"));
-app.use("/api/products/:id/reviews", require("./routes/productReviewRoutes"));
-app.use("/api/cart", require("./routes/cartRoutes"));
-app.use("/api/orders", require("./routes/orderRoutes"));
-app.use("/api/promotions", require("./routes/promotionRoutes"));
-app.use("/api/reviews", require("./routes/reviewRoutes"));
-app.use("/api/home-config", require("./routes/homeConfigRoutes"));
-app.use("/api/blogs", require("./routes/blogRoutes"));
-app.use("/api/contacts", require("./routes/contactRoutes"));
+app.use("/api/auth", authLimiter, require("../src/routes/authRoutes"));
+app.use("/api/products", require("../src/routes/productRoutes"));
+app.use("/api/products/:id/reviews", require("../src/routes/productReviewRoutes"));
+app.use("/api/cart", require("../src/routes/cartRoutes"));
+app.use("/api/orders", require("../src/routes/orderRoutes"));
+app.use("/api/promotions", require("../src/routes/promotionRoutes"));
+app.use("/api/reviews", require("../src/routes/reviewRoutes"));
+app.use("/api/home-config", require("../src/routes/homeConfigRoutes"));
+app.use("/api/blogs", require("../src/routes/blogRoutes"));
+app.use("/api/contacts", require("../src/routes/contactRoutes"));
 
 // Serve static files (uploads)
 // 🚀 Vercel fix: Use absolute path and check existence
@@ -75,7 +75,7 @@ app.get("/", (req, res) => {
 });
 
 // Error Handlers
-const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
+const { notFound, errorHandler } = require("../src/middlewares/errorMiddleware");
 app.use(notFound);
 app.use(errorHandler);
 

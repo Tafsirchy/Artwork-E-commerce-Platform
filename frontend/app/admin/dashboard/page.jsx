@@ -10,6 +10,7 @@ import usePromotionStore from "@/store/promotionStore";
 import ProfileAside from "@/components/dashboard/ProfileAside";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import AdminDashboardSkeleton from "@/components/ui/AdminDashboardSkeleton";
 
 export default function AdminDashboard() {
   const { user, token, _hasHydrated } = useAuthStore();
@@ -55,6 +56,7 @@ export default function AdminDashboard() {
     }
   };
 
+  if (!_hasHydrated) return <AdminDashboardSkeleton />;
   if (!user || user.role !== "admin") return null;
 
   return (

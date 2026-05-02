@@ -32,11 +32,11 @@ export default function CartPage() {
           {/* Cart Items */}
           <div className="w-full lg:w-2/3">
             <div className="space-y-4 sm:space-y-6">
-              {items.map((item) => (
-                <div key={item.product._id} className="flex gap-4 sm:gap-6 bg-gallery-surface border border-gallery-border p-4 sm:p-6 shadow-sm relative group overflow-hidden">
+              {items.map((item, idx) => (
+                <div key={item.product?._id || idx} className="flex gap-4 sm:gap-6 bg-gallery-surface border border-gallery-border p-4 sm:p-6 shadow-sm relative group overflow-hidden">
                   <div className="relative w-24 h-32 sm:w-32 sm:h-40 flex-shrink-0 bg-gallery-soft border border-gallery-border/50">
                     <Image
-                      src={getValidImageSrc(item.product.imageUrl)}
+                      src={getValidImageSrc(item.product.imageUrl || item.product.image || item.product.thumbnailUrl)}
                       alt={item.product.title}
                       fill
                       className="object-cover"
@@ -46,7 +46,7 @@ export default function CartPage() {
                   <div className="flex-1 flex flex-col justify-between py-1 sm:py-2">
                     <div>
                       <h3 className="text-lg sm:text-xl font-light text-gallery-text leading-tight">{item.product.title}</h3>
-                      <p className="text-[10px] tracking-[0.2em] uppercase text-gallery-muted mt-1 font-bold">{item.product.creator}</p>
+                      <p className="text-[10px] tracking-[0.2em] uppercase text-gallery-muted mt-1 font-bold">{item.product.creator || item.product.artist}</p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 gap-4">

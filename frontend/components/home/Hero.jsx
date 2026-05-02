@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ArrowRight, Quote } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -22,13 +23,13 @@ const shards = [
 ];
 
 const galleryImages = [
-  "https://images.unsplash.com/photo-1705711714839-cf327143c4a0?q=80&w=687&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1170&auto=format&fit=crop",
-  "https://plus.unsplash.com/premium_photo-1682125164600-e7493508e496?q=80&w=880&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200",
-  "https://images.unsplash.com/photo-1557933488-c8daa2a5772c?q=80&w=687&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1747764968315-fb6a641a4eb8?q=80&w=744&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=80&w=687&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1705711714839-cf327143c4a0?q=70&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=70&w=800&auto=format&fit=crop",
+  "https://plus.unsplash.com/premium_photo-1682125164600-e7493508e496?q=70&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=70&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1557933488-c8daa2a5772c?q=70&w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1747764968315-fb6a641a4eb8?q=70&w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=70&w=600&auto=format&fit=crop",
 ];
 
 const artThoughts = [
@@ -64,7 +65,14 @@ function Shard({ shardInfo, index }) {
       style={{ top: shardInfo.top, left: shardInfo.left, width: shardInfo.width, height: shardInfo.height, clipPath: shardInfo.clip, zIndex: 10 }}
     >
       <div className="absolute w-[300%] h-[300%]" style={{ left: `-${(index % 3) * 100}%`, top: `-${Math.floor(index / 3) * 100}%` }}>
-        <img src={imgSrc} alt="Shard" className="w-full h-full object-cover" />
+        <Image
+          src={imgSrc}
+          alt="Shard"
+          fill
+          priority
+          className="object-cover"
+          sizes="(max-width: 768px) 50vw, 33vw"
+        />
       </div>
     </div>
   );
@@ -296,48 +304,50 @@ export default function Hero() {
   }, [shuffleLayout]);
 
   return (
-    <section ref={heroRef} className="relative w-full min-h-screen bg-gallery-bg flex items-center overflow-hidden">
+    <section ref={heroRef} className="relative w-full bg-gallery-bg flex items-center overflow-hidden">
       <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] bg-gallery-gold/5 rounded-full blur-[120px]" />
 
       {/* 🧩 POETIC FRAGMENTS (Hidden on Mobile for Clutter Reduction) */}
       {isDesktop && (
-        <>
-          <div ref={thoughtBoxTL} className="absolute top-[8%] left-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
-            <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pr-6 pl-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
-              <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
-              <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-left">
-                {currentThoughts[2]}
-              </p>
+        <div className="absolute inset-0 z-40 pointer-events-none">
+          <div className="container mx-auto px-6 h-full relative">
+            <div ref={thoughtBoxTL} className="absolute top-[10%] left-6 opacity-0 max-w-[240px]">
+              <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pr-6 pl-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
+                <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
+                <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-left">
+                  {currentThoughts[2]}
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div ref={thoughtBoxTR} className="absolute top-[8%] right-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
-            <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pl-6 pr-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
-              <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
-              <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-right">
-                {currentThoughts[0]}
-              </p>
+            <div ref={thoughtBoxTR} className="absolute top-[10%] right-6 opacity-0 max-w-[240px]">
+              <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pl-6 pr-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
+                <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
+                <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-right">
+                  {currentThoughts[0]}
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div ref={thoughtBoxBL} className="absolute bottom-[8%] left-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
-            <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pr-6 pl-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
-              <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
-              <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-left">
-                {currentThoughts[1]}
-              </p>
+            <div ref={thoughtBoxBL} className="absolute bottom-[10%] left-6 opacity-0 max-w-[240px]">
+              <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pr-6 pl-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
+                <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
+                <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-left">
+                  {currentThoughts[1]}
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div ref={thoughtBoxBR} className="absolute bottom-[8%] right-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
-            <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pl-6 pr-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
-              <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
-              <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-right">
-                {currentThoughts[3]}
-              </p>
+            <div ref={thoughtBoxBR} className="absolute bottom-[10%] right-6 opacity-0 max-w-[240px]">
+              <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pl-6 pr-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
+                <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
+                <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-right">
+                  {currentThoughts[3]}
+                </p>
+              </div>
             </div>
           </div>
-        </>
+        </div>
       )}
 
       <div className="relative z-20 container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 items-center gap-12 lg:gap-16 py-12 lg:py-20">
@@ -390,7 +400,14 @@ export default function Hero() {
                       }}
                     >
                       <div className="absolute w-[300%] h-[300%] flex items-center justify-center" style={{ left: `-${(i % 3) * 100}%`, top: `-${Math.floor(i / 3) * 100}%` }}>
-                        <img src={targetImage} alt="Collection Shard" className="w-full h-full object-cover" />
+                        <Image
+                          src={targetImage}
+                          alt="Collection Shard"
+                          fill
+                          priority
+                          className="object-cover"
+                          sizes="(max-width: 768px) 50vw, 33vw"
+                        />
                       </div>
                     </div>
                   ))}

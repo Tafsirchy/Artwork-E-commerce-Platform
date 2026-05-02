@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import useAuthStore from "@/store/authStore";
 import api, { setAuthToken } from "@/lib/api";
 import { toast } from "react-toastify";
 import { Upload, Edit2, Trash2, X } from "lucide-react";
 import ProfileAside from "@/components/dashboard/ProfileAside";
 import { motion } from "framer-motion";
+import AdminTableSkeleton from "@/components/ui/AdminTableSkeleton";
 
 export default function AdminProductsPage() {
   const { user, token, _hasHydrated } = useAuthStore();
@@ -185,7 +187,7 @@ export default function AdminProductsPage() {
               </div>
               
               {fetchLoading ? (
-                <div className="p-20 text-center text-gallery-muted uppercase tracking-widest text-xs">Loading Collection...</div>
+                <AdminTableSkeleton />
               ) : (
                 <div className="space-y-6">
                   {/* Mobile Card Layout */}
@@ -198,8 +200,8 @@ export default function AdminProductsPage() {
                         className="bg-white border border-gallery-border p-4 shadow-sm space-y-4"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-16 h-16 border border-gallery-border overflow-hidden bg-gallery-bg shrink-0">
-                            <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover" />
+                          <div className="relative w-16 h-16 border border-gallery-border overflow-hidden bg-gallery-bg shrink-0">
+                            <Image src={p.imageUrl} alt={p.title} fill className="object-cover" sizes="64px" />
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-black text-gallery-text truncate uppercase tracking-tight">{p.title}</p>
@@ -248,8 +250,8 @@ export default function AdminProductsPage() {
                             <tr key={p._id} className="hover:bg-gallery-soft/10 transition-colors group">
                               <td className="px-6 py-4">
                                 <div className="flex items-center gap-4">
-                                  <div className="w-12 h-12 border border-gallery-border overflow-hidden bg-gallery-bg shrink-0">
-                                    <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                                  <div className="relative w-12 h-12 border border-gallery-border overflow-hidden bg-gallery-bg shrink-0">
+                                    <Image src={p.imageUrl} alt={p.title} fill className="object-cover grayscale group-hover:grayscale-0 transition-all" sizes="48px" />
                                   </div>
                                   <span className="text-sm font-medium text-gallery-text truncate max-w-[200px]">{p.title}</span>
                                 </div>
@@ -345,7 +347,9 @@ export default function AdminProductsPage() {
                   onClick={() => document.getElementById("image-input").click()}
                 >
                   {preview ? (
-                    <img src={preview} alt="Preview" className="max-h-64 mx-auto object-contain shadow-2xl" />
+                    <div className="relative h-64 w-full">
+                      <Image src={preview} alt="Preview" fill className="object-contain shadow-2xl" sizes="(max-width: 768px) 100vw, 600px" />
+                    </div>
                   ) : (
                     <div className="flex flex-col items-center gap-4 text-gallery-muted group-hover:text-gallery-gold transition-colors py-4">
                       <Upload size={40} strokeWidth={1} />

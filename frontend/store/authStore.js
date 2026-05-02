@@ -30,6 +30,21 @@ const useAuthStore = create(
         }
       },
 
+      googleLogin: async (tokenId) => {
+        set({ isLoading: true, error: null });
+        try {
+          const { data } = await api.post("/auth/google", { tokenId });
+          setAuthToken(data.token);
+          set({ user: data, token: data.token, isLoading: false });
+        } catch (error) {
+          set({
+            error: error.response?.data?.message || "Google login failed",
+            isLoading: false,
+          });
+          throw error;
+        }
+      },
+
       updateUser: (userData) => {
         // Sync API headers if token changed (though usually profile update returns same token)
         const newToken = userData.token || get().token;

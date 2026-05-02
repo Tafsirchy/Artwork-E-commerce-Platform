@@ -1,8 +1,59 @@
+const { OAuth2Client } = require("google-auth-library");
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 const crypto = require("crypto");
 const axios = require("axios");
 const { sendResetPasswordEmail } = require("../services/mailService");
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// @desc    Auth user with Google
+// @route   POST /api/auth/google
+// @access  Public
+const googleLogin = async (req, res, next) => {
+  try {
+    const { tokenId } = req.body;
+
+    const ticket = await client.verifyIdToken({
+      idToken: tokenId,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const { name, email, sub, picture } = ticket.getPayload();
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // Update user with googleId if not present
+      if (!user.googleId) {
+        user.googleId = sub;
+        if (!user.avatar) user.avatar = picture;
+        await user.save();
+      }
+    } else {
+      // Create new user
+      user = await User.create({
+        name,
+        email,
+        googleId: sub,
+        avatar: picture,
+      });
+    }
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      addresses: user.addresses,
+      preferences: user.preferences,
+      token: generateToken(user._id),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -263,6 +314,7 @@ const deleteUserProfile = async (req, res, next) => {
 module.exports = { 
   registerUser, 
   loginUser, 
+  googleLogin,
   getUserProfile, 
   updateUserProfile,
   forgotPassword,

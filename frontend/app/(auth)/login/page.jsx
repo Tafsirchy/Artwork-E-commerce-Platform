@@ -7,13 +7,26 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Mail, Lock, LogIn, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading } = useAuthStore();
+  const { login, googleLogin, isLoading } = useAuthStore();
   const router = useRouter();
+
+  const handleGoogleSuccess = async (tokenId) => {
+    try {
+      await googleLogin(tokenId);
+      toast.success("Welcome back, Curator", {
+        style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
+      });
+      router.push("/");
+    } catch (error) {
+      toast.error(error.message || "Google verification failed");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,13 +120,28 @@ export default function LoginPage() {
               <div className="relative flex justify-center text-[10px] uppercase tracking-[0.3em] font-black"><span className="bg-white px-6 text-gallery-muted">Social Integration</span></div>
             </div>
 
-            <button
-              type="button"
-              className="w-full h-14 lg:h-12 bg-white border border-gallery-border flex items-center justify-center gap-4 text-xs uppercase tracking-widest font-black hover:bg-gallery-soft/30 transition-all active:scale-95 shadow-sm"
-            >
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-4 h-4" alt="Google" />
-              Sign in with Google
-            </button>
+            <div className="flex justify-center relative min-h-[40px]">
+              {isLoading && (
+                <div className="absolute inset-0 z-10 bg-white/80 backdrop-blur-[1px] flex items-center justify-center pointer-events-none transition-all">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-gallery-gold border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-[10px] uppercase tracking-widest font-black text-gallery-gold">Authenticating</span>
+                  </div>
+                </div>
+              )}
+              <GoogleLogin
+                onSuccess={(credentialResponse) => {
+                  handleGoogleSuccess(credentialResponse.credential);
+                }}
+                onError={() => {
+                  toast.error("Google Authentication Failed");
+                }}
+                useOneTap
+                theme="outline"
+                shape="square"
+                width="350"
+              />
+            </div>
           </div>
         </form>
 

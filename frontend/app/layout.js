@@ -4,6 +4,8 @@ import PageTransition from "@/components/ui/PageTransition";
 import ConditionalShell from "@/components/ui/ConditionalShell";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ProgressBarProvider from "@/components/shared/ProgressBarProvider";
+import GoogleAuthProvider from "@/components/shared/GoogleAuthProvider";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -27,11 +29,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${outfit.variable} ${signatureFont.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-gallery-bg font-outfit">
-        <ConditionalShell>
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </ConditionalShell>
+        <ProgressBarProvider>
+          <GoogleAuthProvider>
+            <ConditionalShell>
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </ConditionalShell>
+          </GoogleAuthProvider>
+        </ProgressBarProvider>
         <ToastContainer
           position="top-right"
           autoClose={3000}

@@ -8,6 +8,7 @@ import api from "@/lib/api";
 import { toast } from "react-toastify";
 import AnimatedButton from "../shared/AnimatedButton";
 import useCartStore from "@/store/cartStore";
+import FeaturedSkeleton from "../ui/FeaturedSkeleton";
 
 const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => {
   const { addToCart } = useCartStore();
@@ -46,10 +47,11 @@ const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => {
       onClick={() => onImageClick && onImageClick(item)}
     >
       <Image
-        src={item.imageUrl}
+        src={item.thumbnailUrl || item.imageUrl}
         alt={item.title}
         fill
         className="object-cover transition-transform duration-1000 group-hover:scale-105"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
 
       {/* The Shutter/Door Effect (Overlay - Desktop Only) */}
@@ -89,11 +91,9 @@ const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => {
           onClick={(e) => {
             e.stopPropagation();
             addToCart({
-              _id: item._id || item.id,
-              title: item.title,
-              price: item.price,
-              image: item.imageUrl || item.image,
-              artist: item.creator || item.artist
+              ...item,
+              imageUrl: item.imageUrl || item.image,
+              creator: item.creator || item.artist
             });
             toast.success(`"${item.title}" added to collection`);
           }}
@@ -126,7 +126,25 @@ export default function FeaturedArtwork() {
   }, []);
 
   return (
-    <section className={`py-28 bg-gallery-bg transition-opacity duration-700 ${(featuredItems.length < 4) ? "opacity-0 min-h-[500px]" : "opacity-100"}`}>
+    <AnimatePresence mode="wait">
+      {featuredItems.length < 4 ? (
+        <motion.div
+          key="skeleton"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <FeaturedSkeleton />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="content"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <section className="py-28 bg-gallery-bg">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-10">
           <div className="overflow-hidden">
@@ -275,18 +293,18 @@ export default function FeaturedArtwork() {
                   {/* Portrait 1 */}
                   {featuredItems[0] && (
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="w-1/3 md:w-1/4 bg-white p-2 md:p-4 shadow-2xl">
-                      <div className="relative aspect-[4/5]"><Image src={featuredItems[0].imageUrl} alt="art" fill className="object-cover" /></div>
+                      <div className="relative aspect-[4/5]"><Image src={featuredItems[0].thumbnailUrl || featuredItems[0].imageUrl} alt="art" fill className="object-cover" sizes="(max-width: 768px) 33vw, 25vw" /></div>
                     </motion.div>
                   )}
                   {/* Landscapes */}
                   <div className="w-1/3 md:w-1/4 flex flex-col gap-4 md:gap-8">
-                    {featuredItems[1] && <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white p-2 md:p-4 shadow-2xl"><div className="relative aspect-[5/4]"><Image src={featuredItems[1].imageUrl} alt="art" fill className="object-cover" /></div></motion.div>}
-                    {featuredItems[2] && <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white p-2 md:p-4 shadow-2xl"><div className="relative aspect-[5/4]"><Image src={featuredItems[2].imageUrl} alt="art" fill className="object-cover" /></div></motion.div>}
+                    {featuredItems[1] && <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white p-2 md:p-4 shadow-2xl"><div className="relative aspect-[5/4]"><Image src={featuredItems[1].thumbnailUrl || featuredItems[1].imageUrl} alt="art" fill className="object-cover" sizes="(max-width: 768px) 33vw, 25vw" /></div></motion.div>}
+                    {featuredItems[2] && <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white p-2 md:p-4 shadow-2xl"><div className="relative aspect-[5/4]"><Image src={featuredItems[2].thumbnailUrl || featuredItems[2].imageUrl} alt="art" fill className="object-cover" sizes="(max-width: 768px) 33vw, 25vw" /></div></motion.div>}
                   </div>
                   {/* Portrait 2 */}
                   {featuredItems[3] && (
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="w-1/3 md:w-1/4 bg-white p-2 md:p-4 shadow-2xl">
-                      <div className="relative aspect-[4/5]"><Image src={featuredItems[3].imageUrl} alt="art" fill className="object-cover" /></div>
+                      <div className="relative aspect-[4/5]"><Image src={featuredItems[3].thumbnailUrl || featuredItems[3].imageUrl} alt="art" fill className="object-cover" sizes="(max-width: 768px) 33vw, 25vw" /></div>
                     </motion.div>
                   )}
               </div>
@@ -322,7 +340,7 @@ export default function FeaturedArtwork() {
             >
               {/* Image Section */}
               <div className="relative w-full md:w-3/5 min-h-[40vh] md:min-h-[60vh] bg-black/40">
-                <Image src={activeImage.imageUrl} alt={activeImage.title} fill className="object-contain p-6 md:p-10" />
+                <Image src={activeImage.imageUrl} alt={activeImage.title} fill priority className="object-contain p-6 md:p-10" sizes="(max-width: 1200px) 100vw, 80vw" />
               </div>
 
               {/* Details Section */}
@@ -358,6 +376,9 @@ export default function FeaturedArtwork() {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+          </section>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

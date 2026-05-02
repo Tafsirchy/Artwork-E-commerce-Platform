@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import useCartStore from "@/store/cartStore";
 import { toast } from "react-toastify";
@@ -10,6 +11,7 @@ import useWishlistStore from "@/store/wishlistStore";
 import usePromotionStore from "@/store/promotionStore";
 
 export default function ProductCard({ product }) {
+  const router = useRouter();
   const { addToCart } = useCartStore();
   const { toggleWishlist, isInWishlist } = useWishlistStore();
   const { globalDiscount } = usePromotionStore();
@@ -49,10 +51,14 @@ export default function ProductCard({ product }) {
     }
   };
 
-  const imageSrc = getValidImageSrc(product.imageUrl);
+  const imageSrc = getValidImageSrc(product.thumbnailUrl || product.imageUrl);
 
   return (
-    <Link href={`/products/${product._id}`} className="group block">
+    <Link 
+      href={`/products/${product._id}`} 
+      className="group block"
+      onMouseEnter={() => router.prefetch(`/products/${product._id}`)}
+    >
       <div className="bg-gallery-surface border border-gallery-border overflow-hidden transition-transform duration-300 group-hover:scale-[1.03] shadow-sm hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] relative">
         
         {/* Discount Badge */}
