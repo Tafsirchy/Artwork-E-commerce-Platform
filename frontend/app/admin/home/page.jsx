@@ -54,9 +54,9 @@ export default function AdminHomeManagement() {
     try {
       setLoading(true);
       const [revs, prods, feat] = await Promise.all([
-        api.get("/home/reviews"),
+        api.get("/home-config/reviews"),
         api.get("/products"),
-        api.get("/home/featured")
+        api.get("/home-config/featured")
       ]);
       setReviews(revs.data);
       setProducts(prods.data);
