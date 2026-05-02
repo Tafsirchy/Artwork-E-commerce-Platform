@@ -1,3 +1,5 @@
+// Production Optimized Build - May 2026
+// This is the clean, high-performance version of the Artwork E-Commerce API.
 const app = require("../src/app");
 
 // 🚀 Database connection assurance for Vercel Serverless
