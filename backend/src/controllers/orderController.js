@@ -49,18 +49,21 @@ const createOrder = async (req, res, next) => {
       totalPrice: Number(totalPrice || 0),
     });
 
-    // 📉 Reduce Inventory Stock
+    // 📉 Reduce Inventory Stock Concurrently
     const Product = require("../models/Product");
-    for (const item of orderItems) {
-      const product = await Product.findById(item.product);
-      if (product) {
-        if (product.stock < (item.quantity || item.qty)) {
-          return res.status(400).json({ message: `Insufficient stock for ${product.title}` });
+    try {
+      await Promise.all(orderItems.map(async (item) => {
+        const product = await Product.findById(item.product);
+        if (product) {
+          if (product.stock < (item.quantity || item.qty)) {
+            throw new Error(`Insufficient stock for ${product.title}`);
+          }
+          product.stock -= (item.quantity || item.qty);
+          await product.save();
         }
-        product.stock -= (item.quantity || item.qty);
-        await product.save();
-        console.log(`DEBUG: Reduced stock for ${product.title} to ${product.stock}`);
-      }
+      }));
+    } catch (stockErr) {
+      return res.status(400).json({ message: stockErr.message });
     }
 
     console.log("DEBUG: Saving order to database");
