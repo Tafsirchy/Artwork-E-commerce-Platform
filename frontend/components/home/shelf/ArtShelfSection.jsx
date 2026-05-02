@@ -8,6 +8,7 @@ import Shelf from "./Shelf";
 import CategoryModal from "./CategoryModal";
 import WeatherSystem from "./WeatherSystem";
 import ArtworkModal from "./ArtworkModal";
+import ArtShelfSkeleton from "../../ui/ArtShelfSkeleton";
 
 /* ─── SVG Tree (trunk + branches) ─────────────────────────────── */
 function TreeSVG() {
@@ -182,6 +183,8 @@ export default function ArtShelfSection() {
   }, [cancelClose, isTouchDevice]);
 
   const containerRef = useRef(null);
+
+  if (shelfCategories.length === 0) return <ArtShelfSkeleton />;
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden transition-colors duration-1000" style={{ backgroundColor: isRaining ? "#202836" : "#f8f6f2" }}>

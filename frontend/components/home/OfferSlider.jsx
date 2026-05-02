@@ -43,6 +43,18 @@ export default function OfferSlider() {
   }, [copiedCoupon]);
 
   if (!isSliderVisible) return null;
+  
+  if (offers.length === 0) {
+    return (
+      <div className="bg-gallery-primary py-4 relative animate-pulse">
+        <div className="flex justify-center gap-20">
+          <div className="h-4 w-48 bg-white/10 rounded" />
+          <div className="h-4 w-48 bg-white/10 rounded hidden sm:block" />
+          <div className="h-4 w-48 bg-white/10 rounded hidden lg:block" />
+        </div>
+      </div>
+    );
+  }
 
   const handleCopy = (offer) => {
     console.log("Copying:", offer.code);

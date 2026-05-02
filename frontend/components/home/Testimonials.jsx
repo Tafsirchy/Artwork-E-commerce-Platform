@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Star, Quote, Eye } from "lucide-react";
 import React, { useEffect, useState, useCallback, memo, useRef } from "react";
 import api from "@/lib/api";
+import TestimonialsSkeleton from "../ui/TestimonialsSkeleton";
 
 const TestimonialCard = memo(({ item, onSelect }) => (
   <div
@@ -126,10 +127,12 @@ export default function Testimonials() {
     setHoveredArt(item);
   }, []);
 
+  if (!hasMounted || reviews.length === 0) return <TestimonialsSkeleton />;
+
   return (
     <section 
       ref={sectionRef}
-      className={`py-20 sm:py-28 bg-gallery-soft/30 relative overflow-hidden transition-opacity duration-700 ${(!hasMounted || reviews.length === 0) ? "opacity-0 min-h-[600px]" : "opacity-100"}`}
+      className={`py-20 sm:py-28 bg-gallery-soft/30 relative overflow-hidden transition-opacity duration-700 opacity-100`}
     >
       {/* Art Preview Modal/Overlay */}
       <AnimatePresence>
