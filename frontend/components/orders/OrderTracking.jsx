@@ -35,13 +35,13 @@ export default function OrderTracking({ order }) {
           return (
             <div key={step.id} className="relative z-10 flex flex-col items-center">
               <div 
-                className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
+                className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 bg-white ${
                   isActive 
-                    ? "bg-white border-gallery-gold text-gallery-gold" 
-                    : "bg-white border-gallery-border text-gallery-muted"
-                } ${isCompleted ? "bg-gallery-gold text-white border-gallery-gold" : ""}`}
+                    ? "border-gallery-gold text-gallery-gold" 
+                    : "border-gallery-border text-gallery-muted"
+                }`}
               >
-                {isCompleted ? <Check size={20} /> : <Icon size={20} />}
+                {isCompleted || isActive ? <Check size={24} strokeWidth={2.5} /> : <Icon size={20} />}
               </div>
               
               <div className="absolute top-16 text-center whitespace-nowrap">

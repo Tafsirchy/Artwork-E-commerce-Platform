@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 const crypto = require("crypto");
+const axios = require("axios");
 const { sendResetPasswordEmail } = require("../services/mailService");
 
 // @desc    Register a new user
@@ -92,6 +93,7 @@ const getUserProfile = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatar: user.avatar,
         addresses: user.addresses,
         preferences: user.preferences,
       });
@@ -126,6 +128,26 @@ const updateUserProfile = async (req, res, next) => {
         user.preferences = req.body.preferences;
       }
 
+      if (req.body.removeAvatar === "true" || req.body.removeAvatar === true) {
+        user.avatar = undefined;
+      }
+
+      if (req.file) {
+        // Upload to ImgBB
+        const imageBase64 = req.file.buffer.toString("base64");
+        const formData = new URLSearchParams();
+        formData.append("image", imageBase64);
+
+        const imgbbRes = await axios.post(
+          `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`,
+          formData
+        );
+
+        if (imgbbRes.data && imgbbRes.data.data.url) {
+          user.avatar = imgbbRes.data.data.url;
+        }
+      }
+
       const updatedUser = await user.save();
 
       res.json({
@@ -133,6 +155,7 @@ const updateUserProfile = async (req, res, next) => {
         name: updatedUser.name,
         email: updatedUser.email,
         role: updatedUser.role,
+        avatar: updatedUser.avatar,
         addresses: updatedUser.addresses,
         preferences: updatedUser.preferences,
         token: generateToken(updatedUser._id),

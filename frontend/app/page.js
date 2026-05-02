@@ -10,6 +10,7 @@ import ValueSection from "@/components/home/ValueSection";
 import Testimonials from "@/components/home/Testimonials";
 import CTA from "@/components/home/CTA";
 import Newsletter from "@/components/home/Newsletter";
+import ScrollToTop from "@/components/shared/ScrollToTop";
 
 export default function HomePage() {
   return (
@@ -46,6 +47,9 @@ export default function HomePage() {
 
       {/* 📩 9. Newsletter / Contact */}
       <Newsletter />
+
+      {/* 🚀 10. Scroll To Top — "Return to Summit" */}
+      <ScrollToTop />
     </div>
   );
 }

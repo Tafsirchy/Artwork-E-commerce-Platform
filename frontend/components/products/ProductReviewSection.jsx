@@ -153,24 +153,24 @@ export default function ProductReviewSection({ productId }) {
 
   return (
     <div className="w-full border-t border-gallery-border mt-0 bg-gallery-bg">
-      <div className="container mx-auto px-6 py-16 ">
+      <div className="container mx-auto lg:px-6 py-10 ">
 
         {/* ── Section Header ── */}
-        <div className="mb-12">
-          <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-2">Collector Perspectives</p>
-          <h2 className="text-3xl font-light text-gallery-text tracking-tight uppercase">
+        <div className="mb-8">
+          <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-1">Collector Perspectives</p>
+          <h2 className="text-2xl font-light text-gallery-text tracking-tight uppercase">
             Acquisition <span className="font-serif text-gallery-gold">Reviews</span>
           </h2>
         </div>
 
         {/* ── Summary Row ── */}
         {totalReviews > 0 && (
-          <div className="flex flex-col md:flex-row gap-10 mb-12 p-8 bg-white border border-gallery-border">
+          <div className="flex flex-col md:flex-row gap-8 mb-10 p-6 bg-white border border-gallery-border shadow-sm">
             {/* Big avg */}
-            <div className="flex flex-col items-center justify-center min-w-[120px] border-r border-gallery-border pr-10">
-              <p className="text-6xl font-light text-gallery-text">{avgRating}</p>
-              <StarDisplay rating={avgRating} size={14} />
-              <p className="text-[9px] tracking-[0.3em] uppercase text-gallery-muted mt-2 font-bold">
+            <div className="flex flex-col items-center justify-center min-w-[100px] border-r border-gallery-border pr-8">
+              <p className="text-5xl font-light text-gallery-text">{avgRating}</p>
+              <StarDisplay rating={avgRating} size={12} />
+              <p className="text-[8px] tracking-[0.3em] uppercase text-gallery-muted mt-2 font-bold">
                 {totalReviews} {totalReviews === 1 ? "review" : "reviews"}
               </p>
             </div>
@@ -195,12 +195,12 @@ export default function ProductReviewSection({ productId }) {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
           {/* ── Review Form ── */}
           <div className="lg:col-span-2">
-            <div className="bg-white border border-gallery-border p-8">
-              <p className="text-[10px] tracking-[0.4em] uppercase font-bold text-gallery-text mb-6">
+            <div className="bg-white border border-gallery-border p-6">
+              <p className="text-[10px] tracking-[0.4em] uppercase font-bold text-gallery-text mb-4">
                 {myReview ? "Your Review" : "Leave a Review"}
               </p>
 
@@ -232,20 +232,20 @@ export default function ProductReviewSection({ productId }) {
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <p className="text-[9px] uppercase tracking-widest font-bold text-gallery-muted mb-2">Your Rating</p>
+                    <p className="text-[9px] uppercase tracking-widest font-bold text-gallery-muted mb-1">Your Rating</p>
                     <StarInput value={rating} onChange={setRating} />
                   </div>
                   <div>
-                    <p className="text-[9px] uppercase tracking-widest font-bold text-gallery-muted mb-2">Your Thoughts</p>
+                    <p className="text-[9px] uppercase tracking-widest font-bold text-gallery-muted mb-1">Your Thoughts</p>
                     <textarea
                       required
-                      rows={4}
+                      rows={3}
                       placeholder="Share your experience with this piece..."
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
-                      className="w-full px-4 py-3 bg-gallery-soft/30 border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light resize-none placeholder:text-gallery-muted/50"
+                      className="w-full px-4 py-2 bg-gallery-soft/30 border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light resize-none placeholder:text-gallery-muted/50"
                     />
                   </div>
                   <button

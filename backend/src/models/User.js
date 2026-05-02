@@ -39,6 +39,9 @@ const userSchema = new mongoose.Schema(
       receipts: { type: Boolean, default: true },
       curated: { type: Boolean, default: false }
     },
+    avatar: {
+      type: String,
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },

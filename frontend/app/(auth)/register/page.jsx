@@ -6,7 +6,7 @@ import useAuthStore from "@/store/authStore";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, X, ShieldCheck, Phone, Mail, User, Lock, Globe, ArrowLeft } from "lucide-react";
+import { Check, X, ShieldCheck, Phone, Mail, User, Lock, Globe, ArrowLeft, Eye, EyeOff } from "lucide-react";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -15,11 +15,12 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [strength, setStrength] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register, isLoading } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
-    // Basic password strength logic
     let s = 0;
     if (password.length > 6) s++;
     if (/[A-Z]/.test(password)) s++;
@@ -36,140 +37,165 @@ export default function RegisterPage() {
     }
     try {
       await register(name, email, password, phone);
-      toast.success("Registration successful!", { style: { backgroundColor: "#1a1a1a", color: "#fff" } });
+      toast.success("Identity inscribed into history", {
+        style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
+      });
       router.push("/");
     } catch (error) {
       toast.error(error.message || "Registration failed");
     }
   };
 
-  const getStrengthLabel = () => {
-    if (strength === 0) return "Too weak";
-    if (strength === 1) return "Weak";
-    if (strength === 2) return "Moderate";
-    if (strength === 3) return "Strong";
-    return "Very Strong";
-  };
-
   const getStrengthColor = () => {
-    if (strength === 0) return "bg-gray-200";
+    if (strength === 0) return "bg-gallery-soft";
     if (strength === 1) return "bg-red-400";
-    if (strength === 2) return "bg-yellow-400";
+    if (strength === 2) return "bg-amber-400";
     if (strength === 3) return "bg-blue-400";
     return "bg-green-500";
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gallery-bg p-2">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gallery-bg p-6 sm:p-8 overflow-x-hidden relative">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gallery-gold/30" />
+
       <Link
         href="/"
-        className="fixed top-6 left-6 flex items-center gap-2 text-[9px] uppercase tracking-[0.3em] text-gallery-muted hover:text-gallery-gold transition-all z-50 group"
+        className="fixed top-6 left-6 sm:top-10 sm:left-10 flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-gallery-muted hover:text-gallery-text transition-all z-50 group font-black"
       >
-        <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
-        Back to Gallery
+        <div className="w-10 h-10 rounded-full bg-white border border-gallery-border flex items-center justify-center group-hover:border-gallery-gold transition-colors shadow-sm">
+          <ArrowLeft size={16} />
+        </div>
+        <span className="hidden sm:inline">Back to Gallery</span>
       </Link>
 
-      <div className="w-full max-w-xl bg-white p-5 lg:p-8 border border-gallery-border shadow-2xl relative">
-        <div className="text-center mb-4">
-          <h2 className="text-xl font-light text-gallery-text tracking-tight uppercase mb-0.5">Create <span className="font-serif">Identity</span></h2>
-          <p className="text-gallery-muted text-[7px] tracking-[0.3em] uppercase">Join the collective</p>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-full max-w-[600px] bg-white p-8 sm:p-14 lg:p-8 border border-gallery-border shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative my-12 lg:my-4"
+      >
+        <div className="text-center mb-10 sm:mb-12 lg:mb-4">
+          <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-3 font-black">Membership Invitation</p>
+          <h2 className="text-3xl sm:text-4xl lg:text-2xl font-extralight text-gallery-text tracking-tighter uppercase mb-2">
+            Create <span className="font-serif text-gallery-gold">Identity</span>
+          </h2>
+          <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Join the collective of curated excellence</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="space-y-0.5">
-            <label className="text-[8px] uppercase tracking-widest font-bold text-gallery-muted flex items-center gap-2">
-              <User size={9} /> Name
+        <form onSubmit={handleSubmit} className="space-y-5 lg:space-y-2">
+          <div className="space-y-2 lg:space-y-1">
+            <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
+              <User size={14} className="text-gallery-gold" /> Personal Name
             </label>
             <input
               type="text" required placeholder="Elias Vance"
-              className="w-full px-3 py-1.5 bg-gallery-soft/20 border border-gallery-border focus:border-gallery-gold outline-none text-xs font-light"
+              className="w-full h-14 lg:h-12 px-5 bg-gallery-soft/10 border border-gallery-border focus:border-gallery-gold outline-none text-base font-light transition-all"
               value={name} onChange={(e) => setName(e.target.value)}
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-0.5">
-              <label className="text-[8px] uppercase tracking-widest font-bold text-gallery-muted flex items-center gap-2">
-                <Phone size={9} /> Phone
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-3">
+            <div className="space-y-2 lg:space-y-1">
+              <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
+                <Phone size={14} className="text-gallery-gold" /> Contact Number
               </label>
               <input
                 type="tel" required placeholder="+1 234..."
-                className="w-full px-3 py-1.5 bg-gallery-soft/20 border border-gallery-border focus:border-gallery-gold outline-none text-xs font-light"
+                className="w-full h-14 lg:h-12 px-5 bg-gallery-soft/10 border border-gallery-border focus:border-gallery-gold outline-none text-base font-light transition-all"
                 value={phone} onChange={(e) => setPhone(e.target.value)}
               />
             </div>
-            <div className="space-y-0.5">
-              <label className="text-[8px] uppercase tracking-widest font-bold text-gallery-muted flex items-center gap-2">
-                <Mail size={9} /> Email
+            <div className="space-y-2 lg:space-y-1">
+              <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
+                <Mail size={14} className="text-gallery-gold" /> Email Address
               </label>
               <input
                 type="email" required placeholder="elias@gallery.com"
-                className="w-full px-3 py-1.5 bg-gallery-soft/20 border border-gallery-border focus:border-gallery-gold outline-none text-xs font-light"
+                className="w-full h-14 lg:h-12 px-5 bg-gallery-soft/10 border border-gallery-border focus:border-gallery-gold outline-none text-base font-light transition-all"
                 value={email} onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-0.5">
-              <label className="text-[8px] uppercase tracking-widest font-bold text-gallery-muted flex items-center gap-2">
-                <Lock size={9} /> Password
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-3">
+            <div className="space-y-2 lg:space-y-1">
+              <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
+                <Lock size={14} className="text-gallery-gold" /> Keyphrase
               </label>
-              <input
-                type="password" required
-                className="w-full px-3 py-1.5 bg-gallery-soft/20 border border-gallery-border focus:border-gallery-gold outline-none text-xs font-light"
-                value={password} onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"} required
+                  className="w-full h-14 lg:h-12 px-5 pr-14 bg-gallery-soft/10 border border-gallery-border focus:border-gallery-gold outline-none text-base font-light transition-all"
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-0 top-0 h-14 lg:h-12 w-14 flex items-center justify-center text-gallery-muted hover:text-gallery-gold transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
               {password && (
-                <div className="pt-0.5">
-                  <div className="h-0.5 w-full bg-gray-100 overflow-hidden">
-                    <motion.div className={`h-full ${getStrengthColor()}`} initial={{ width: 0 }} animate={{ width: `${(strength / 4) * 100}%` }} />
+                <div className="pt-1">
+                  <div className="h-1 w-full bg-gallery-soft overflow-hidden">
+                    <motion.div className={`h-full ${getStrengthColor()}`} initial={{ width: 0 }} animate={{ width: `${(strength / 4) * 100}%` }} transition={{ duration: 0.5 }} />
                   </div>
                 </div>
               )}
             </div>
-            <div className="space-y-0.5">
-              <label className="text-[8px] uppercase tracking-widest font-bold text-gallery-muted flex items-center gap-2">
-                <ShieldCheck size={9} /> Confirm
+            <div className="space-y-2 lg:space-y-1">
+              <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
+                <ShieldCheck size={14} className="text-gallery-gold" /> Validation
               </label>
-              <input
-                type="password" required
-                className={`w-full px-3 py-1.5 bg-gallery-soft/20 border outline-none text-xs font-light ${confirmPassword ? (password === confirmPassword ? 'border-green-200' : 'border-red-200') : 'border-gallery-border'}`}
-                value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"} required
+                  className={`w-full h-14 lg:h-12 px-5 pr-14 bg-gallery-soft/10 border outline-none text-base font-light transition-all ${confirmPassword ? (password === confirmPassword ? 'border-green-200 focus:border-green-400' : 'border-red-200 focus:border-red-400') : 'border-gallery-border focus:border-gallery-gold'}`}
+                  value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-0 top-0 h-14 lg:h-12 w-14 flex items-center justify-center text-gallery-muted hover:text-gallery-gold transition-colors"
+                  aria-label={showConfirmPassword ? "Hide confirmation" : "Show confirmation"}
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="pt-1 space-y-2">
+          <div className="pt-6 lg:pt-3 space-y-4 lg:space-y-2">
             <button
               type="submit" disabled={isLoading}
-              className="w-full py-2.5 bg-gallery-primary text-white text-[9px] uppercase tracking-[0.3em] font-bold hover:bg-black transition-all shadow-lg disabled:opacity-50"
+              className="w-full h-16 lg:h-14 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all shadow-xl disabled:opacity-50 active:scale-95 flex items-center justify-center gap-3"
             >
-              {isLoading ? "Creating..." : "Inscribe Account"}
+              {isLoading ? "Inscribing..." : "Publish Identity"}
             </button>
 
-            <div className="relative py-0.5">
+            <div className="relative py-4 lg:py-1">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gallery-border"></div></div>
-              <div className="relative flex justify-center text-[6px] uppercase tracking-[0.3em]"><span className="bg-white px-2 text-gallery-muted">Or</span></div>
+              <div className="relative flex justify-center text-[10px] uppercase tracking-[0.3em] font-black"><span className="bg-white px-6 text-gallery-muted">Social Integration</span></div>
             </div>
 
             <button
               type="button"
-              className="w-full py-2.5 bg-white border border-gallery-border flex items-center justify-center gap-3 text-[9px] uppercase tracking-widest font-bold hover:bg-gallery-soft transition-all"
+              className="w-full h-14 lg:h-12 bg-white border border-gallery-border flex items-center justify-center gap-4 text-xs uppercase tracking-widest font-black hover:bg-gallery-soft/30 transition-all active:scale-95 shadow-sm"
             >
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-2.5 h-2.5" alt="Google" />
-              Join with Google
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-4 h-4" alt="Google" />
+              Inscribe with Google
             </button>
           </div>
         </form>
 
-        <p className="mt-4 text-center text-[8px] tracking-widest uppercase text-gallery-muted">
-          Already a member?{" "}
-          <Link href="/login" className="text-gallery-gold hover:text-gallery-text transition-colors font-bold">
-            Sign In
+        <p className="mt-12 lg:mt-4 text-center text-xs tracking-widest uppercase text-gallery-muted font-bold">
+          Already a curator?{" "}
+          <Link href="/login" className="text-gallery-gold hover:text-gallery-text transition-colors font-black border-b border-gallery-gold pb-0.5">
+            Authenticate
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -57,6 +57,8 @@ app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/promotions", require("./routes/promotionRoutes"));
 app.use("/api/reviews", require("./routes/reviewRoutes"));
 app.use("/api/home-config", require("./routes/homeConfigRoutes"));
+app.use("/api/blogs", require("./routes/blogRoutes"));
+app.use("/api/contacts", require("./routes/contactRoutes"));
 
 // Serve static files (uploads)
 app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));

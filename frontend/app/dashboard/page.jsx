@@ -65,98 +65,98 @@ export default function CustomerDashboard() {
   if (!_hasHydrated) return <DashboardSkeleton />;
 
   return (
-    <section className="bg-gallery-bg min-h-screen py-24">
-      <div className="container mx-auto px-6 max-w-[1600px] flex flex-col lg:flex-row items-start gap-12">
+    <section className="bg-gallery-bg min-h-screen pt-12 sm:pt-20 pb-20 sm:pb-24">
+      <div className="container mx-auto px-6 max-w-[1600px] flex flex-col lg:flex-row items-start gap-8 sm:gap-12">
         
         {/* Sidebar Profile */}
         <ProfileAside />
 
         {/* Main Content Area */}
-        <div className="flex-1">
+        <div className="flex-1 w-full">
           {/* Header Section */}
-          <div className="mb-16">
+          <div className="mb-8 sm:mb-16">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <h1 className="text-4xl font-light text-gallery-text tracking-tighter uppercase mb-2">
+              <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text tracking-tighter uppercase mb-2">
                 Collector Overview
               </h1>
-              <p className="text-gallery-muted text-sm tracking-widest uppercase font-medium">
+              <p className="text-gallery-muted text-[10px] sm:text-sm tracking-[0.2em] sm:tracking-widest uppercase font-black">
                 BRISTIII Private Archive • Welcome Back, {user?.name}
               </p>
             </motion.div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 mb-10 sm:mb-16">
             {stats.map((stat, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="p-10 bg-white border border-gallery-border relative overflow-hidden group hover:border-gallery-gold transition-all duration-500"
+                className="p-6 sm:p-10 bg-white border border-gallery-border relative overflow-hidden group hover:border-gallery-gold transition-all duration-500 shadow-sm"
               >
                 <div className="absolute top-0 left-0 w-1 h-full bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                <div className="flex justify-between items-start mb-6">
+                <div className="flex justify-between items-start mb-4 sm:mb-6">
                   <div className="text-gallery-gold">{stat.icon}</div>
-                  <span className="text-3xl font-light text-gallery-text">{stat.value}</span>
+                  <span className="text-2xl sm:text-3xl font-light text-gallery-text">{stat.value}</span>
                 </div>
-                <p className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-bold">{stat.label}</p>
+                <p className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-black">{stat.label}</p>
               </motion.div>
             ))}
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 sm:gap-12">
             
             {/* Recent Orders */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="xl:col-span-2 space-y-8"
+              className="xl:col-span-2 space-y-6 sm:space-y-8"
             >
               <div className="flex justify-between items-end border-b border-gallery-border pb-6">
-                <h2 className="text-xs tracking-[0.6em] uppercase text-gallery-text font-bold">Recent Acquisitions</h2>
-                <Link href="/orders" className="text-[9px] tracking-[0.2em] uppercase text-gallery-gold font-bold hover:gap-2 flex items-center gap-1 transition-all">
-                  View All <ArrowRight size={10} />
+                <h2 className="text-[10px] sm:text-xs tracking-[0.4em] sm:tracking-[0.6em] uppercase text-gallery-text font-black">Recent Acquisitions</h2>
+                <Link href="/orders" className="text-xs tracking-[0.2em] uppercase text-gallery-gold font-black hover:gap-2 flex items-center gap-2 transition-all">
+                  View All <ArrowRight size={12} />
                 </Link>
               </div>
               
               {/* Latest Order Tracking */}
               {recentOrders.length > 0 && (
-                <div className="bg-white border border-gallery-border p-8 pb-16">
-                  <h3 className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-bold mb-8">Latest Order Journey</h3>
+                <div className="bg-white border border-gallery-border p-6 sm:p-8 pb-12 sm:pb-16 shadow-sm">
+                  <h3 className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-black mb-6 sm:mb-8">Latest Order Journey</h3>
                   <OrderTracking order={recentOrders[0]} />
                 </div>
               )}
               
               <div className="space-y-4">
                 {loading ? (
-                   <div className="p-10 text-center uppercase tracking-widest text-gallery-muted text-[10px]">Accessing Records...</div>
+                   <div className="p-10 text-center uppercase tracking-widest text-gallery-muted text-xs">Accessing Records...</div>
                 ) : recentOrders.map((order) => (
                   <div 
                     key={order._id}
-                    className="p-8 bg-white border border-gallery-border hover:border-gallery-gold/30 transition-all flex flex-col md:flex-row justify-between items-center gap-6 group"
+                    className="p-6 sm:p-8 bg-white border border-gallery-border hover:border-gallery-gold/30 transition-all flex flex-col sm:flex-row justify-between items-center gap-6 group shadow-sm"
                   >
-                    <div className="flex items-center gap-6">
-                      <div className="w-12 h-12 bg-gallery-soft flex items-center justify-center">
+                    <div className="flex items-center gap-6 w-full sm:w-auto">
+                      <div className="w-12 h-12 bg-gallery-soft flex items-center justify-center shrink-0">
                         <Clock size={18} className="text-gallery-muted" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-gallery-text mb-1 uppercase tracking-wider">#{order._id.slice(-8).toUpperCase()}</p>
-                        <p className="text-[10px] text-gallery-muted tracking-widest">
+                        <p className="text-sm font-black text-gallery-text mb-1 uppercase tracking-wider">#{order._id.slice(-8).toUpperCase()}</p>
+                        <p className="text-xs text-gallery-muted tracking-widest">
                           {new Date(order.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
                     
-                    <div className="flex flex-col md:flex-row items-center gap-4">
-                      <div className="text-center md:text-right">
-                        <p className="text-lg font-light text-gallery-text mb-1">${order.totalPrice.toFixed(2)}</p>
-                        <span className={`text-[9px] tracking-[0.2em] uppercase font-bold px-3 py-1 border ${order.isDelivered ? 'border-green-200 text-green-600 bg-green-50' : order.isTransit ? 'border-amber-200 text-amber-600 bg-amber-50' : 'border-gallery-gold/20 text-gallery-gold bg-gallery-gold/5'}`}>
+                    <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-4 sm:pt-0 border-gallery-border">
+                      <div className="text-left sm:text-right">
+                        <p className="text-xl font-black text-gallery-text tracking-tighter leading-none mb-1">${order.totalPrice.toFixed(2)}</p>
+                        <span className={`text-[9px] tracking-[0.2em] uppercase font-black px-3 py-1 border ${order.isDelivered ? 'border-green-200 text-green-600 bg-green-50' : order.isTransit ? 'border-amber-200 text-amber-600 bg-amber-50' : 'border-gallery-gold/20 text-gallery-gold bg-gallery-gold/5'}`}>
                           {order.isDelivered ? "Delivered" : order.isTransit ? "In Transit" : "Processing"}
                         </span>
                       </div>
@@ -165,7 +165,7 @@ export default function CustomerDashboard() {
                           setSelectedOrder(order);
                           setIsTrackingOpen(true);
                         }}
-                        className="px-6 py-3 border border-gallery-text text-gallery-text text-[8px] tracking-[0.3em] uppercase font-bold hover:bg-gallery-primary hover:text-white transition-all group-hover:border-gallery-gold group-hover:text-gallery-gold"
+                        className="h-12 px-8 border border-gallery-text text-gallery-text text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-primary hover:text-white transition-all group-hover:border-gallery-gold group-hover:text-gallery-gold active:scale-95"
                       >
                         Track
                       </button>
@@ -174,30 +174,30 @@ export default function CustomerDashboard() {
                 ))}
                 {!loading && recentOrders.length === 0 && (
                   <div className="p-16 text-center border border-dashed border-gallery-border bg-white/50">
-                    <p className="text-[10px] tracking-widest uppercase text-gallery-muted">No acquisitions recorded yet.</p>
+                    <p className="text-xs tracking-widest uppercase text-gallery-muted">No acquisitions recorded yet.</p>
                   </div>
                 )}
               </div>
 
               {/* Pagination Controls */}
               {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-4 pt-4">
+                <div className="flex justify-center items-center gap-4 pt-6">
                   <button
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="p-2 border border-gallery-border hover:border-gallery-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    className="w-12 h-12 flex items-center justify-center border border-gallery-border hover:border-gallery-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all active:bg-gallery-soft shadow-sm"
                   >
-                    <ArrowRight size={14} className="rotate-180" />
+                    <ArrowRight size={16} className="rotate-180" />
                   </button>
-                  <span className="text-[10px] tracking-[0.3em] uppercase font-bold text-gallery-muted">
-                    Page {currentPage} of {totalPages}
+                  <span className="text-xs tracking-[0.3em] uppercase font-black text-gallery-muted">
+                    {currentPage} / {totalPages}
                   </span>
                   <button
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="p-2 border border-gallery-border hover:border-gallery-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    className="w-12 h-12 flex items-center justify-center border border-gallery-border hover:border-gallery-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all active:bg-gallery-soft shadow-sm"
                   >
-                    <ArrowRight size={14} />
+                    <ArrowRight size={16} />
                   </button>
                 </div>
               )}
@@ -208,31 +208,31 @@ export default function CustomerDashboard() {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="space-y-8 lg:sticky lg:top-28 h-fit self-start"
+              className="space-y-6 sm:space-y-8 lg:sticky lg:top-28 h-fit self-start w-full"
             >
-              <h2 className="text-xs tracking-[0.6em] uppercase text-gallery-text font-bold border-b border-gallery-border pb-6">Shortcuts</h2>
+              <h2 className="text-[10px] sm:text-xs tracking-[0.4em] sm:tracking-[0.6em] uppercase text-gallery-text font-black border-b border-gallery-border pb-6">Shortcuts</h2>
               
-              <div className="grid grid-cols-1 gap-4">
-                <Link href="/wishlist" className="p-6 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group">
-                  <Heart size={18} className="text-gallery-gold group-hover:text-white transition-colors" />
-                  <span className="text-[10px] tracking-[0.3em] uppercase font-bold">My Wishlist</span>
+              <div className="grid grid-cols-1 gap-3 sm:gap-4">
+                <Link href="/wishlist" className="h-20 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group px-8 shadow-sm">
+                  <Heart size={20} className="text-gallery-gold group-hover:text-white transition-colors" />
+                  <span className="text-xs tracking-[0.3em] uppercase font-black">My Wishlist</span>
                 </Link>
-                <Link href="/settings" className="p-6 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group">
-                  <Settings size={18} className="text-gallery-gold group-hover:text-white transition-colors" />
-                  <span className="text-[10px] tracking-[0.3em] uppercase font-bold">Security & Keys</span>
+                <Link href="/settings" className="h-20 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group px-8 shadow-sm">
+                  <Settings size={20} className="text-gallery-gold group-hover:text-white transition-colors" />
+                  <span className="text-xs tracking-[0.3em] uppercase font-black">Security & Keys</span>
                 </Link>
-                <Link href="/contact" className="p-6 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group">
-                  <MapPin size={18} className="text-gallery-gold group-hover:text-white transition-colors" />
-                  <span className="text-[10px] tracking-[0.3em] uppercase font-bold">Shipping Address</span>
+                <Link href="/contact" className="h-20 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group px-8 shadow-sm">
+                  <MapPin size={20} className="text-gallery-gold group-hover:text-white transition-colors" />
+                  <span className="text-xs tracking-[0.3em] uppercase font-black">Shipping Address</span>
                 </Link>
               </div>
 
-              <div className="p-8 bg-gallery-primary text-white space-y-6">
-                <h3 className="text-xs tracking-[0.3em] uppercase font-bold">Need Assistance?</h3>
-                <p className="text-[10px] leading-relaxed text-white/60 tracking-wider">
+              <div className="p-8 bg-gallery-primary text-white space-y-6 shadow-2xl">
+                <h3 className="text-xs tracking-[0.3em] uppercase font-black">Need Assistance?</h3>
+                <p className="text-[11px] leading-relaxed text-white/60 tracking-wider font-light uppercase">
                   Our VIP concierge service is available 24/7 for our distinguished collectors.
                 </p>
-                <Link href="/contact" className="inline-block text-[9px] tracking-[0.3em] uppercase font-bold border-b border-gallery-gold pb-1 text-gallery-gold">
+                <Link href="/contact" className="inline-block text-[10px] tracking-[0.3em] uppercase font-black border-b border-gallery-gold pb-1 text-gallery-gold hover:text-white hover:border-white transition-all">
                   Contact Concierge
                 </Link>
               </div>

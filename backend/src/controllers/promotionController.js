@@ -79,4 +79,33 @@ const deletePromotion = async (req, res) => {
   }
 };
 
-module.exports = { getPromotions, getAllPromotions, createPromotion, updatePromotion, deletePromotion };
+// @desc    Validate a promotion code
+// @route   POST /api/promotions/validate
+// @access  Private
+const validatePromotion = async (req, res) => {
+  const { code } = req.body;
+  try {
+    const promotion = await Promotion.findOne({ code: code.toUpperCase(), isActive: true });
+    
+    if (!promotion) {
+      return res.status(404).json({ message: 'Invalid or inactive promotion code' });
+    }
+
+    if (promotion.expiryDate && new Date(promotion.expiryDate) < new Date()) {
+      return res.status(400).json({ message: 'This promotion code has expired' });
+    }
+
+    res.json(promotion);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { 
+  getPromotions, 
+  getAllPromotions, 
+  createPromotion, 
+  updatePromotion, 
+  deletePromotion,
+  validatePromotion
+};

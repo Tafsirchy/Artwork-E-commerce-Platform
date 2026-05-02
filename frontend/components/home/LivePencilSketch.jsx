@@ -67,7 +67,6 @@ const LivePencilSketch = () => {
   const [activeBrush, setActiveBrush] = useState(BRUSHES[0]);
   const [isPaintingActive, setIsPaintingActive] = useState(false);
 
-  // Shading memory for user interaction
   const shadingRef = useRef([]);
 
   useEffect(() => {
@@ -92,7 +91,6 @@ const LivePencilSketch = () => {
     const drawStroke = (stroke, currentTime) => {
       const elapsed = currentTime - startTime - stroke.delay;
       if (elapsed < 0) return;
-
       const strokeDuration = 1000;
       const t = Math.min(elapsed / strokeDuration, 1);
 
@@ -111,7 +109,6 @@ const LivePencilSketch = () => {
       } else {
         const points = stroke.points;
         const count = Math.floor(points.length * t);
-
         if (count > 0) {
           ctx.moveTo(points[0][0], points[0][1]);
           for (let i = 1; i < count; i++) {
@@ -127,18 +124,11 @@ const LivePencilSketch = () => {
     const render = () => {
       const now = Date.now();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // --- RESPONSIVE SCALING & CENTERING ---
-      // The portrait is roughly 400x650 logical units. 
-      // We'll scale it to fit the current canvas size while maintaining aspect ratio.
-      const padding = 0;
       const logicalWidth = 400;
       const logicalHeight = 600;
-
-      const scaleX = (canvas.width / window.devicePixelRatio - padding * 2) / logicalWidth;
-      const scaleY = (canvas.height / window.devicePixelRatio - padding * 2) / logicalHeight;
+      const scaleX = (canvas.width / window.devicePixelRatio) / logicalWidth;
+      const scaleY = (canvas.height / window.devicePixelRatio) / logicalHeight;
       const scale = Math.min(scaleX, scaleY);
-
       const offsetX = (canvas.width / window.devicePixelRatio - logicalWidth * scale) / 2 - (200 * scale);
       const offsetY = (canvas.height / window.devicePixelRatio - logicalHeight * scale) / 2 - (50 * scale);
 
@@ -146,27 +136,18 @@ const LivePencilSketch = () => {
       ctx.translate(offsetX, offsetY);
       ctx.scale(scale, scale);
 
-      // --- DRAWING ---
       ctx.strokeStyle = 'rgba(0, 0, 0, 0.02)';
       ctx.setLineDash([5, 15]);
-      ctx.beginPath();
-      ctx.arc(400, 400, 350, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.beginPath(); ctx.arc(400, 400, 350, 0, Math.PI * 2); ctx.stroke();
       ctx.setLineDash([]);
 
-      Object.values(PORTRAIT_PATHS).flat().forEach(stroke => {
-        drawStroke(stroke, now);
-      });
-
+      Object.values(PORTRAIT_PATHS).flat().forEach(stroke => drawStroke(stroke, now));
       shadingRef.current.forEach(point => {
         ctx.fillStyle = point.color;
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, point.r, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(point.x, point.y, point.r, 0, Math.PI * 2); ctx.fill();
       });
 
-      const totalElapsed = now - startTime;
-      if (totalElapsed > 2500) {
+      if (now - startTime > 2500) {
         ctx.fillStyle = 'rgba(210, 105, 30, 0.015)';
         ctx.beginPath();
         const lipPath = PORTRAIT_PATHS.lips[0].points;
@@ -174,37 +155,29 @@ const LivePencilSketch = () => {
         lipPath.forEach(p => ctx.lineTo(p[0], p[1]));
         ctx.fill();
       }
-
       ctx.restore();
       animationFrame = requestAnimationFrame(render);
     };
 
     render();
-
     return () => {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animationFrame);
     };
   }, []);
 
-  const handleMouseMove = (e) => {
+  const handlePointerMove = (clientX, clientY) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
+    const viewX = clientX - rect.left;
+    const viewY = clientY - rect.top;
 
-    // Viewport coordinates
-    const viewX = e.clientX - rect.left;
-    const viewY = e.clientY - rect.top;
-
-    // Map to Logical coordinates (mirroring the render loop logic)
-    const padding = 0;
     const logicalWidth = 400;
     const logicalHeight = 600;
-
-    const scaleX = (canvas.width / window.devicePixelRatio - padding * 2) / logicalWidth;
-    const scaleY = (canvas.height / window.devicePixelRatio - padding * 2) / logicalHeight;
+    const scaleX = (canvas.width / window.devicePixelRatio) / logicalWidth;
+    const scaleY = (canvas.height / window.devicePixelRatio) / logicalHeight;
     const scale = Math.min(scaleX, scaleY);
-
     const offsetX = (canvas.width / window.devicePixelRatio - logicalWidth * scale) / 2 - (200 * scale);
     const offsetY = (canvas.height / window.devicePixelRatio - logicalHeight * scale) / 2 - (50 * scale);
 
@@ -213,7 +186,7 @@ const LivePencilSketch = () => {
 
     setMousePos({ x: viewX, y: viewY });
 
-    if (isHovered && isPaintingActive) {
+    if (isPaintingActive) {
       for (let i = 0; i < activeBrush.density; i++) {
         shadingRef.current.push({
           x: x + (Math.random() - 0.5) * activeBrush.scatter / scale,
@@ -226,165 +199,101 @@ const LivePencilSketch = () => {
     }
   };
 
-  const togglePainting = () => {
-    setIsPaintingActive(!isPaintingActive);
-  };
-
   return (
-    <section className="relative w-full min-h-screen bg-white overflow-hidden flex items-center py-28">
+    <section className="relative w-full min-h-screen bg-white overflow-hidden flex items-center py-12 md:py-28">
       <div className="container mx-auto px-6 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+        <div className="flex flex-col lg:flex-row items-stretch gap-8 lg:gap-20">
 
-          {/* LEFT: INTERACTIVE CANVAS (65%) */}
-          <div
-            className="relative w-full lg:w-[65%] h-[50vh] lg:h-[80vh] cursor-none group/canvas bg-gallery-soft/10 rounded-[40px] border border-black/5 overflow-hidden shadow-inner"
-            onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onDoubleClick={togglePainting}
-          >
-            <canvas
-              ref={canvasRef}
-              className="w-full h-full"
-              style={{ touchAction: 'none' }}
-            />
-
-            {/* --- LEFT: BRUSH SELECTOR --- */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="absolute left-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 bg-white/60 backdrop-blur-xl p-4 rounded-2xl border border-black/5 z-20 cursor-auto"
+          {/* LEFT: INTERACTIVE CANVAS */}
+          <div className="w-full lg:w-[65%] flex flex-col gap-6">
+            <div
+              className="relative w-full aspect-square md:aspect-auto md:h-[70vh] cursor-crosshair group/canvas bg-gallery-soft/10 rounded-2xl md:rounded-[40px] border border-black/5 overflow-hidden shadow-inner"
+              onMouseMove={(e) => handlePointerMove(e.clientX, e.clientY)}
+              onTouchMove={(e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
-              <p className="text-[8px] tracking-[0.3em] uppercase text-gallery-muted mb-2 text-center">Medium</p>
-              <div className="flex flex-col gap-2">
-                {BRUSHES.map((b) => (
-                  <motion.button
-                    key={b.name}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveBrush(b);
-                    }}
-                    className={`text-[9px] py-2 px-3 rounded-none border transition-all duration-300 text-left ${activeBrush.name === b.name ? 'bg-gallery-text text-white border-gallery-text shadow-md' : 'bg-white/50 text-gallery-text border-transparent hover:border-gallery-gold/30'}`}
-                  >
-                    {b.name.split(' ')[1] || b.name}
-                  </motion.button>
-                ))}
+              <canvas ref={canvasRef} className="w-full h-full" style={{ touchAction: 'none' }} />
+              
+              {/* Desktop Sidebars (LG+) */}
+              <div className="hidden lg:block">
+                <div className="absolute left-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 bg-white/80 backdrop-blur-xl p-4 rounded-2xl border border-black/5 z-20 shadow-xl">
+                  <p className="text-[8px] tracking-[0.3em] uppercase text-gallery-muted mb-2 text-center">Medium</p>
+                  {BRUSHES.map((b) => (
+                    <button key={b.name} onClick={() => setActiveBrush(b)} className={`text-[9px] py-3 px-4 rounded-none border transition-all ${activeBrush.name === b.name ? 'bg-gallery-text text-white border-gallery-text' : 'bg-white/50 text-gallery-text border-transparent'}`}>
+                      {b.name.split(' ')[1] || b.name}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 bg-white/80 backdrop-blur-xl p-4 rounded-2xl border border-black/5 z-20 shadow-xl">
+                  <p className="text-[8px] tracking-[0.3em] uppercase text-gallery-muted mb-2 text-center">Tints</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {PALETTE.map((p) => (
+                      <button key={p.name} onClick={() => setActiveColor(p)} className={`w-8 h-8 rounded-full border-2 ${activeColor.name === p.name ? 'border-gallery-text scale-110 shadow-lg' : 'border-transparent opacity-60'}`} style={{ backgroundColor: p.dot }} />
+                    ))}
+                  </div>
+                  <button onClick={() => shadingRef.current = []} className="text-[8px] tracking-[0.2em] uppercase text-red-500 mt-2">Clear</button>
+                </div>
               </div>
-            </motion.div>
 
-            {/* --- RIGHT: COLOR PALETTE --- */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 bg-white/60 backdrop-blur-xl p-4 rounded-2xl border border-black/5 z-20 cursor-auto"
-            >
-              <p className="text-[8px] tracking-[0.3em] uppercase text-gallery-muted mb-2 text-center">Tints</p>
-              <div className="grid grid-cols-2 gap-2">
-                {PALETTE.map((p, i) => (
-                  <motion.button
-                    key={p.name}
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveColor(p);
-                    }}
-                    className={`w-7 h-7 rounded-full border-2 transition-all duration-300 ${activeColor.name === p.name ? 'border-gallery-text scale-110 shadow-lg' : 'border-transparent opacity-60'}`}
-                    style={{ backgroundColor: p.dot }}
-                    title={p.name}
-                  />
-                ))}
-              </div>
-              <div className="w-full h-px bg-gallery-border/10 my-1" />
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  shadingRef.current = [];
-                }}
-                className="text-[8px] tracking-[0.2em] uppercase text-red-400 hover:text-red-600 transition-colors text-center"
-              >
-                Clear
-              </motion.button>
-            </motion.div>
-
-            {/* Pencil Cursor & Double-Click Tooltip */}
-            {hasMounted && isHovered && (
-              <>
-                <motion.div
-                  className="absolute pointer-events-none z-50 text-gallery-text"
-                  style={{
-                    left: 0,
-                    top: 0,
-                    x: mousePos.x,
-                    y: mousePos.y,
-                  }}
-                  animate={{
-                    scale: isPaintingActive ? 1.2 : 1,
-                    opacity: isPaintingActive ? 1 : 0.4
-                  }}
-                >
-                  <Pencil size={24} className="-rotate-45" />
-                  {/* Double Click Tooltip */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="absolute left-8 top-0 whitespace-nowrap bg-black/80 text-white text-[9px] tracking-[0.2em] uppercase py-1 px-3 rounded-full backdrop-blur-md"
-                  >
-                    {isPaintingActive ? 'Double Click to Stop' : 'Double Click to Paint'}
-                  </motion.div>
-                  <div className={`absolute -bottom-1 -right-1 w-2 h-2 rounded-full blur-sm ${isPaintingActive ? 'bg-gallery-gold animate-pulse' : 'bg-black/10'}`} />
-                </motion.div>
-              </>
-            )}
-
-            {/* Status Indicator */}
-            <div className="absolute bottom-6 left-6 flex items-center gap-4 text-gallery-muted/40">
-              <div className="flex flex-col">
-                <span className="text-[10px] tracking-[0.4em] uppercase">Live Sketching</span>
+              {/* Status Indicator */}
+              <div className="absolute bottom-6 left-6 flex flex-col">
+                <span className="text-[10px] tracking-[0.4em] uppercase text-gallery-muted/60">Live Sketching</span>
                 <span className="text-[10px] font-signature text-gallery-text">Series 0.4: "The Observant"</span>
+              </div>
+
+              {/* Toggle Paint Button (Mobile-First UI) */}
+              <button 
+                onClick={() => setIsPaintingActive(!isPaintingActive)}
+                className={`absolute bottom-6 right-6 px-6 py-3 rounded-full text-[9px] tracking-[0.3em] uppercase font-bold transition-all duration-500 z-30 shadow-2xl lg:hidden ${isPaintingActive ? 'bg-gallery-gold text-white scale-110' : 'bg-white text-gallery-text'}`}
+              >
+                {isPaintingActive ? 'Stop Painting' : 'Start Painting'}
+              </button>
+            </div>
+
+            {/* Mobile Artist's Toolbox (Visible on < LG) */}
+            <div className="lg:hidden flex flex-col gap-6 bg-gallery-soft/20 p-6 rounded-2xl border border-black/5">
+              <div className="flex flex-col gap-3">
+                <p className="text-[8px] tracking-[0.4em] uppercase text-gallery-accent font-bold">Select Medium</p>
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                  {BRUSHES.map((b) => (
+                    <button key={b.name} onClick={() => setActiveBrush(b)} className={`whitespace-nowrap text-[10px] py-4 px-6 rounded-none border transition-all ${activeBrush.name === b.name ? 'bg-gallery-text text-white' : 'bg-white text-gallery-text border-black/5'}`}>
+                      {b.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <p className="text-[8px] tracking-[0.4em] uppercase text-gallery-accent font-bold">Select Tint</p>
+                <div className="flex gap-4 items-center">
+                  {PALETTE.map((p) => (
+                    <button key={p.name} onClick={() => setActiveColor(p)} className={`w-12 h-12 rounded-full border-4 ${activeColor.name === p.name ? 'border-gallery-gold scale-110' : 'border-transparent'}`} style={{ backgroundColor: p.dot }} />
+                  ))}
+                  <div className="w-px h-8 bg-black/10 mx-2" />
+                  <button onClick={() => shadingRef.current = []} className="text-[10px] tracking-[0.2em] uppercase text-red-500 font-bold">Clear Canvas</button>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* RIGHT: CONTENT (35%) */}
+          {/* RIGHT: CONTENT */}
           <div className="w-full lg:w-[35%] flex flex-col justify-center">
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, ease: "easeOut" }}
-            >
-              <div className="flex items-center gap-3 mb-8">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <div className="flex items-center gap-3 mb-6">
                 <Sparkles size={16} className="text-gallery-gold" />
                 <span className="text-[10px] tracking-[0.6em] uppercase text-gallery-accent font-medium">Generative Soul</span>
               </div>
-
-              <h1 className="text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4 leading-[1.1]">
-                Art Comes <br />
-                <span className="font-serif text-gallery-gold font-light">to Life</span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-6 leading-tight">
+                Art Comes <br /> <span className="font-serif text-gallery-gold">to Life</span>
               </h1>
-
-              <p className="text-gallery-muted text-lg font-light leading-relaxed mb-12 border-l-2 border-gallery-gold/20 pl-8">
-                Experience the meditative flow of a digital graphite pencil. A living portrait that reacts to your presence, evolving with every glance and movement.
+              <p className="text-gallery-muted text-base md:text-lg font-light leading-relaxed mb-10 border-l-2 border-gallery-gold/20 pl-8">
+                Experience the meditative flow of a digital graphite pencil. A living portrait that reacts to your presence, evolving with every movement.
               </p>
-
-              <div className="space-y-6">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group flex items-center gap-6 bg-gallery-text text-white px-8 py-5 rounded-none hover:bg-gallery-primary transition-all duration-500 shadow-xl"
-                >
-                  <span className="text-xs tracking-[0.4em] uppercase font-bold">Acquire Original</span>
-                  <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-500" />
-                </motion.button>
-
-                <p className="text-[10px] tracking-[0.2em] uppercase text-gallery-muted/60 pl-4">
-                  * Interactive Shading Enabled
-                </p>
-              </div>
+              <button className="w-full md:w-auto group flex items-center justify-center gap-6 bg-gallery-text text-white px-10 py-5 rounded-none hover:bg-gallery-primary transition-all shadow-xl active:scale-95">
+                <span className="text-xs tracking-[0.4em] uppercase font-bold">Acquire Original</span>
+                <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+              </button>
             </motion.div>
           </div>
         </div>

@@ -86,11 +86,15 @@ const WelcomingDoraemon = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="absolute bottom-[-5%] left-0 w-[300px] h-[400px] pointer-events-none hidden lg:block"
     >
-      <svg viewBox="0 0 200 300" className="w-full h-full opacity-40">
+      <svg viewBox="0 0 200 300" className="w-full h-full opacity-60 filter drop-shadow-lg">
         <defs>
           <radialGradient id="tail-grad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ff0000" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#b30000" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="#ff0000" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#b30000" stopOpacity="0.7" />
+          </radialGradient>
+          <radialGradient id="body-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#0096d7" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#0072a3" stopOpacity="0.6" />
           </radialGradient>
         </defs>
 
@@ -98,60 +102,59 @@ const WelcomingDoraemon = () => {
         <motion.circle
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 3, repeat: Infinity }}
-          cx="35" cy="245" r="8" fill="url(#tail-grad)" stroke="#fff" strokeWidth="0.5"
+          cx="35" cy="245" r="8" fill="url(#tail-grad)" stroke="#fff" strokeWidth="0.5" strokeOpacity="0.5"
         />
 
-        {/* Main Body & Head Outline */}
-        <circle cx="100" cy="110" r="75" stroke="#fff" strokeWidth="1.5" fill="none" />
-        <path d="M45 165 Q 35 270, 100 270 Q 165 270, 155 165" stroke="#fff" strokeWidth="1.5" fill="none" />
+        {/* Main Body & Head */}
+        <circle cx="100" cy="110" r="75" fill="url(#body-grad)" stroke="#fff" strokeWidth="1" strokeOpacity="0.5" />
+        <path d="M45 165 Q 35 270, 100 270 Q 165 270, 155 165" fill="url(#body-grad)" stroke="#fff" strokeWidth="1" strokeOpacity="0.5" />
 
-        {/* Face Detail (The white inner area) */}
-        <path d="M100 55 Q 160 55, 160 110 Q 160 165, 100 165 Q 40 165, 40 110 Q 40 55, 100 55 Z" stroke="#fff" strokeWidth="1" opacity="0.5" fill="none" />
+        {/* Face Detail (White inner area) */}
+        <path d="M100 55 Q 160 55, 160 110 Q 160 165, 100 165 Q 40 165, 40 110 Q 40 55, 100 55 Z" fill="#fff" fillOpacity="0.6" stroke="#fff" strokeWidth="0.5" strokeOpacity="0.4" />
 
         {/* Large Iconic Eyes */}
-        <circle cx="82" cy="85" r="14" stroke="#fff" strokeWidth="1.2" fill="none" />
-        <circle cx="118" cy="85" r="14" stroke="#fff" strokeWidth="1.2" fill="none" />
+        <circle cx="82" cy="85" r="14" fill="#fff" fillOpacity="0.7" stroke="#fff" strokeWidth="0.5" strokeOpacity="0.4" />
+        <circle cx="118" cy="85" r="14" fill="#fff" fillOpacity="0.7" stroke="#fff" strokeWidth="0.5" strokeOpacity="0.4" />
+        
         {/* Pupils with reflections */}
-        <g>
-          <circle cx="85" cy="88" r="2" fill="#fff" />
-          <circle cx="84.5" cy="87.5" r="0.8" fill="#000" opacity="0.3" />
-          <circle cx="115" cy="88" r="2" fill="#fff" />
-          <circle cx="114.5" cy="114.5" r="0.8" fill="#000" opacity="0.3" />
+        <g opacity="0.6">
+          <circle cx="85" cy="88" r="2.5" fill="#000" />
+          <circle cx="84" cy="87" r="0.8" fill="#fff" />
+          <circle cx="115" cy="88" r="2.5" fill="#000" />
+          <circle cx="116" cy="87" r="0.8" fill="#fff" />
         </g>
 
         {/* Nose & Whiskers */}
-        <circle cx="100" cy="108" r="6" fill="#ff4d4d" opacity="0.9" stroke="#fff" strokeWidth="0.5" />
-        <path d="M100 114 L 100 155" stroke="#fff" strokeWidth="1.2" opacity="0.7" />
-        <path d="M100 155 Q 100 165, 120 160 M 100 155 Q 100 165, 80 160" stroke="#fff" strokeWidth="1" fill="none" /> {/* Mouth */}
+        <circle cx="100" cy="108" r="7" fill="#ff0000" fillOpacity="0.8" stroke="#fff" strokeWidth="0.5" strokeOpacity="0.4" />
+        <path d="M100 115 L 100 155" stroke="#fff" strokeWidth="1" opacity="0.2" />
+        <path d="M100 155 Q 100 165, 120 160 M 100 155 Q 100 165, 80 160" stroke="#fff" strokeWidth="1" fill="none" opacity="0.3" />
 
         {/* Dynamic Whiskers */}
-        <g opacity="0.5" stroke="#fff" strokeWidth="0.8">
+        <g stroke="#fff" strokeWidth="0.8" opacity="0.2">
           <path d="M75 120 L 35 110 M 75 130 L 30 130 M 75 140 L 35 150" />
           <path d="M125 120 L 165 110 M 125 130 L 170 130 M 125 140 L 165 150" />
         </g>
 
         {/* Collar & Golden Bell */}
-        <path d="M45 165 L 155 165" stroke="#ff4d4d" strokeWidth="4" opacity="0.6" strokeLinecap="round" />
-        <circle cx="100" cy="175" r="12" fill="#C4A484" stroke="#fff" strokeWidth="1" />
-        <circle cx="100" cy="178" r="2.5" fill="#333" />
-        <line x1="100" y1="180" x2="100" y2="187" stroke="#333" strokeWidth="1" />
+        <path d="M45 165 L 155 165" stroke="#ff0000" strokeWidth="6" strokeOpacity="0.6" strokeLinecap="round" />
+        <circle cx="100" cy="175" r="13" fill="#ffd700" fillOpacity="0.7" stroke="#fff" strokeWidth="1" strokeOpacity="0.4" />
+        <circle cx="100" cy="178" r="2.5" fill="#333" opacity="0.5" />
 
         {/* 4D Pocket (Pouch) */}
-        <path d="M65 195 Q 100 245, 135 195 L 65 195" stroke="#fff" strokeWidth="1.2" opacity="0.7" fill="none" />
+        <path d="M65 195 Q 100 245, 135 195 L 65 195" fill="#fff" fillOpacity="0.4" stroke="#fff" strokeWidth="1" strokeOpacity="0.3" />
 
-        {/* Paws (Hands & Feet) */}
-        <circle cx="35" cy="180" r="18" stroke="#fff" strokeWidth="1" fill="none" opacity="0.4" />
-        <circle cx="165" cy="180" r="18" stroke="#fff" strokeWidth="1" fill="none" opacity="0.4" />
-        <path d="M70 270 Q 70 290, 90 290 L 110 290 Q 130 290, 130 270" stroke="#fff" strokeWidth="1" opacity="0.4" fill="none" />
+        {/* Paws */}
+        <circle cx="35" cy="180" r="18" fill="#fff" fillOpacity="0.2" stroke="#fff" strokeWidth="0.5" strokeOpacity="0.2" />
+        <circle cx="165" cy="180" r="18" fill="#fff" fillOpacity="0.2" stroke="#fff" strokeWidth="0.5" strokeOpacity="0.2" />
       </svg>
 
-      {/* Floating Hearts (Love) emerging from pouch */}
+      {/* Floating Hearts */}
       <AnimatePresence>
         {hearts.map(h => (
           <motion.div
             key={h.id}
-            initial={{ opacity: 0, y: 0, scale: 0.5, rotate: -15 }}
-            animate={{ opacity: 0.8, y: -180, scale: 1.4, rotate: 10 }}
+            initial={{ opacity: 0, y: 0, scale: 0.5 }}
+            animate={{ opacity: 0.6, y: -180, scale: 1.4 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 3.5, ease: "easeOut" }}
             className="absolute top-[65%] left-1/2 text-gallery-gold"
@@ -182,7 +185,7 @@ const KissingCat = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="absolute bottom-[-5%] right-0 w-[300px] h-[400px] pointer-events-none hidden lg:block"
     >
-      <svg viewBox="0 0 200 300" className="w-full h-full opacity-40">
+      <svg viewBox="0 0 200 300" className="w-full h-full opacity-60 filter drop-shadow-lg">
         <defs>
           <filter id="eye-glow">
             <feGaussianBlur stdDeviation="1" result="coloredBlur" />
@@ -191,9 +194,13 @@ const KissingCat = () => {
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <linearGradient id="cat-body" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#fdf5e6" stopOpacity="0.7" />
+            <stop offset="100%" stopColor="#faebd7" stopOpacity="0.5" />
+          </linearGradient>
         </defs>
 
-        {/* Improved Fluid S-Curve Tail */}
+        {/* Tail */}
         <motion.path
           animate={{
             d: [
@@ -203,8 +210,9 @@ const KissingCat = () => {
             ]
           }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          stroke="#fff"
-          strokeWidth="1.2"
+          stroke="#fdf5e6"
+          strokeWidth="12"
+          strokeOpacity="0.4"
           fill="none"
           strokeLinecap="round"
         />
@@ -212,37 +220,37 @@ const KissingCat = () => {
         {/* Body */}
         <path
           d="M100 260 Q 150 260, 160 200 Q 170 140, 100 140 Q 30 140, 40 200 Q 50 260, 100 260 Z"
+          fill="url(#cat-body)"
           stroke="#fff"
-          strokeWidth="1.5"
-          fill="none"
+          strokeWidth="1"
+          strokeOpacity="0.4"
         />
 
-        {/* Front Legs & Paws */}
-        <path d="M75 250 L 75 285 Q 75 295, 85 295" stroke="#fff" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-        <path d="M125 250 L 125 285 Q 125 295, 115 295" stroke="#fff" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        {/* Front Legs */}
+        <path d="M75 250 L 75 285 Q 75 295, 85 295" stroke="#fdf5e6" strokeWidth="8" strokeOpacity="0.4" fill="none" strokeLinecap="round" />
+        <path d="M125 250 L 125 285 Q 125 295, 115 295" stroke="#fdf5e6" strokeWidth="8" strokeOpacity="0.4" fill="none" strokeLinecap="round" />
 
         {/* Ears */}
-        <path d="M65 155 L 50 110 L 85 140" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
-        <path d="M135 155 L 150 110 L 115 140" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
+        <path d="M65 155 L 50 110 L 85 140" fill="#fdf5e6" fillOpacity="0.5" stroke="#fff" strokeWidth="1" strokeOpacity="0.4" />
+        <path d="M135 155 L 150 110 L 115 140" fill="#fdf5e6" fillOpacity="0.5" stroke="#fff" strokeWidth="1" strokeOpacity="0.4" />
 
-        {/* Static Expressive Eyes */}
-        <g filter="url(#eye-glow)">
-          {/* Left Eye */}
-          <circle cx="80" cy="180" r="2.5" fill="#fff" opacity="0.9" />
-          <circle cx="79" cy="179" r="0.8" fill="#fff" />
-
-          {/* Right Eye */}
-          <circle cx="120" cy="180" r="2.5" fill="#fff" opacity="0.9" />
-          <circle cx="119" cy="179" r="0.8" fill="#fff" />
+        {/* Expressive Eyes */}
+        <g filter="url(#eye-glow)" opacity="0.6">
+          <circle cx="80" cy="180" r="4" fill="#32cd32" />
+          <circle cx="80" cy="180" r="1.5" fill="#000" />
+          <circle cx="120" cy="180" r="4" fill="#32cd32" />
+          <circle cx="120" cy="180" r="1.5" fill="#000" />
         </g>
 
         {/* Nose & Mouth */}
-        <path d="M100 195 L 97 200 L 103 200 Z" fill="#C4A484" />
-        <path d="M90 210 Q 100 220, 110 210" stroke="#fff" strokeWidth="1" fill="none" />
+        <circle cx="100" cy="198" r="3" fill="#ffb6c1" fillOpacity="0.6" />
+        <path d="M90 210 Q 100 220, 110 210" stroke="#fff" strokeWidth="1.5" fill="none" opacity="0.2" />
 
         {/* Whiskers */}
-        <path d="M60 195 L 20 185 M 60 200 L 20 200 M 60 205 L 20 215" stroke="#fff" strokeWidth="0.5" opacity="0.4" />
-        <path d="M140 195 L 180 185 M 140 200 L 180 200 M 140 205 L 180 215" stroke="#fff" strokeWidth="0.5" opacity="0.4" />
+        <g stroke="#fff" strokeWidth="0.5" opacity="0.2">
+          <path d="M60 195 L 20 185 M 60 200 L 20 200 M 60 205 L 20 215" />
+          <path d="M140 195 L 180 185 M 140 200 L 180 200 M 140 205 L 180 215" />
+        </g>
       </svg>
 
       {/* Floating Hearts (Kisses) */}
@@ -267,13 +275,18 @@ const KissingCat = () => {
 
 export default function CTA() {
   const [hasMounted, setHasMounted] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     setHasMounted(true);
+    const checkScreen = () => setIsDesktop(window.innerWidth >= 1024);
+    checkScreen();
+    window.addEventListener('resize', checkScreen);
+    return () => window.removeEventListener('resize', checkScreen);
   }, []);
 
   return (
-    <section className="pt-28 pb-36 bg-gallery-primary relative overflow-hidden group">
+    <section className="pt-20 pb-24 sm:pt-28 sm:pb-36 bg-gallery-primary relative overflow-hidden group">
       {/* Artistic Background Layer */}
       <div className="absolute inset-0 z-0">
         <motion.div
@@ -292,8 +305,8 @@ export default function CTA() {
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
           className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-gallery-accent/10 rounded-full blur-[120px]"
         />
-        {/* Floating Particles - Client Side Only to prevent hydration mismatch */}
-        {hasMounted && Array.from({ length: 20 }).map((_, i) => (
+        {/* Floating Particles - Desktop Only for performance */}
+        {hasMounted && isDesktop && Array.from({ length: 20 }).map((_, i) => (
           <motion.div
             key={`particle-${i}`}
             animate={{
@@ -312,8 +325,8 @@ export default function CTA() {
             }}
           />
         ))}
-        {/* Global Butterfly Swarm */}
-        {hasMounted && Array.from({ length: 10 }).map((_, i) => (
+        {/* Global Butterfly Swarm - Desktop Only */}
+        {hasMounted && isDesktop && Array.from({ length: 10 }).map((_, i) => (
           <Butterfly
             key={`butterfly-${i}`}
             startX={`${Math.random() * 100}%`}
@@ -330,28 +343,28 @@ export default function CTA() {
           viewport={{ once: true }}
           transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6 sm:mb-8">
             <div className="relative">
-              <div className="w-px h-24 bg-gradient-to-b from-gallery-gold/0 via-gallery-gold to-gallery-gold/0" />
+              <div className="w-px h-16 sm:h-24 bg-gradient-to-b from-gallery-gold/0 via-gallery-gold to-gallery-gold/0" />
             </div>
           </div>
 
-          <p className="text-gallery-gold text-xs tracking-[0.8em] uppercase mb-6">
+          <p className="text-gallery-gold text-[10px] sm:text-xs tracking-[0.5em] sm:tracking-[0.8em] uppercase mb-6">
             The Sanctuary of Art
           </p>
 
-          <h2 className="text-5xl lg:text-6xl font-light text-white tracking-widest uppercase mb-20 leading-none">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-light text-white tracking-[0.2em] sm:tracking-widest uppercase mb-12 sm:mb-20 leading-tight">
             Begin Your <br />
             <span className="font-serif text-gallery-gold font-light">Legacy.</span>
           </h2>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-10">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
             <Link
               href="/products"
-              className="relative group/link px-20 py-7 bg-white text-gallery-primary text-xs tracking-[0.5em] uppercase overflow-hidden rounded-none shadow-2xl"
+              className="w-full sm:w-auto relative group/link px-12 sm:px-20 py-5 sm:py-7 bg-white text-gallery-primary text-[10px] sm:text-xs tracking-[0.4em] sm:tracking-[0.5em] uppercase overflow-hidden rounded-none shadow-2xl"
             >
-              <span className="relative z-10 flex items-center gap-4 font-bold">
-                Enter Gallery <MoveUpRight size={20} strokeWidth={2} />
+              <span className="relative z-10 flex items-center justify-center gap-4 font-bold">
+                Enter Gallery <MoveUpRight size={18} strokeWidth={2} />
               </span>
               <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover/link:translate-y-0 transition-transform duration-500" />
             </Link>
@@ -360,22 +373,26 @@ export default function CTA() {
               href="/register"
               className="group/link flex flex-col items-center gap-3"
             >
-              <span className="text-white text-[12px] tracking-[0.6em] uppercase group-hover:text-gallery-gold transition-colors font-medium">
+              <span className="text-white text-[10px] sm:text-[12px] tracking-[0.5em] sm:tracking-[0.6em] uppercase group-hover:text-gallery-gold transition-colors font-medium">
                 Become a Member
               </span>
-              <div className="w-12 h-px bg-white/30 group-hover:bg-gallery-gold group-hover:w-24 transition-all duration-700" />
+              <div className="w-8 h-px bg-white/30 group-hover:bg-gallery-gold group-hover:w-20 sm:group-hover:w-24 transition-all duration-700" />
             </Link>
           </div>
         </motion.div>
       </div>
 
-      {/* The Animals */}
-      <WelcomingDoraemon />
-      <KissingCat />
+      {/* The Animals - Desktop Only */}
+      {isDesktop && (
+        <>
+          <WelcomingDoraemon />
+          <KissingCat />
+        </>
+      )}
 
       {/* Bottom Quote */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-center">
-        <p className="text-[10px] tracking-[0.4em] uppercase text-white/20 italic">
+      <div className="absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 text-center w-full px-6">
+        <p className="text-[8px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase text-white/20 italic">
           "Where souls find their reflection in frames"
         </p>
       </div>

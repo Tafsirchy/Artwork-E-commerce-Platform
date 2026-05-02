@@ -81,6 +81,11 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  // 🎟️ Coupon State
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+
   useEffect(() => {
     if (!user) {
       router.push("/login?redirect=/checkout");
@@ -89,6 +94,36 @@ export default function CheckoutPage() {
       router.push("/cart");
     }
   }, [user, items, router, showSuccess]);
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput) return;
+    setIsApplyingCoupon(true);
+    try {
+      const { data } = await api.post("/promotions/validate", { code: couponInput });
+      setAppliedCoupon(data);
+      toast.success(`Coupon "${data.code}" applied!`);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Invalid coupon code");
+      setAppliedCoupon(null);
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const getDiscountAmount = () => {
+    if (!appliedCoupon) return 0;
+    const subtotal = getTotal();
+    if (appliedCoupon.discount.includes("%")) {
+      const percentage = parseFloat(appliedCoupon.discount.replace("%", ""));
+      return (subtotal * percentage) / 100;
+    } else {
+      return parseFloat(appliedCoupon.discount.replace(/[^0-9.]/g, ""));
+    }
+  };
+
+  const getFinalTotal = () => {
+    return getTotal() - getDiscountAmount();
+  };
 
   const placeOrder = async () => {
     if (!address || !city || !postalCode || !country || !phone) {
@@ -109,8 +144,10 @@ export default function CheckoutPage() {
         shippingAddress: { address, city, postalCode, country, phone, location },
         paymentMethod,
         itemsPrice: getTotal(),
-        shippingPrice: 0, // Free shipping
-        totalPrice: getTotal(),
+        shippingPrice: 0,
+        discountPrice: getDiscountAmount(),
+        couponCode: appliedCoupon?.code || "",
+        totalPrice: getFinalTotal(),
       };
 
       const { data } = await api.post("/orders", orderData);
@@ -119,13 +156,11 @@ export default function CheckoutPage() {
       if (paymentMethod === "Card") {
         setClientSecret(data.clientSecret);
       } else {
-        // COD
         handleSuccess();
       }
     } catch (error) {
       const errorMsg = error.response?.data?.message || error.message || "Error placing order";
       toast.error(errorMsg);
-      console.error("Checkout Error Details:", error.response?.data || error);
       setIsSubmitting(false);
     }
   };
@@ -138,66 +173,74 @@ export default function CheckoutPage() {
   if ((!showSuccess && items.length === 0) || !user) return null;
 
   return (
-    <div className="min-h-screen bg-gallery-bg py-12">
+    <div className="min-h-screen bg-gallery-bg py-8 sm:py-12">
       <SuccessModal 
         isOpen={showSuccess} 
         orderId={orderId} 
         onClose={() => router.push("/dashboard")} 
       />
-      <div className="container mx-auto px-6 flex flex-col lg:flex-row gap-12">
+      <div className="container mx-auto px-6 flex flex-col lg:flex-row gap-8 sm:gap-12">
 
         {/* Left Col - Details */}
-        <div className="w-full lg:w-2/3 space-y-8">
+        <div className="w-full lg:w-2/3 space-y-6 sm:space-y-8">
 
-          <div className="bg-gallery-surface border border-gallery-border p-6 md:p-8">
-            <h2 className="text-2xl font-light text-gallery-text mb-6 border-b border-gallery-border pb-4">Shipping Address</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-gallery-surface border border-gallery-border p-6 sm:p-8 shadow-sm">
+            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-6 border-b border-gallery-border pb-4 uppercase tracking-widest">Shipping Sanctuary</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <input
-                type="text" placeholder="Address" value={address} onChange={e => setAddress(e.target.value)}
-                className="col-span-1 md:col-span-2 w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
+                type="text" placeholder="STREET ADDRESS" value={address} onChange={e => setAddress(e.target.value)}
+                className="col-span-1 md:col-span-2 w-full h-14 px-6 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold bg-gallery-soft/30 text-xs tracking-widest uppercase font-black"
               />
               <input
-                type="text" placeholder="City" value={city} onChange={e => setCity(e.target.value)}
-                className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
+                type="text" placeholder="CITY" value={city} onChange={e => setCity(e.target.value)}
+                className="w-full h-14 px-6 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold bg-gallery-soft/30 text-xs tracking-widest uppercase font-black"
               />
               <input
-                type="text" placeholder="Postal Code" value={postalCode} onChange={e => setPostalCode(e.target.value)}
-                className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
+                type="text" placeholder="POSTAL CODE" value={postalCode} onChange={e => setPostalCode(e.target.value)}
+                className="w-full h-14 px-6 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold bg-gallery-soft/30 text-xs tracking-widest uppercase font-black"
               />
               <input
-                type="text" placeholder="Country" value={country} onChange={e => setCountry(e.target.value)}
-                className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
+                type="text" placeholder="COUNTRY" value={country} onChange={e => setCountry(e.target.value)}
+                className="w-full h-14 px-6 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold bg-gallery-soft/30 text-xs tracking-widest uppercase font-black"
               />
               <input
-                type="text" placeholder="Phone Number" value={phone} onChange={e => setPhone(e.target.value)}
-                className="w-full px-4 py-3 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold"
+                type="text" placeholder="CONTACT PHONE" value={phone} onChange={e => setPhone(e.target.value)}
+                className="w-full h-14 px-6 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold bg-gallery-soft/30 text-xs tracking-widest uppercase font-black"
               />
             </div>
           </div>
 
-          <div className="bg-gallery-surface border border-gallery-border p-6 md:p-8">
-            <h2 className="text-2xl font-light text-gallery-text mb-6 border-b border-gallery-border pb-4">Pin Location</h2>
-            <MapPicker onLocationSelect={(loc) => setLocation(loc)} />
+          <div className="bg-gallery-surface border border-gallery-border p-6 sm:p-8 shadow-sm">
+            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-6 border-b border-gallery-border pb-4 uppercase tracking-widest">Pin Location</h2>
+            <div className="border border-gallery-border shadow-inner">
+              <MapPicker onLocationSelect={(loc) => setLocation(loc)} />
+            </div>
           </div>
 
-          <div className="bg-gallery-surface border border-gallery-border p-6 md:p-8">
-            <h2 className="text-2xl font-light text-gallery-text mb-6 border-b border-gallery-border pb-4">Payment Method</h2>
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio" value="Card" checked={paymentMethod === "Card"} onChange={e => setPaymentMethod(e.target.value)}
-                  className="w-4 h-4 text-gallery-primary"
-                  disabled={clientSecret !== ""}
-                />
-                <span className="text-gallery-text">Credit/Debit Card</span>
+          <div className="bg-gallery-surface border border-gallery-border p-6 sm:p-8 shadow-sm">
+            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-6 border-b border-gallery-border pb-4 uppercase tracking-widest">Payment Strategy</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <label className={`flex items-center justify-between p-6 border cursor-pointer transition-all ${paymentMethod === "Card" ? "border-gallery-gold bg-gallery-soft" : "border-gallery-border bg-white"}`}>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="radio" value="Card" checked={paymentMethod === "Card"} onChange={e => setPaymentMethod(e.target.value)}
+                    className="w-5 h-5 accent-gallery-gold"
+                    disabled={clientSecret !== ""}
+                  />
+                  <span className="text-xs uppercase tracking-widest font-black">Digital Vault</span>
+                </div>
+                <span className="text-[9px] uppercase tracking-tighter opacity-40">Card</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio" value="COD" checked={paymentMethod === "COD"} onChange={e => setPaymentMethod(e.target.value)}
-                  className="w-4 h-4 text-gallery-primary"
-                  disabled={clientSecret !== ""}
-                />
-                <span className="text-gallery-text">Cash on Delivery</span>
+              <label className={`flex items-center justify-between p-6 border cursor-pointer transition-all ${paymentMethod === "COD" ? "border-gallery-gold bg-gallery-soft" : "border-gallery-border bg-white"}`}>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="radio" value="COD" checked={paymentMethod === "COD"} onChange={e => setPaymentMethod(e.target.value)}
+                    className="w-5 h-5 accent-gallery-gold"
+                    disabled={clientSecret !== ""}
+                  />
+                  <span className="text-xs uppercase tracking-widest font-black">Hand to Hand</span>
+                </div>
+                <span className="text-[9px] uppercase tracking-tighter opacity-40">Cash</span>
               </label>
             </div>
           </div>
@@ -206,22 +249,59 @@ export default function CheckoutPage() {
 
         {/* Right Col - Summary & Payment */}
         <div className="w-full lg:w-1/3">
-          <div className="bg-gallery-surface border border-gallery-border p-6 sticky top-24">
-            <h2 className="text-2xl font-light text-gallery-text mb-6 border-b border-gallery-border pb-4">Order Summary</h2>
+          <div className="bg-gallery-surface border border-gallery-border p-8 shadow-2xl sticky top-24">
+            <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text mb-8 border-b border-gallery-border pb-4 uppercase tracking-widest">Summary</h2>
 
-            <div className="space-y-4 mb-6 max-h-60 overflow-y-auto">
+            <div className="space-y-4 mb-8 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
               {items.map(item => (
-                <div key={item.product._id} className="flex justify-between text-sm">
-                  <span className="text-gallery-muted truncate pr-4">{item.quantity} x {item.product.title}</span>
-                  <span className="text-gallery-text font-medium">${(item.product.price * item.quantity).toFixed(2)}</span>
+                <div key={item.product._id} className="flex justify-between items-start gap-4 text-xs">
+                  <span className="text-gallery-muted tracking-wide flex-1 uppercase font-bold">{item.quantity} x {item.product.title}</span>
+                  <span className="text-gallery-text font-black tracking-tighter">${(item.product.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>
 
-            <div className="border-t border-gallery-border pt-4 mb-8">
-              <div className="flex justify-between text-xl text-gallery-text font-bold">
-                <span>Total</span>
-                <span className="text-gallery-accent">${getTotal().toFixed(2)}</span>
+            <div className="border-t border-gallery-border pt-6 mb-8">
+              <div className="flex gap-2 mb-6 h-12">
+                <input
+                  type="text"
+                  placeholder="PROMO CODE"
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                  className="flex-1 px-4 border border-gallery-border focus:outline-none focus:ring-1 focus:ring-gallery-gold text-[10px] tracking-widest bg-gallery-soft/20 uppercase font-black"
+                  disabled={appliedCoupon || clientSecret !== ""}
+                />
+                <button
+                  onClick={handleApplyCoupon}
+                  disabled={!couponInput || appliedCoupon || isApplyingCoupon || clientSecret !== ""}
+                  className="px-6 bg-gallery-gold text-white text-[10px] tracking-[0.2em] uppercase font-black hover:bg-gallery-primary transition-all active:scale-95 disabled:opacity-50"
+                >
+                  {isApplyingCoupon ? "..." : (appliedCoupon ? "OK" : "Apply")}
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex justify-between text-xs tracking-widest uppercase text-gallery-muted font-bold">
+                  <span>Subtotal</span>
+                  <span className="text-gallery-text font-black">${getTotal().toFixed(2)}</span>
+                </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-xs tracking-widest uppercase text-emerald-600 font-black">
+                    <span>Benefit ({appliedCoupon.code})</span>
+                    <span>-${getDiscountAmount().toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-xs tracking-widest uppercase text-gallery-muted font-bold">
+                  <span>Logistics</span>
+                  <span className="text-gallery-text font-black">Free</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-gallery-border pt-6 mb-10">
+              <div className="flex justify-between items-end">
+                <span className="text-xs uppercase tracking-[0.4em] text-gallery-muted mb-1 font-black">Final Total</span>
+                <span className="text-3xl font-black text-gallery-accent tracking-tighter leading-none">${getFinalTotal().toFixed(2)}</span>
               </div>
             </div>
 
@@ -229,9 +309,9 @@ export default function CheckoutPage() {
               <button
                 onClick={placeOrder}
                 disabled={isSubmitting}
-                className="w-full py-4 bg-gallery-primary text-white text-lg rounded hover:bg-black transition-colors disabled:opacity-50"
+                className="w-full h-16 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase font-black hover:bg-gallery-gold transition-all shadow-xl active:scale-95 disabled:opacity-50"
               >
-                {isSubmitting ? "Processing..." : "Place Order"}
+                {isSubmitting ? "Finalizing..." : "Complete Acquisition"}
               </button>
             ) : (
               <Elements stripe={stripePromise} options={{ clientSecret }}>

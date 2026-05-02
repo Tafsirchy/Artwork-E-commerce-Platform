@@ -11,7 +11,16 @@ const fs = require("fs");
 const createOrder = async (req, res, next) => {
   try {
     console.log("DEBUG: createOrder started");
-    const { orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, totalPrice } = req.body;
+    const { 
+      orderItems, 
+      shippingAddress, 
+      paymentMethod, 
+      itemsPrice, 
+      shippingPrice, 
+      totalPrice,
+      couponCode,
+      discountPrice 
+    } = req.body;
 
     if (!orderItems || !Array.isArray(orderItems) || orderItems.length === 0) {
       console.log("DEBUG: Validation failed - No order items");
@@ -35,6 +44,8 @@ const createOrder = async (req, res, next) => {
       paymentMethod,
       itemsPrice: Number(itemsPrice || 0),
       shippingPrice: Number(shippingPrice || 0),
+      discountPrice: Number(discountPrice || 0),
+      couponCode: String(couponCode || ""),
       totalPrice: Number(totalPrice || 0),
     });
 

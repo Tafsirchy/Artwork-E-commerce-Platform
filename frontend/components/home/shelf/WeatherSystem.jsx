@@ -87,8 +87,8 @@ export default function WeatherSystem({ active }) {
           </div>
 
           {/* Heavy Rain Drops */}
-          {Array.from({ length: 150 }).map((_, i) => {
-            const isHeavy = Math.random() > 0.8;
+          {Array.from({ length: 80 }).map((_, i) => {
+            const isHeavy = Math.random() > 0.7;
             return (
               <motion.div
                 key={i}
@@ -99,15 +99,15 @@ export default function WeatherSystem({ active }) {
                 }}
                 animate={{
                   y: ["0vh", "110vh"],
-                  opacity: [0, isHeavy ? 0.6 : 0.3, isHeavy ? 0.6 : 0.3, 0],
+                  opacity: [0, isHeavy ? 0.7 : 0.4, isHeavy ? 0.7 : 0.4, 0],
                 }}
                 transition={{
-                  duration: isHeavy ? 0.4 + Math.random() * 0.2 : 0.6 + Math.random() * 0.4,
+                  duration: isHeavy ? 0.35 + Math.random() * 0.15 : 0.5 + Math.random() * 0.3,
                   repeat: Infinity,
                   ease: "linear",
                   delay: Math.random() * 2,
                 }}
-                className={`absolute top-0 w-[2px] bg-gradient-to-b from-transparent via-[#cbd5e1] to-transparent rotate-[15deg] ${isHeavy ? 'h-32 blur-[1px]' : 'h-16'}`}
+                className={`absolute top-0 w-[2.5px] bg-gradient-to-b from-transparent via-[#cbd5e1] to-transparent rotate-[15deg] ${isHeavy ? 'h-40 blur-[1px]' : 'h-20'}`}
               />
             );
           })}

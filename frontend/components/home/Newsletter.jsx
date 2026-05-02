@@ -10,100 +10,114 @@ export default function Newsletter() {
 
   const handleSubscribe = (e) => {
     e.preventDefault();
-    toast.success("Welcome to our private circle.");
+    toast.success("Welcome to the Private Circle.", {
+      position: "top-center",
+      autoClose: 3000,
+      theme: "dark"
+    });
     setEmail("");
   };
 
   return (
-    <section className="py-28 bg-gallery-bg relative overflow-hidden">
-      {/* Decorative Blur Orbs */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-gallery-gold/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gallery-accent/10 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2" />
+    <section className="py-20 sm:py-28 bg-gallery-bg relative overflow-hidden group">
+      {/* 🎭 Premium Atmospheric Layers */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Animated Infinite Circle */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-gallery-gold/10 rounded-full"
+        />
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-gallery-accent/5 rounded-full"
+        />
+        
+        {/* Soft Glows */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gallery-gold/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gallery-accent/5 rounded-full blur-[120px]" />
+      </div>
 
       <div className="container mx-auto px-6 text-center relative z-10">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-10">
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="text-gallery-gold"
+              animate={{ 
+                scale: [1, 1.1, 1],
+                opacity: [0.5, 1, 0.5]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="text-gallery-gold flex flex-col items-center gap-4"
             >
-              <Star size={40} strokeWidth={1} />
+              <div className="w-px h-16 bg-gradient-to-b from-transparent via-gallery-gold to-transparent" />
+              <Star size={32} strokeWidth={1} fill="currentColor" fillOpacity={0.1} />
             </motion.div>
           </div>
 
-          <p className="text-gallery-accent text-sm tracking-[0.6em] uppercase mb-20">
+          <p className="text-gallery-accent text-[10px] sm:text-xs tracking-[0.5em] sm:tracking-[0.8em] uppercase mb-8 sm:mb-12">
             📩 Invitation to the Infinite
           </p>
-          <h2 className="text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4 leading-none">
-            {"Join Our".split(" ").map((word, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="inline-block mr-6"
-              >
-                {word}
-              </motion.span>
-            ))}
-            <br />
-            <motion.span
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.2, delay: 0.4 }}
-              className="font-serif text-gallery-gold font-light"
-            >
+
+          <h2 className="text-3xl sm:text-5xl lg:text-7xl font-light text-gallery-text tracking-[0.1em] sm:tracking-widest uppercase mb-6 sm:mb-8 leading-none">
+            Join Our <br />
+            <span className="font-serif text-gallery-gold italic font-light lowercase sm:uppercase">
               Private Circle
-            </motion.span>
+            </span>
           </h2>
+
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.5, delay: 0.6 }}
-            className="text-gallery-muted text-lg max-w-xl mx-auto mb-16 leading-relaxed font-light"
+            transition={{ duration: 1.5, delay: 0.4 }}
+            className="text-gallery-muted text-sm sm:text-lg max-w-xl mx-auto mb-16 leading-relaxed font-light italic"
           >
-            Become part of a global collective. Receive exclusive early access to new collections and private gallery viewings.
+            Become part of a global collective. Receive exclusive early access to new collections, curatorial insights, and private gallery viewings.
           </motion.p>
 
           <form
             onSubmit={handleSubscribe}
-            className="max-w-2xl mx-auto relative group"
+            className="max-w-2xl mx-auto relative group px-2 sm:px-0"
           >
-            <div className="absolute -inset-1 bg-gradient-to-r from-gallery-gold/0 via-gallery-gold/30 to-gallery-gold/0 opacity-0 group-focus-within:opacity-100 blur transition-opacity duration-500" />
-            <div className="relative flex flex-col sm:flex-row gap-0">
+            {/* Input Glow Effect */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-gallery-gold/0 via-gallery-gold/20 to-gallery-gold/0 opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-700" />
+            
+            <div className="relative flex flex-col sm:flex-row shadow-2xl">
               <input
                 type="email"
                 required
-                placeholder="Enter your email for inspiration"
+                placeholder="The gateway starts with your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 px-10 py-6 bg-white border border-gallery-border focus:outline-none focus:border-gallery-gold transition-all text-gallery-text tracking-[0.2em] text-sm uppercase placeholder:text-gallery-muted/50"
+                className="flex-1 px-8 sm:px-10 py-6 bg-white/80 backdrop-blur-md border border-gallery-border focus:outline-none focus:border-gallery-gold transition-all text-gallery-text tracking-[0.1em] sm:tracking-[0.2em] text-xs sm:text-sm uppercase placeholder:text-gallery-muted/40 rounded-none"
               />
               <button
                 type="submit"
-                className="px-12 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase flex items-center justify-center gap-4 hover:bg-gallery-gold transition-colors group/btn"
+                className="px-10 sm:px-12 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.4em] sm:tracking-[0.5em] uppercase flex items-center justify-center gap-4 hover:bg-black transition-all group/btn active:scale-[0.98]"
               >
-                Connect <Send size={14} className="group-hover/btn:translate-x-2 transition-transform" />
+                Connect <Send size={14} className="group-hover/btn:translate-x-2 group-hover/btn:-translate-y-1 transition-transform duration-500" />
               </button>
             </div>
           </form>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="mt-10 text-[9px] text-gallery-muted uppercase tracking-[0.3em]"
+            viewport={{ once: true }}
+            transition={{ delay: 0.8 }}
+            className="mt-12 flex flex-col items-center gap-4"
           >
-            By subscribing, you enter a commitment to artistic discovery.
-          </motion.p>
+            <div className="w-12 h-px bg-gallery-gold/20" />
+            <p className="text-[9px] text-gallery-muted uppercase tracking-[0.4em] font-medium">
+              By subscribing, you enter a commitment to artistic discovery.
+            </p>
+          </motion.div>
         </motion.div>
       </div>
     </section>

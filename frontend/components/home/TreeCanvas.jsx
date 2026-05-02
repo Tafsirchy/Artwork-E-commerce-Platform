@@ -215,8 +215,11 @@ export default function TreeCanvas() {
   const [cards, setCards] = useState([]);
   const [positions, setPositions] = useState([]);
   const [hoveredCardId, setHoveredCardId] = useState(null);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    
     import("@/lib/api").then(({ default: api }) => {
       api.get("/products")
         .then(({ data }) => {
@@ -238,7 +241,8 @@ export default function TreeCanvas() {
     const my = mouseRef.current.y;
     if (mx === null) return;
 
-    const r2 = 240 * 240;
+    const radius = isTouchDevice ? 300 : 240;
+    const r2 = radius * radius;
     const idSet = new Set();
     const particles = particlesRef.current;
     const len = particles.length;
@@ -255,7 +259,6 @@ export default function TreeCanvas() {
       }
     }
 
-    // Optimization: Skip loop if match set hasn't changed
     const idStr = [...idSet].sort().join(",");
     if (idStr === matchedRef.current) return;
     matchedRef.current = idStr;
@@ -280,9 +283,22 @@ export default function TreeCanvas() {
       return;
     }
 
-    const matched = artworks.filter(a => idSet.has(a._id)).slice(0, 6);
+    const matched = artworks.filter(a => idSet.has(a._id)).slice(0, 4);
     setCards(matched);
-    setPositions(randomPositions(matched.length));
+    
+    // Stabilize mobile positions
+    if (isTouchDevice) {
+        const mobilePositions = [
+            { x: "5%", y: "15%" },
+            { x: "55%", y: "15%" },
+            { x: "5%", y: "55%" },
+            { x: "55%", y: "55%" },
+        ];
+        setPositions(mobilePositions.slice(0, matched.length));
+    } else {
+        setPositions(randomPositions(matched.length));
+    }
+    
     setShowCards(true);
 
     clearTimeout(timerRef.current);
@@ -294,18 +310,31 @@ export default function TreeCanvas() {
       }
       matchedRef.current = "";
     }, 5000);
-  }, [artworks]);
+  }, [artworks, isTouchDevice]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d", { alpha: false }); // Perf: Opaque canvas
+    const ctx = canvas.getContext("2d", { alpha: false });
     let W, H, cx, cy;
+    const isVisible = { current: false };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const wasVisible = isVisible.current;
+        isVisible.current = entry.isIntersecting;
+        if (isVisible.current && !wasVisible) {
+          rafRef.current = requestAnimationFrame(loop);
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    if (containerRef.current) observer.observe(containerRef.current);
 
     const resize = () => {
       W = canvas.width = containerRef.current.offsetWidth;
       H = canvas.height = containerRef.current.offsetHeight;
       cx = W / 2; cy = H * 0.52;
-      // Slightly reduced count to 2500 for better mobile/low-end performance while maintaining density
       particlesRef.current = Array.from({ length: 2500 }, () => new Particle(cx, cy));
       if (artworks.length) {
         particlesRef.current.forEach(p => p.computeMatches(artworks, 110));
@@ -317,20 +346,14 @@ export default function TreeCanvas() {
     setTimeout(() => { bloomRef.current = true; }, 400);
 
     const loop = (t) => {
+      if (!isVisible.current) return;
       frameRef.current++;
-
-      // Perf: Only clear and redraw at 60fps
       ctx.fillStyle = "#fff";
       ctx.fillRect(0, 0, W, H);
-
       drawTrunk(ctx, t, W, H, cx, cy);
-
-      // ⚠️ THROTTLE: Only check hover every 4 frames (approx 15 times/sec)
-      // This is plenty for interaction but saves 75% of collision logic CPU
       if (hoverRef.current && frameRef.current % 4 === 0) {
         checkHover();
       }
-
       if (bloomRef.current) {
         const particles = particlesRef.current;
         const len = particles.length;
@@ -347,13 +370,17 @@ export default function TreeCanvas() {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", resize);
       clearTimeout(timerRef.current);
+      observer.disconnect();
     };
   }, [artworks, checkHover]);
 
   const onMove = useCallback((e) => {
     const r = canvasRef.current?.getBoundingClientRect();
     if (!r) return;
-    mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top };
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    mouseRef.current = { x: clientX - r.left, y: clientY - r.top };
+    hoverRef.current = true;
   }, []);
 
   const onLeave = useCallback(() => {
@@ -367,52 +394,56 @@ export default function TreeCanvas() {
   }, []);
 
   return (
-    <section className="w-full py-24 bg-white flex flex-col items-center">
-      <div className="max-w-4xl w-full px-6 text-center mb-16">
+    <section className="w-full py-16 md:py-24 bg-white flex flex-col items-center">
+      <div className="max-w-4xl w-full px-6 text-center mb-10 md:mb-16">
         <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
-          className="text-[10px] tracking-[0.6em] uppercase text-black/40 font-bold mb-3">
+          className="text-[9px] md:text-[10px] tracking-[0.4em] md:tracking-[0.6em] uppercase text-black/40 font-bold mb-3">
           Living Masterpiece
         </motion.p>
         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-4xl md:text-5xl font-serif text-black tracking-tight italic">
+          className="text-3xl md:text-5xl font-serif text-black tracking-tight italic">
           The Breathing Canopy
         </motion.h2>
-        <motion.div initial={{ width: 0 }} whileInView={{ width: 80 }}
-          className="h-[1px] bg-black/10 mx-auto mt-8" />
+        <motion.div initial={{ width: 0 }} whileInView={{ width: 60 }}
+          className="h-[1px] bg-black/10 mx-auto mt-6 md:mt-8" />
         <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.4 }}
-          className="mt-5 text-[11px] text-black/30 tracking-[0.35em] uppercase">
-          Hover over the canopy — discover artworks by color
+          className="mt-5 text-[9px] md:text-[11px] text-black/30 tracking-[0.3em] md:tracking-[0.35em] uppercase">
+          {isTouchDevice ? "Sweep through the canopy — discover by color" : "Hover over the canopy — discover by color"}
         </motion.p>
       </div>
 
-      <div className="relative container mx-auto px-6">
+      <div className="relative container mx-auto px-4 md:px-6">
         <motion.div ref={containerRef}
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1.5 }}
-          className="relative w-full h-[550px] md:h-[750px]"
+          className="relative w-full h-[450px] md:h-[750px] touch-none"
           onMouseMove={onMove}
+          onTouchMove={onMove}
           onMouseEnter={() => { hoverRef.current = true; }}
           onMouseLeave={onLeave}
+          onTouchEnd={onLeave}
         >
           <canvas ref={canvasRef} className="w-full h-full" />
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none">
             <motion.p animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ repeat: Infinity, duration: 3.5 }}
-              className="text-[9px] tracking-[0.4em] uppercase text-black/25 whitespace-nowrap">
-              move cursor through the colors
+              className="text-[8px] md:text-[9px] tracking-[0.4em] uppercase text-black/25 whitespace-nowrap">
+              {isTouchDevice ? "swipe your finger through the colors" : "move cursor through the colors"}
             </motion.p>
           </div>
         </motion.div>
 
-        <>
+        <AnimatePresence>
           {showCards && cards.map((art, i) => {
             if (hoveredCardId && hoveredCardId !== art._id) return null;
-
             const pos = positions[i] || { x: "50%", y: "10%" };
             return (
-              <div key={`c-${art._id}`}
-                className="absolute z-40 pointer-events-auto animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-200 ease-out fill-mode-both"
-                style={{ left: pos.x, top: pos.y, animationDelay: hoveredCardId ? "0ms" : `${i * 30}ms` }}
+              <motion.div key={`c-${art._id}`}
+                initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="absolute z-40 pointer-events-auto"
+                style={{ left: pos.x, top: pos.y }}
                 onMouseEnter={() => {
                   setHoveredCardId(art._id);
                   clearTimeout(timerRef.current);
@@ -430,45 +461,25 @@ export default function TreeCanvas() {
                 }}
               >
                 <Link href={`/products/${art._id}`}>
-                  <div className="group w-28 md:w-36 bg-white p-2 cursor-pointer hover:scale-105 transition-transform duration-300"
-                    style={{ boxShadow: `0 8px 32px ${art.colorConcept[0]}40, 0 2px 8px rgba(0,0,0,0.14)` }}>
-
-                    <div className="flex gap-1 mb-2">
-                      {art.colorConcept.slice(0, 5).map((c, ci) => (
-                        <div key={ci} className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: c }} />
-                      ))}
+                  <div className="group w-32 md:w-40 bg-white p-2 md:p-3 shadow-2xl transition-transform duration-300"
+                    style={{ borderBottom: `4px solid ${art.colorConcept[0]}` }}>
+                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-gray-50 mb-3">
+                      <Image src={art.imageUrl} alt={art.title} fill className="object-cover" />
                     </div>
-
-                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-gray-50">
-                      <Image src={art.imageUrl} alt={art.title} fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        unoptimized />
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                        style={{ background: `linear-gradient(to top, ${art.colorConcept[0]}50, transparent)` }} />
-                    </div>
-
-                    <div className="mt-2 px-0.5">
-                      <p className="text-[9px] font-bold tracking-widest uppercase text-black/70 truncate leading-tight">
-                        {art.title}
-                      </p>
-                      <p className="text-[8px] italic text-black/35 font-serif truncate mt-0.5">
-                        {art.creator}
-                      </p>
-                      <p className="text-[8px] text-black/30 tracking-wider mt-1 uppercase">
-                        View Portrait →
-                      </p>
+                    <div className="px-1 pb-1">
+                      <p className="text-[10px] font-bold tracking-widest uppercase text-black truncate">{art.title}</p>
+                      <p className="text-[8px] italic text-black/40 font-serif truncate mt-1">Explore Portrait →</p>
                     </div>
                   </div>
                 </Link>
-              </div>
+              </motion.div>
             );
           })}
-        </>
+        </AnimatePresence>
       </div>
 
-      <div className="max-w-xl text-center px-6 mt-16">
-        <p className="text-[11px] tracking-[0.3em] text-black/30 uppercase leading-relaxed italic font-medium">
+      <div className="max-w-xl text-center px-6 mt-12 md:mt-16">
+        <p className="text-[10px] md:text-[11px] tracking-[0.3em] text-black/30 uppercase leading-relaxed italic font-medium">
           "A living painting where colors breathe, move, and respond — without losing its original artistic soul."
         </p>
       </div>

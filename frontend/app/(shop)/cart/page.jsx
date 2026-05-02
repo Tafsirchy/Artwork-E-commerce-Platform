@@ -24,55 +24,59 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gallery-bg py-16">
+    <div className="min-h-screen bg-gallery-bg py-10 sm:py-16">
       <div className="container mx-auto px-6">
-        <h1 className="text-4xl font-light text-gallery-text mb-12">Your Collection</h1>
+        <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text mb-8 sm:mb-12 tracking-tight uppercase">Your Collection</h1>
 
-        <div className="flex flex-col lg:flex-row gap-12">
+        <div className="flex flex-col lg:flex-row gap-8 sm:gap-12">
           {/* Cart Items */}
           <div className="w-full lg:w-2/3">
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {items.map((item) => (
-                <div key={item.product._id} className="flex gap-6 bg-gallery-surface border border-gallery-border p-4 shadow-sm">
-                  <div className="relative w-24 h-32 md:w-32 md:h-40 flex-shrink-0 bg-gallery-soft">
+                <div key={item.product._id} className="flex gap-4 sm:gap-6 bg-gallery-surface border border-gallery-border p-4 sm:p-6 shadow-sm relative group overflow-hidden">
+                  <div className="relative w-24 h-32 sm:w-32 sm:h-40 flex-shrink-0 bg-gallery-soft border border-gallery-border/50">
                     <Image
                       src={getValidImageSrc(item.product.imageUrl)}
                       alt={item.product.title}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 640px) 96px, 128px"
                     />
                   </div>
-                  <div className="flex-1 flex flex-col justify-between py-2">
+                  <div className="flex-1 flex flex-col justify-between py-1 sm:py-2">
                     <div>
-                      <h3 className="text-xl font-light text-gallery-text">{item.product.title}</h3>
-                      <p className="text-sm text-gallery-muted mt-1">{item.product.creator}</p>
+                      <h3 className="text-lg sm:text-xl font-light text-gallery-text leading-tight">{item.product.title}</h3>
+                      <p className="text-[10px] tracking-[0.2em] uppercase text-gallery-muted mt-1 font-bold">{item.product.creator}</p>
                     </div>
 
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center border border-gallery-border">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 gap-4">
+                      {/* Tactile Quantity Controls */}
+                      <div className="flex items-center border border-gallery-border h-12 w-fit bg-white">
                         <button
                           onClick={() => updateQuantity(item.product._id, item.quantity - 1)}
-                          className="px-3 py-1 text-gallery-muted hover:text-gallery-text transition-colors"
+                          className="w-12 h-full flex items-center justify-center text-gallery-muted hover:text-gallery-text transition-colors active:bg-gallery-soft"
+                          aria-label="Decrease quantity"
                         >
                           <Minus size={16} />
                         </button>
-                        <span className="px-4 py-1 text-gallery-text border-x border-gallery-border">{item.quantity}</span>
+                        <span className="w-10 h-full flex items-center justify-center text-gallery-text border-x border-gallery-border font-bold text-sm">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.product._id, item.quantity + 1)}
-                          className="px-3 py-1 text-gallery-muted hover:text-gallery-text transition-colors"
+                          className="w-12 h-full flex items-center justify-center text-gallery-muted hover:text-gallery-text transition-colors active:bg-gallery-soft"
+                          aria-label="Increase quantity"
                         >
                           <Plus size={16} />
                         </button>
                       </div>
 
-                      <div className="flex items-center gap-6">
-                        <span className="font-bold text-gallery-accent">${(item.product.price * item.quantity).toFixed(2)}</span>
+                      <div className="flex items-center justify-between sm:justify-end gap-6">
+                        <span className="text-xl font-black text-gallery-accent tracking-tighter">${(item.product.price * item.quantity).toFixed(2)}</span>
                         <button
                           onClick={() => removeFromCart(item.product._id)}
-                          className="text-gallery-muted hover:text-red-500 transition-colors"
+                          className="w-12 h-12 flex items-center justify-center border border-red-50 text-gallery-muted hover:text-red-500 hover:border-red-100 transition-all active:bg-red-50"
                           aria-label="Remove item"
                         >
-                          <Trash2 size={20} />
+                          <Trash2 size={18} />
                         </button>
                       </div>
                     </div>
@@ -84,32 +88,32 @@ export default function CartPage() {
 
           {/* Order Summary */}
           <div className="w-full lg:w-1/3">
-            <div className="bg-gallery-surface border border-gallery-border p-6 shadow-sm sticky top-24">
-              <h2 className="text-2xl font-light text-gallery-text mb-6 border-b border-gallery-border pb-4">Order Summary</h2>
+            <div className="bg-gallery-surface border border-gallery-border p-8 shadow-2xl sticky top-24">
+              <h2 className="text-xl sm:text-2xl font-light text-gallery-text mb-8 border-b border-gallery-border pb-4 uppercase tracking-widest">Summary</h2>
 
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between text-gallery-muted">
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between text-sm sm:text-base text-gallery-muted uppercase tracking-wider font-bold">
                   <span>Subtotal</span>
-                  <span>${getTotal().toFixed(2)}</span>
+                  <span className="text-gallery-text">${getTotal().toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-gallery-muted">
-                  <span>Shipping</span>
-                  <span>Calculated at checkout</span>
+                <div className="flex justify-between text-xs text-gallery-muted uppercase tracking-widest">
+                  <span>Logistics</span>
+                  <span className="italic">Calculated at checkout</span>
                 </div>
               </div>
 
-              <div className="border-t border-gallery-border pt-4 mb-8">
-                <div className="flex justify-between text-xl text-gallery-text font-bold">
-                  <span>Total</span>
-                  <span className="text-gallery-accent">${getTotal().toFixed(2)}</span>
+              <div className="border-t border-gallery-border pt-6 mb-10">
+                <div className="flex justify-between items-end">
+                  <span className="text-xs uppercase tracking-[0.4em] text-gallery-muted mb-1 font-bold">Total Investment</span>
+                  <span className="text-3xl font-black text-gallery-accent tracking-tighter leading-none">${getTotal().toFixed(2)}</span>
                 </div>
               </div>
 
               <button
                 onClick={() => router.push('/checkout')}
-                className="w-full py-4 bg-gallery-primary text-white text-lg rounded hover:bg-black transition-colors"
+                className="w-full h-16 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase font-black hover:bg-gallery-gold transition-all shadow-xl active:scale-95"
               >
-                Proceed to Checkout
+                Acquisition Entry
               </button>
             </div>
           </div>

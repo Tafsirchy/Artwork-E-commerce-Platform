@@ -19,7 +19,7 @@ export default function ProductsPage() {
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 12; // Increased for better 2-column flow
 
   const categories = ["All", "Abstract", "Landscape", "Modern", "Minimalism", "Expressionism", "Illustration"];
 
@@ -53,7 +53,6 @@ export default function ProductsPage() {
     if (sortBy === "price-high") result.sort((a, b) => b.price - a.price);
     if (sortBy === "newest") result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    // Reset pagination when filters change
     return result;
   }, [products, category, sortBy, priceRange]);
 
@@ -73,25 +72,26 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gallery-bg py-24">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-8">
-          <p className="text-sm tracking-[0.3em] uppercase text-gallery-muted mb-3">Bristiii</p>
-          <h1 className="text-5xl font-light text-gallery-text">Curated Gallery</h1>
-          <div className="w-12 h-[2px] bg-gallery-gold mx-auto mt-6" />
+    <div className="min-h-screen bg-gallery-bg py-12 lg:py-24">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-[10px] tracking-[0.4em] uppercase text-gallery-muted mb-2 sm:mb-3">Bristiii</p>
+          <h1 className="text-3xl sm:text-5xl font-light text-gallery-text tracking-tight uppercase">Curated Gallery</h1>
+          <div className="w-10 h-[1px] bg-gallery-gold mx-auto mt-4 sm:mt-6" />
         </div>
 
-        {/* Filter Toggle Button */}
-        <div className="flex justify-center mb-12">
+        {/* Filter Toggle Button (Touch Optimized) */}
+        <div className="flex justify-center mb-10">
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="flex items-center gap-3 px-8 py-3 bg-white border border-gallery-gold/20 rounded-full shadow-sm hover:shadow-md transition-all group"
+            // 🚀 SM Fix: Massive touch target for filters
+            className="flex items-center gap-3 px-10 py-4 bg-white border border-gallery-border/50 rounded-none shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-xl transition-all group"
           >
-            <Filter size={16} className="text-gallery-gold group-hover:rotate-12 transition-transform" />
-            <span className="text-xs tracking-[0.2em] uppercase font-medium text-gallery-text">
-              {isFilterOpen ? "Close Filters" : "Filter & Sort"}
+            <Filter size={14} className="text-gallery-gold" />
+            <span className="text-[10px] tracking-[0.3em] uppercase font-black text-gallery-text">
+              {isFilterOpen ? "Close Filters" : "Refine Collection"}
             </span>
             <ChevronDown size={14} className={`text-gallery-muted transition-transform duration-300 ${isFilterOpen ? 'rotate-180' : ''}`} />
           </motion.button>
@@ -106,23 +106,24 @@ export default function ProductsPage() {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden mb-12"
             >
-              <div className="bg-white/50 backdrop-blur-md rounded-3xl p-8 border border-gallery-gold/10 shadow-inner grid grid-cols-1 md:grid-cols-3 gap-10">
+              <div className="bg-white p-6 sm:p-10 border border-gallery-border grid grid-cols-1 md:grid-cols-3 gap-10">
                 
                 {/* Category Filter */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-2">
                     <SortAsc size={14} className="text-gallery-gold" />
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-bold">Category</span>
+                    <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Medium</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {categories.map(cat => (
                       <button
                         key={cat}
                         onClick={() => setCategory(cat)}
-                        className={`px-4 py-2 rounded-full text-[10px] tracking-widest uppercase transition-all border ${
+                        // 🚀 SM Fix: 44px min height for touch targets
+                        className={`px-5 py-3 text-[10px] tracking-widest uppercase transition-all border ${
                           category === cat 
-                          ? "bg-gallery-text text-white border-gallery-text" 
-                          : "bg-transparent text-gallery-muted border-gallery-gold/20 hover:border-gallery-gold"
+                          ? "bg-gallery-primary text-white border-gallery-primary" 
+                          : "bg-transparent text-gallery-muted border-gallery-border hover:border-gallery-gold"
                         }`}
                       >
                         {cat}
@@ -132,10 +133,10 @@ export default function ProductsPage() {
                 </div>
 
                 {/* Price Filter */}
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div className="flex items-center gap-2 mb-2">
                     <DollarSign size={14} className="text-gallery-gold" />
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-bold">Max Price</span>
+                    <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Valuation</span>
                   </div>
                   <input 
                     type="range" 
@@ -144,11 +145,11 @@ export default function ProductsPage() {
                     step="500"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                    className="w-full accent-gallery-gold bg-gallery-gold/10 h-1.5 rounded-lg appearance-none cursor-pointer"
+                    className="w-full accent-gallery-gold bg-gallery-soft h-[3px] appearance-none cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] tracking-widest text-gallery-muted uppercase">
+                  <div className="flex justify-between text-[10px] tracking-widest text-gallery-muted uppercase font-black">
                     <span>$0</span>
-                    <span className="text-gallery-text font-bold">${priceRange[1]}</span>
+                    <span className="text-gallery-accent">${priceRange[1].toLocaleString()}</span>
                   </div>
                 </div>
 
@@ -156,31 +157,31 @@ export default function ProductsPage() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-2">
                     <SortAsc size={14} className="text-gallery-gold" />
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-gallery-muted font-bold">Sort By</span>
+                    <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Sequence</span>
                   </div>
                   <select 
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full bg-transparent border-b border-gallery-gold/20 py-2 text-xs tracking-widest uppercase text-gallery-text focus:outline-none focus:border-gallery-gold transition-colors cursor-pointer"
+                    className="w-full bg-gallery-soft/50 border border-gallery-border px-4 py-3 text-[10px] tracking-widest uppercase text-gallery-text focus:outline-none focus:border-gallery-gold transition-colors cursor-pointer appearance-none"
                   >
-                    <option value="newest">Newest Acquisitions</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
+                    <option value="newest">Recent Acquisitions</option>
+                    <option value="price-low">Valuation: Low to High</option>
+                    <option value="price-high">Valuation: High to Low</option>
                   </select>
                 </div>
 
                 {/* Clear All Button */}
-                <div className="md:col-span-3 flex justify-end">
+                <div className="md:col-span-3 flex justify-end pt-6 border-t border-gallery-border/30">
                   <button 
                     onClick={() => {
                       setCategory("All");
                       setPriceRange([0, 10000]);
                       setSortBy("newest");
                     }}
-                    className="flex items-center gap-2 text-[9px] tracking-[0.4em] uppercase text-gallery-muted hover:text-red-400 transition-colors"
+                    className="flex items-center gap-2 text-[9px] tracking-[0.5em] uppercase text-gallery-muted hover:text-red-500 transition-colors font-black"
                   >
                     <X size={12} />
-                    Clear Filters
+                    Reset Curation
                   </button>
                 </div>
               </div>
@@ -188,8 +189,8 @@ export default function ProductsPage() {
           )}
         </AnimatePresence>
 
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {/* Gallery Grid (2-column SM Optimized) */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8">
           {loading
             ? Array.from({ length: 8 }).map((_, i) => (
               <ProductCardSkeleton key={i} />
@@ -197,9 +198,9 @@ export default function ProductsPage() {
             : paginatedProducts.map((product, i) => (
               <motion.div
                 key={product._id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
               >
                 <ProductCard product={product} />
               </motion.div>
@@ -208,48 +209,54 @@ export default function ProductsPage() {
 
         {/* Empty State */}
         {!loading && filteredAndSortedProducts.length === 0 && (
-          <div className="text-center py-20 bg-white/50 rounded-[40px] border border-dashed border-gallery-gold/20">
-            <p className="text-gallery-muted tracking-[0.2em] uppercase text-sm">No artworks match your selection.</p>
+          <div className="text-center py-20 bg-white border border-dashed border-gallery-border">
+            <p className="text-gallery-muted tracking-[0.3em] uppercase text-[10px] font-black">The archives are empty for this selection.</p>
             <button 
               onClick={() => {
                 setCategory("All");
                 setPriceRange([0, 10000]);
                 setSortBy("newest");
               }}
-              className="mt-6 text-[10px] tracking-[0.5em] uppercase text-gallery-gold border-b border-gallery-gold/30 hover:border-gallery-gold transition-all"
+              className="mt-6 text-[9px] tracking-[0.5em] uppercase text-gallery-gold border-b border-gallery-gold/30 hover:border-gallery-gold transition-all font-black"
             >
-              Reset All
+              Reset Curation
             </button>
           </div>
         )}
 
         {/* Pagination Controls */}
         {!loading && totalPages > 1 && (
-          <div className="mt-20 flex flex-col items-center gap-6">
+          <div className="mt-16 sm:mt-24 flex flex-col items-center gap-8">
             <div className="flex items-center gap-4">
               <button
                 disabled={currentPage === 1}
                 onClick={() => goToPage(currentPage - 1)}
-                className={`p-3 rounded-full border border-gallery-gold/20 transition-all ${
+                // 🚀 SM Fix: 48px touch targets
+                className={`w-12 h-12 flex items-center justify-center border border-gallery-border transition-all ${
                   currentPage === 1 
                   ? "opacity-30 cursor-not-allowed" 
                   : "hover:bg-white hover:border-gallery-gold text-gallery-text"
                 }`}
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={18} />
               </button>
 
               <div className="flex items-center gap-2">
                 {Array.from({ length: totalPages }).map((_, i) => {
                   const page = i + 1;
+                  // Only show current, first, last, and immediate neighbors on small screens if many pages
+                  const isVisible = totalPages <= 5 || page === 1 || page === totalPages || Math.abs(currentPage - page) <= 1;
+                  
+                  if (!isVisible) return <span key={page} className="text-gallery-muted">.</span>;
+
                   return (
                     <button
                       key={page}
                       onClick={() => goToPage(page)}
-                      className={`w-10 h-10 rounded-full text-xs tracking-widest transition-all ${
+                      className={`w-12 h-12 text-[10px] tracking-widest transition-all ${
                         currentPage === page
-                        ? "bg-gallery-text text-white shadow-lg"
-                        : "hover:bg-white text-gallery-muted border border-transparent hover:border-gallery-gold/30"
+                        ? "bg-gallery-primary text-white"
+                        : "bg-white text-gallery-muted border border-gallery-border hover:border-gallery-gold"
                       }`}
                     >
                       {page}
@@ -261,18 +268,18 @@ export default function ProductsPage() {
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => goToPage(currentPage + 1)}
-                className={`p-3 rounded-full border border-gallery-gold/20 transition-all ${
+                className={`w-12 h-12 flex items-center justify-center border border-gallery-border transition-all ${
                   currentPage === totalPages 
                   ? "opacity-30 cursor-not-allowed" 
                   : "hover:bg-white hover:border-gallery-gold text-gallery-text"
                 }`}
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={18} />
               </button>
             </div>
             
-            <p className="text-[10px] tracking-[0.4em] uppercase text-gallery-muted font-light">
-              Viewing {startIndex + 1} - {Math.min(startIndex + itemsPerPage, filteredAndSortedProducts.length)} of {filteredAndSortedProducts.length} Artworks
+            <p className="text-[9px] tracking-[0.5em] uppercase text-gallery-muted font-black">
+              Showing {startIndex + 1} - {Math.min(startIndex + itemsPerPage, filteredAndSortedProducts.length)} / {filteredAndSortedProducts.length} Pieces
             </p>
           </div>
         )}

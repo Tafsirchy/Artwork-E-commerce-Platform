@@ -54,7 +54,7 @@ function Shard({ shardInfo, index }) {
     // Only start randomized interval after hydration
     const interval = setInterval(() => {
       setImgSrc(galleryImages[Math.floor(Math.random() * galleryImages.length)]);
-    }, Math.random() * 2000 + 4000); 
+    }, Math.random() * 2000 + 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -85,6 +85,7 @@ export default function Hero() {
   const [currentThoughts, setCurrentThoughts] = useState(artThoughts[0]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const shuffleLayout = useCallback(() => {
     if (document.hidden || isCompleted) return;
@@ -260,14 +261,21 @@ export default function Hero() {
 
   useEffect(() => {
     setIsMounted(true);
-    let layoutTimer = setInterval(shuffleLayout, 800); // Faster layout shifts to build the grid
+    const checkScreen = () => setIsDesktop(window.innerWidth >= 1024);
+    checkScreen();
+    window.addEventListener('resize', checkScreen);
+
+    // 🚀 Performance Optimization: Throttled layout shifts on mobile
+    let layoutTimer = null;
+    const interval = window.innerWidth >= 1024 ? 800 : 2500;
+    layoutTimer = setInterval(shuffleLayout, interval);
 
     const handleVisibility = () => {
       if (document.hidden) {
         clearInterval(layoutTimer);
       } else {
         clearInterval(layoutTimer);
-        layoutTimer = setInterval(shuffleLayout, 800);
+        layoutTimer = setInterval(shuffleLayout, interval);
       }
     };
 
@@ -282,6 +290,7 @@ export default function Hero() {
     return () => {
       ctx.revert();
       clearInterval(layoutTimer);
+      window.removeEventListener('resize', checkScreen);
       document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [shuffleLayout]);
@@ -290,48 +299,52 @@ export default function Hero() {
     <section ref={heroRef} className="relative w-full min-h-screen bg-gallery-bg flex items-center overflow-hidden">
       <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] bg-gallery-gold/5 rounded-full blur-[120px]" />
 
-      {/* 🧩 POETIC FRAGMENTS (Full Screen Absolute, safely framing the center) */}
-      <div ref={thoughtBoxTL} className="absolute top-[8%] left-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
-        <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pr-6 pl-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
-          <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-left">
-            {currentThoughts[2]}
-          </p>
-        </div>
-      </div>
+      {/* 🧩 POETIC FRAGMENTS (Hidden on Mobile for Clutter Reduction) */}
+      {isDesktop && (
+        <>
+          <div ref={thoughtBoxTL} className="absolute top-[8%] left-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
+            <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pr-6 pl-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
+              <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
+              <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-left">
+                {currentThoughts[2]}
+              </p>
+            </div>
+          </div>
 
-      <div ref={thoughtBoxTR} className="absolute top-[8%] right-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
-        <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pl-6 pr-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
-          <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
-          <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-right">
-            {currentThoughts[0]}
-          </p>
-        </div>
-      </div>
+          <div ref={thoughtBoxTR} className="absolute top-[8%] right-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
+            <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pl-6 pr-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
+              <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
+              <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-right">
+                {currentThoughts[0]}
+              </p>
+            </div>
+          </div>
 
-      <div ref={thoughtBoxBL} className="absolute bottom-[8%] left-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
-        <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pr-6 pl-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
-          <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-left">
-            {currentThoughts[1]}
-          </p>
-        </div>
-      </div>
+          <div ref={thoughtBoxBL} className="absolute bottom-[8%] left-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
+            <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pr-6 pl-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
+              <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
+              <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-left">
+                {currentThoughts[1]}
+              </p>
+            </div>
+          </div>
 
-      <div ref={thoughtBoxBR} className="absolute bottom-[8%] right-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
-        <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pl-6 pr-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
-          <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
-          <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-right">
-            {currentThoughts[3]}
-          </p>
-        </div>
-      </div>
+          <div ref={thoughtBoxBR} className="absolute bottom-[8%] right-[5%] z-40 opacity-0 pointer-events-none max-w-[280px]">
+            <div className="bg-white/5 backdrop-blur-3xl border border-white/10 pl-6 pr-8 py-6 rounded-2xl shadow-2xl relative overflow-hidden">
+              <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gallery-gold/0 via-gallery-gold/50 to-gallery-gold/0"></div>
+              <p className="text-[9px] tracking-[0.35em] uppercase text-gallery-text font-medium leading-[2.5] text-right">
+                {currentThoughts[3]}
+              </p>
+            </div>
+          </div>
+        </>
+      )}
 
-      <div className="relative z-20 container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 items-center gap-16 py-12">
+      <div className="relative z-20 container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 items-center gap-12 lg:gap-16 py-12 lg:py-20">
 
-        {/* 🏛️ LEFT SIDE: Source Clusters */}
-        <div className="left-side-container relative h-full flex flex-col items-start justify-center order-1 w-full">
-          <div ref={clusterRef} className="relative w-full max-w-[420px] h-[420px]">
+        {/* 🏛️ SOURCE CLUSTERS (Order-2 on Mobile) */}
+        <div className="left-side-container relative h-full flex flex-col items-center lg:items-start justify-center order-2 lg:order-1 w-full">
+          <div ref={clusterRef} className="relative w-full max-w-[320px] xs:max-w-[380px] sm:max-w-[420px] aspect-square">
             {[0, 1, 2].map((cardIndex) => {
               const currentSlotIndex = slotIndices[cardIndex];
               const slot = layoutSlots[currentSlotIndex];
@@ -342,7 +355,7 @@ export default function Hero() {
                   className={`cluster-${cardIndex} ${slot.class} ${slot.z}`}
                   transition={{ layout: { type: "spring", stiffness: 300, damping: 30 } }}
                 >
-                  <div className={`relative ${slot.aspect} w-full rounded-3xl overflow-hidden bg-[#FAF8F5] border border-white/40`}>
+                  <div className={`relative ${slot.aspect} w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-[#FAF8F5] border border-white/40 shadow-xl`}>
                     <div className="absolute inset-0">
                       {shards.map((shard, i) => (
                         <Shard key={i} shardInfo={shard} index={i} />
@@ -355,11 +368,11 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* 🖋️ RIGHT SIDE: Hero Text & Separate Assembly Window */}
-        <div className="relative z-10 order-2 flex flex-col items-end justify-center h-full w-full">
+        {/* 🖋️ HERO TEXT (Order-1 on Mobile) */}
+        <div className="relative z-10 order-1 lg:order-2 flex flex-col items-center lg:items-end justify-center h-full w-full">
 
-          {/* 🖼️ COLLECTION FRAME */}
-          <div className="collection-frame absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] z-0 pointer-events-none opacity-50 flex items-center justify-center">
+          {/* 🖼️ COLLECTION FRAME (Responsive) */}
+          <div className="collection-frame absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] z-0 pointer-events-none opacity-50 flex items-center justify-center">
             <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 p-4 flex items-center justify-center">
                 <div className="relative w-full h-full aspect-square flex items-center justify-center">
@@ -387,23 +400,23 @@ export default function Hero() {
           </div>
 
           {/* 🖋️ TEXT CONTENT */}
-          <div ref={titleRef} className="relative z-10 flex flex-col items-end text-right w-full">
-            <div className="title-line mb-6 inline-flex items-center gap-3 px-6 py-2 border border-gallery-gold/20 rounded-none bg-white/20 backdrop-blur-xl shadow-inner">
-              <Sparkles size={14} className="text-gallery-gold animate-pulse" />
-              <span className="text-[9px] tracking-[0.6em] uppercase text-gallery-text font-medium">The Living Canvas • Series I</span>
+          <div ref={titleRef} className="relative z-10 flex flex-col items-center lg:items-end text-center lg:text-right w-full">
+            <div className="title-line mb-6 inline-flex items-center gap-3 px-4 sm:px-6 py-2 border border-gallery-gold/20 rounded-none bg-white/20 backdrop-blur-xl shadow-inner">
+              <Sparkles size={12} className="text-gallery-gold animate-pulse" />
+              <span className="text-[8px] sm:text-[9px] tracking-[0.4em] sm:tracking-[0.6em] uppercase text-gallery-text font-medium">The Living Canvas • Series I</span>
             </div>
 
-            <h1 className="text-6xl md:text-[5.2rem] font-extralight text-gallery-text leading-[0.9] mb-6 tracking-tighter">
+            <h1 className="text-4xl sm:text-6xl lg:text-[5.2rem] font-extralight text-gallery-text leading-[1.1] lg:leading-[0.9] mb-6 tracking-tighter">
               <span className="title-line block">Echoes of the</span>
               <span className="title-line block text-gallery-accent font-serif mt-2">Unseen.</span>
             </h1>
 
-            <p className="title-line text-gallery-muted text-lg font-light leading-relaxed mb-10 max-w-lg border-r-2 border-gallery-gold/20 pr-8">
+            <p className="title-line text-gallery-muted text-base sm:text-lg font-light leading-relaxed mb-10 max-w-lg border-b-2 lg:border-b-0 lg:border-r-2 border-gallery-gold/20 pb-6 lg:pb-0 lg:pr-8">
               Witness the digital rebirth of form. A curated sanctuary where every shard tells a story, and every masterpiece finds its soul.
             </p>
 
             <div className="title-line flex flex-col sm:flex-row items-center gap-10">
-              <Link href="/products" className="group relative px-12 py-6 bg-gallery-primary text-white text-[10px] tracking-[0.5em] uppercase overflow-hidden rounded-none block shadow-2xl transition-all duration-500 hover:shadow-gallery-gold/20">
+              <Link href="/products" className="group relative px-10 sm:px-12 py-5 sm:py-6 bg-gallery-primary text-white text-[9px] sm:text-[10px] tracking-[0.4em] sm:tracking-[0.5em] uppercase overflow-hidden rounded-none block shadow-2xl transition-all duration-500 hover:shadow-gallery-gold/20 active:scale-95">
                 <span className="relative z-10 transition-transform duration-500 group-hover:translate-x-2 block">ENTER THE GALLERY</span>
                 <div className="absolute inset-0 bg-gallery-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               </Link>
