@@ -4,7 +4,7 @@ export const shelfCategories = [
     direction: "right",
     color: "#C9A96E",
     glowColor: "rgba(201,169,110,0.35)",
-    position: { top: "8%", left: "50%", width: "220px", transform: "translateX(-50%)" },
+    position: { top: "8%", left: "50%", width: "36%", transform: "translateX(-50%)" },
     artworks: [],
   },
   {
@@ -12,7 +12,7 @@ export const shelfCategories = [
     direction: "left",
     color: "#E8C4C4",
     glowColor: "rgba(232,196,196,0.35)",
-    position: { top: "74%", left: "50%", width: "360px", transform: "translateX(-50%)" },
+    position: { top: "74%", left: "50%", width: "60%", transform: "translateX(-50%)" },
     artworks: [],
   },
   {
@@ -20,7 +20,7 @@ export const shelfCategories = [
     direction: "right",
     color: "#8B9DC3",
     glowColor: "rgba(139,157,195,0.35)",
-    position: { top: "28%", right: "12%", width: "240px", transform: "none" },
+    position: { top: "28%", left: "50%", width: "40%", transform: "none" },
     artworks: [],
   },
   {
@@ -28,7 +28,7 @@ export const shelfCategories = [
     direction: "left",
     color: "#B0A8B9",
     glowColor: "rgba(176,168,185,0.35)",
-    position: { top: "52%", left: "6%", width: "300px", transform: "none" },
+    position: { top: "52%", right: "50%", width: "50%", transform: "none" },
     artworks: [],
   },
   {
@@ -36,7 +36,7 @@ export const shelfCategories = [
     direction: "right",
     color: "#D4896A",
     glowColor: "rgba(212,137,106,0.35)",
-    position: { top: "52%", right: "6%", width: "270px", transform: "none" },
+    position: { top: "52%", left: "50%", width: "45%", transform: "none" },
     artworks: [],
   },
   {
@@ -44,7 +44,7 @@ export const shelfCategories = [
     direction: "left",
     color: "#7A9E7E",
     glowColor: "rgba(122,158,126,0.35)",
-    position: { top: "28%", left: "12%", width: "260px", transform: "none" },
+    position: { top: "28%", right: "50%", width: "43%", transform: "none" },
     artworks: [],
   },
 ];

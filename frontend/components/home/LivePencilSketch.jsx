@@ -66,6 +66,7 @@ const LivePencilSketch = () => {
   const [activeColor, setActiveColor] = useState(PALETTE[0]);
   const [activeBrush, setActiveBrush] = useState(BRUSHES[0]);
   const [isPaintingActive, setIsPaintingActive] = useState(false);
+  const [isMouseDown, setIsMouseDown] = useState(false);
 
   const shadingRef = useRef([]);
 
@@ -185,8 +186,9 @@ const LivePencilSketch = () => {
     const y = (viewY - offsetY) / scale;
 
     setMousePos({ x: viewX, y: viewY });
-
-    if (isPaintingActive) {
+    
+    // 🚀 RESTORED: Draw if toggle is ON (mobile) OR mouse is DOWN (desktop)
+    if (isPaintingActive || isMouseDown) {
       for (let i = 0; i < activeBrush.density; i++) {
         shadingRef.current.push({
           x: x + (Math.random() - 0.5) * activeBrush.scatter / scale,
@@ -210,8 +212,10 @@ const LivePencilSketch = () => {
               className="relative w-full aspect-square md:aspect-auto md:h-[70vh] cursor-crosshair group/canvas bg-gallery-soft/10 rounded-2xl md:rounded-[40px] border border-black/5 overflow-hidden shadow-inner"
               onMouseMove={(e) => handlePointerMove(e.clientX, e.clientY)}
               onTouchMove={(e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY)}
+              onMouseDown={() => setIsMouseDown(true)}
+              onMouseUp={() => setIsMouseDown(false)}
               onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              onMouseLeave={() => { setIsHovered(false); setIsMouseDown(false); }}
             >
               <canvas ref={canvasRef} className="w-full h-full" style={{ touchAction: 'none' }} />
               

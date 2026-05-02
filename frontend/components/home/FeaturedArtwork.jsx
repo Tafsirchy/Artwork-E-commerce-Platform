@@ -5,9 +5,14 @@ import Link from "next/link";
 import { Plus, Eye, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import api from "@/lib/api";
+import { toast } from "react-toastify";
 import AnimatedButton from "../shared/AnimatedButton";
+import useCartStore from "@/store/cartStore";
 
-const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => (
+const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => {
+  const { addToCart } = useCartStore();
+  
+  return (
   <motion.div
     initial={{ opacity: 0, scale: 0.95, y: 30 }}
     whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -80,18 +85,33 @@ const ArtworkCard = ({ item, index, className, aspectClass, onImageClick }) => (
       </div>
       <div className="text-right">
         <p className="text-lg font-light text-gallery-gold mb-2">${item.price?.toLocaleString()}</p>
-        <button className="w-12 h-12 bg-gallery-soft flex items-center justify-center rounded-full hover:bg-gallery-primary hover:text-white transition-colors ml-auto shadow-sm active:scale-95">
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            addToCart({
+              _id: item._id || item.id,
+              title: item.title,
+              price: item.price,
+              image: item.imageUrl || item.image,
+              artist: item.creator || item.artist
+            });
+            toast.success(`"${item.title}" added to collection`);
+          }}
+          className="w-12 h-12 bg-gallery-soft flex items-center justify-center rounded-full hover:bg-gallery-primary hover:text-white transition-colors ml-auto shadow-sm active:scale-95"
+        >
           <Plus size={20} strokeWidth={1.5} />
         </button>
       </div>
     </div>
   </motion.div>
-);
+  );
+};
 
 export default function FeaturedArtwork() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeImage, setActiveImage] = useState(null);
   const [featuredItems, setFeaturedItems] = useState([]);
+  const { addToCart } = useCartStore();
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -313,7 +333,24 @@ export default function FeaturedArtwork() {
                 <div className="text-2xl font-light text-white mb-8">${activeImage.price?.toLocaleString()}</div>
 
                 <div className="space-y-3 w-full">
-                  <AnimatedButton text="Acquire Piece" containerClass="w-full mt-0" buttonClass="border-white/30 hover:border-white w-full py-4" textClass="text-white group-hover:text-black text-[9px]" fillClass="bg-white" />
+                  <AnimatedButton 
+                    text="Acquire Piece" 
+                    containerClass="w-full mt-0" 
+                    buttonClass="border-white/30 hover:border-white w-full py-4" 
+                    textClass="text-white group-hover:text-black text-[9px]" 
+                    fillClass="bg-white" 
+                    onClick={() => {
+                      addToCart({
+                        _id: activeImage._id || activeImage.id,
+                        title: activeImage.title,
+                        price: activeImage.price,
+                        image: activeImage.imageUrl || activeImage.image,
+                        artist: activeImage.creator || activeImage.artist
+                      });
+                      toast.success(`"${activeImage.title}" added to collection`);
+                      setActiveImage(null);
+                    }}
+                  />
                   <button className="w-full py-4 text-[9px] tracking-[0.3em] uppercase text-white/50 hover:text-white transition-colors border border-transparent hover:border-white/10 active:scale-95">View in Room</button>
                 </div>
               </div>

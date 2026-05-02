@@ -64,7 +64,7 @@ export default function CategoryModal({ category, onClose, onMouseEnter, onMouse
         onClick={onClose}
       >
         {/* Floating Controls */}
-        <div className="absolute top-8 right-8 z-[210]">
+        <div className="absolute top-4 right-4 md:top-8 md:right-8 z-[210]">
           <button
             onClick={onClose}
             className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white/60 hover:text-white transition-all flex items-center justify-center border border-white/10 group shadow-lg"
@@ -78,14 +78,50 @@ export default function CategoryModal({ category, onClose, onMouseEnter, onMouse
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.98, opacity: 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className="relative z-10 w-full max-w-6xl aspect-[1.8/1] md:aspect-[2.2/1] flex flex-col will-change-transform"
+          className="relative z-10 w-full max-w-6xl h-[85vh] md:h-auto md:aspect-[2.2/1] flex flex-col will-change-transform"
           onClick={(e) => e.stopPropagation()}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           style={{ perspective: "2500px" }}
         >
-          {/* 📖 The Realistic Book */}
-          <div className="flex-1 relative w-full h-full preserve-3d">
+          {/* 📱 MOBILE VIEW (Scrollable Stack) */}
+          <div className="flex md:hidden flex-col w-full h-full bg-[#faf9f6] rounded-[2px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] relative overflow-hidden">
+            <div className="absolute inset-0 opacity-[0.04] pointer-events-none z-0 mix-blend-multiply" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/paper.png')" }} />
+            
+            <div className="px-6 pt-10 pb-6 text-center z-10 border-b border-black/5 shrink-0 relative">
+              <p className="text-[9px] tracking-[0.6em] uppercase font-bold text-black/40 mb-2">Volume One</p>
+              <h2 className="text-4xl font-serif text-black/80 tracking-wide lowercase italic">{category.name}</h2>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-6 py-8 pb-20 space-y-16 relative z-10">
+              {category.artworks.map((artwork, idx) => (
+                <div key={idx} className="flex flex-col items-center group cursor-pointer" onClick={() => onSelectArtwork(artwork)}>
+                  <div className="relative w-[85%] aspect-[4/5] bg-white shadow-[0_15px_35px_-10px_rgba(0,0,0,0.2)] p-2.5 border border-black/5 mb-6">
+                    <div className="relative w-full h-full overflow-hidden bg-gray-50">
+                      <Image src={artwork.image} alt={artwork.title} fill className="object-cover" />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <h3 className="text-xs font-bold tracking-[0.25em] uppercase text-black/80 mb-2">{artwork.title}</h3>
+                    <p className="text-[10px] italic text-black/40 font-serif mb-3">{artwork.artist}</p>
+                    <div className="flex items-center justify-center gap-2.5">
+                       <span className="h-[1px] w-2.5 bg-black/5" />
+                       <p className="text-[10px] font-light tracking-[0.2em]" style={{ color: category.color }}>{artwork.price}</p>
+                       <span className="h-[1px] w-2.5 bg-black/5" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              <div className="pt-10 pb-6 text-center border-t border-black/5 mt-12">
+                <Bookmark size={20} className="text-black/10 mx-auto mb-4" />
+                <p className="text-[9px] tracking-widest uppercase text-black/20">The End of the Volume</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 💻 DESKTOP VIEW (The Realistic Book) */}
+          <div className="hidden md:flex flex-1 relative w-full h-full preserve-3d">
             
             {/* 🏗️ Book Edge Detail */}
             <div className="absolute inset-y-1 -left-2 w-3 bg-[#d8d4ca] rounded-l-sm border-l border-black/10 z-0" />
@@ -233,7 +269,7 @@ export default function CategoryModal({ category, onClose, onMouseEnter, onMouse
           </div>
 
           {/* Catalog Information Label */}
-          <div className="mt-8 flex justify-between items-end">
+          <div className="hidden md:flex mt-8 justify-between items-end">
              <div className="text-white/40">
                 <p className="text-[10px] tracking-[0.5em] uppercase font-bold mb-1">Interactive Catalog</p>
                 <div className="flex items-center gap-3">
@@ -261,11 +297,11 @@ function PageContent({ data, side, categoryColor, onSelect }) {
 
   // Cover Page
   if (data.type === "cover") {
-     if (side === "left") {
+      if (side === "left") {
         return (
-          <div className="w-full h-full flex flex-col items-center justify-center p-12 bg-[#eeebe5] shadow-inner">
-             <div className="w-16 h-24 border-2 border-black/10 flex items-center justify-center mb-6">
-                <Bookmark size={32} className="text-black/5" strokeWidth={1} />
+          <div className="w-full h-full flex flex-col items-center justify-center p-4 md:p-12 bg-[#eeebe5] shadow-inner">
+             <div className="w-12 h-16 md:w-16 md:h-24 border-2 border-black/10 flex items-center justify-center mb-4 md:mb-6">
+                <Bookmark size={24} className="text-black/5 md:w-8 md:h-8" strokeWidth={1} />
              </div>
              <p className="text-[10px] tracking-[0.4em] uppercase text-black/30 mb-2">Established 2026</p>
              <p className="text-[9px] tracking-widest uppercase text-black/20 text-center leading-loose">
@@ -275,7 +311,7 @@ function PageContent({ data, side, categoryColor, onSelect }) {
         );
      }
      return (
-        <div className="w-full h-full flex flex-col items-center justify-center p-12 relative overflow-hidden">
+        <div className="w-full h-full flex flex-col items-center justify-center p-4 md:p-12 relative overflow-hidden">
            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-black/[0.02] to-transparent pointer-events-none" />
            <motion.div 
              initial={{ scale: 0.9, opacity: 0 }}
@@ -283,10 +319,10 @@ function PageContent({ data, side, categoryColor, onSelect }) {
              transition={{ duration: 1 }}
              className="text-center z-10"
            >
-              <p className="text-[11px] tracking-[0.6em] uppercase font-bold text-black/40 mb-4">Volume One</p>
-              <h2 className="text-6xl font-serif text-black/80 tracking-wide mb-8 lowercase italic">{data.title}</h2>
-              <div className="w-24 h-[2px] mx-auto bg-black/10 mb-8" />
-              <p className="text-xs tracking-[0.3em] uppercase text-black/30">Curated Collection</p>
+              <p className="text-[9px] md:text-[11px] tracking-[0.6em] uppercase font-bold text-black/40 mb-2 md:mb-4">Volume One</p>
+              <h2 className="text-2xl md:text-6xl font-serif text-black/80 tracking-wide mb-4 md:mb-8 lowercase italic">{data.title}</h2>
+              <div className="w-16 md:w-24 h-[2px] mx-auto bg-black/10 mb-4 md:mb-8" />
+              <p className="text-[8px] md:text-xs tracking-[0.3em] uppercase text-black/30">Curated Collection</p>
            </motion.div>
         </div>
      );
@@ -296,11 +332,11 @@ function PageContent({ data, side, categoryColor, onSelect }) {
   if (data.type === "outro") {
      if (side === "left") {
         return (
-          <div className="w-full h-full flex flex-col items-center justify-center p-12">
+          <div className="w-full h-full flex flex-col items-center justify-center p-4 md:p-12">
              <div className="max-w-xs text-center">
-                <h4 className="text-xl font-serif italic text-black/60 mb-6">A Note on the Archive</h4>
-                <p className="text-[11px] leading-relaxed text-black/30 font-light uppercase tracking-widest">
-                   Every piece in this collection has been selected for its unique contribution to the digital dialogue. We invite you to explore the rest of our gallery.
+                <h4 className="text-lg md:text-xl font-serif italic text-black/60 mb-4 md:mb-6">A Note</h4>
+                <p className="text-[8px] md:text-[11px] leading-relaxed text-black/30 font-light uppercase tracking-widest">
+                   Every piece in this collection has been selected for its unique contribution.
                 </p>
                 <div className="mt-8 flex justify-center gap-4">
                    <div className="w-2 h-2 rounded-full bg-black/5" />
@@ -312,11 +348,11 @@ function PageContent({ data, side, categoryColor, onSelect }) {
         );
      }
      return (
-        <div className="w-full h-full flex flex-col items-center justify-center p-12 bg-[#eeebe5] shadow-inner">
+        <div className="w-full h-full flex flex-col items-center justify-center p-4 md:p-12 bg-[#eeebe5] shadow-inner">
            <div className="text-center">
-              <p className="text-[10px] tracking-[0.5em] uppercase text-black/20 font-bold mb-4">Finis</p>
-              <div className="w-12 h-12 rounded-full border border-black/10 flex items-center justify-center mx-auto mb-6">
-                 <Bookmark size={20} className="text-black/10" />
+              <p className="text-[8px] md:text-[10px] tracking-[0.5em] uppercase text-black/20 font-bold mb-4">Finis</p>
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-black/10 flex items-center justify-center mx-auto mb-4 md:mb-6">
+                 <Bookmark size={16} className="text-black/10 md:w-5 md:h-5" />
               </div>
               <p className="text-[9px] tracking-widest uppercase text-black/20">The End of the Volume</p>
            </div>
@@ -329,7 +365,7 @@ function PageContent({ data, side, categoryColor, onSelect }) {
   if (!artwork) return null;
 
   return (
-    <div className="w-full h-full flex flex-col p-8 md:p-12 relative group cursor-pointer" onClick={() => onSelect(artwork)}>
+    <div className="w-full h-full flex flex-col p-4 md:p-12 relative group cursor-pointer" onClick={() => onSelect(artwork)}>
        <div className="flex-1 flex flex-col items-center justify-center">
           {/* Minimalist & Small Image Frame */}
           <div className="relative w-[55%] aspect-[4/5] md:aspect-[3/4] bg-white shadow-[0_20px_40px_-12px_rgba(0,0,0,0.25)] p-2.5 md:p-3.5 border border-black/5 transition-all duration-700">

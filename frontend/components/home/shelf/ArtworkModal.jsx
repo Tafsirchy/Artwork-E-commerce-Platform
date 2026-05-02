@@ -1,9 +1,11 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { X, ShoppingBag, ChevronRight } from "lucide-react";
-
 export default function ArtworkModal({ artwork, onClose }) {
+  const router = useRouter();
+
   if (!artwork) return null;
 
   return (
@@ -31,7 +33,7 @@ export default function ArtworkModal({ artwork, onClose }) {
           {/* Image */}
           <div className="relative w-full md:w-[55%] min-h-[320px] md:min-h-[500px] bg-black flex items-center justify-center overflow-hidden">
             <motion.div
-              className="relative w-full h-full"
+              className="absolute inset-0 w-full h-full"
               whileHover={{ scale: 1.04 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
@@ -45,7 +47,7 @@ export default function ArtworkModal({ artwork, onClose }) {
           </div>
 
           {/* Details */}
-          <div className="w-full md:w-[45%] p-8 md:p-12 flex flex-col justify-center bg-[#141414]">
+          <div className="w-full md:w-[45%] p-6 md:p-12 flex flex-col justify-center bg-[#141414]">
             <motion.span
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -88,12 +90,14 @@ export default function ArtworkModal({ artwork, onClose }) {
               transition={{ delay: 0.35 }}
               className="space-y-3"
             >
-              <button className="w-full py-4 flex items-center justify-center gap-3 bg-white text-black text-[10px] tracking-[0.3em] uppercase font-medium hover:bg-white/90 transition-colors">
-                <ShoppingBag size={14} />
-                Add to Cart
-              </button>
-              <button className="w-full py-4 flex items-center justify-center gap-2 border border-white/15 text-white/50 hover:text-white hover:border-white/40 text-[10px] tracking-[0.3em] uppercase transition-colors">
-                View Details
+              <button 
+                onClick={() => {
+                  router.push(`/products/${artwork._id || artwork.id}`);
+                  onClose();
+                }}
+                className="w-full py-5 md:py-4 flex items-center justify-center gap-2 bg-white text-black hover:bg-white/90 text-xs md:text-[10px] tracking-[0.3em] uppercase transition-colors active:scale-95"
+              >
+                View Masterpiece Details
                 <ChevronRight size={12} />
               </button>
             </motion.div>
@@ -102,7 +106,7 @@ export default function ArtworkModal({ artwork, onClose }) {
           {/* Close */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-full"
+            className="absolute top-3 right-3 md:top-4 md:right-4 w-11 h-11 md:w-9 md:h-9 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-full bg-black/20 md:bg-transparent"
           >
             <X size={18} />
           </button>

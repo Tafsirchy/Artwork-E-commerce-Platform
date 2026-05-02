@@ -54,7 +54,7 @@ export default function Shelf({ category, onSelect, onDeselect }) {
           scale: (hovered || labelHovered) ? 1.05 : 1
         }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="absolute top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-full text-[10px] tracking-[0.3em] uppercase font-bold whitespace-nowrap z-20 flex items-center gap-3 cursor-pointer"
+        className="hidden sm:flex absolute top-1/2 -translate-y-1/2 px-5 py-3 md:py-1.5 min-h-[44px] md:min-h-0 rounded-full text-xs md:text-[10px] tracking-[0.3em] uppercase font-bold whitespace-nowrap z-20 items-center justify-center gap-3 cursor-pointer active:scale-95"
         style={{
           [category.direction === "left" ? "right" : "left"]: "100%",
           backgroundColor: (hovered || labelHovered) ? category.color : "#efebe3",
@@ -62,6 +62,8 @@ export default function Shelf({ category, onSelect, onDeselect }) {
           boxShadow: (hovered || labelHovered) ? `0 4px 20px ${category.glowColor}` : "0 2px 8px rgba(0,0,0,0.05)",
           border: `1px solid ${(hovered || labelHovered) ? "transparent" : "#d8cabc"}`
         }}
+        role="button"
+        tabIndex={0}
       >
         {category.direction === "left" && <span className="text-lg leading-none">←</span>}
         {category.name}
@@ -78,6 +80,7 @@ export default function Shelf({ category, onSelect, onDeselect }) {
           setHovered(false);
           if (onDeselect) onDeselect();
         }}
+        onClick={() => onSelect(category)}
         className="flex flex-col items-center cursor-pointer relative"
         whileHover={{ y: -6, scale: 1.03 }}
         animate={{ y: 0, scale: 1 }}
@@ -93,43 +96,51 @@ export default function Shelf({ category, onSelect, onDeselect }) {
             initial={{ opacity: 0, y: 40, scale: 0.5, rotate: ROTATIONS[i % ROTATIONS.length] - 20 }}
             whileInView={{ opacity: 1, y: 0, scale: 1, rotate: ROTATIONS[i % ROTATIONS.length] }}
             viewport={{ once: true, amount: 0.2 }}
-            className="relative overflow-hidden shadow-md bg-white origin-bottom"
+            className={`relative origin-bottom ${i >= 2 ? "hidden sm:block" : ""}`}
             style={{
               width: "48px",
               height: i % 3 === 0 ? "64px" : i % 3 === 1 ? "52px" : "58px",
-              border: "2px solid white",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
             }}
             animate={{
-              y: hovered ? -8 : [0, -3, 0],
+              y: hovered ? -8 : 0,
               scale: hovered ? 1.15 : 1,
               rotate: hovered ? ROTATIONS[i % ROTATIONS.length] * 1.8 : ROTATIONS[i % ROTATIONS.length],
-              boxShadow: hovered 
-                ? `0 15px 35px ${category.glowColor}, 0 5px 15px rgba(0,0,0,0.2)` 
-                : "0 4px 12px rgba(0,0,0,0.15)"
             }}
             transition={{
-              y: hovered ? { type: "spring", stiffness: 400, damping: 20 } : { duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" },
-              scale: { type: "spring", stiffness: 400, damping: 25 },
-              rotate: { type: "spring", stiffness: 300, damping: 20 },
+              type: "spring", stiffness: 400, damping: 20,
               opacity: { duration: 0.5, delay: i * 0.1 },
-              default: { type: "spring", stiffness: 200, damping: 15, delay: i * 0.1 }
+              rotate: { type: "spring", stiffness: 300, damping: 20 }
             }}
           >
-            <Image
-              src={art.image}
-              alt={art.title}
-              fill
-              className="object-cover"
-              sizes="48px"
-            />
+            <motion.div
+              className="relative w-full h-full overflow-hidden bg-white"
+              style={{ border: "2px solid white" }}
+              animate={{
+                y: [0, -3, 0],
+                boxShadow: hovered 
+                  ? `0 15px 35px ${category.glowColor}, 0 5px 15px rgba(0,0,0,0.2)` 
+                  : "0 4px 12px rgba(0,0,0,0.15)"
+              }}
+              transition={{
+                y: { duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" },
+                boxShadow: { type: "spring", stiffness: 400, damping: 20 }
+              }}
+            >
+              <Image
+                src={art.image}
+                alt={art.title}
+                fill
+                className="object-cover"
+                sizes="48px"
+              />
+            </motion.div>
           </motion.div>
         ))}
       </div>
 
       {/* Shelf Plank */}
       <motion.div
-        className="rounded-sm relative"
+        className="rounded-sm relative w-[var(--mobile-width)] lg:w-full"
         initial={{ scaleX: 0, opacity: 0, filter: "blur(4px)" }}
         whileInView={{ scaleX: 1, opacity: 1, filter: "blur(0px)" }}
         viewport={{ once: true }}
@@ -140,7 +151,7 @@ export default function Shelf({ category, onSelect, onDeselect }) {
             : "0 2px 6px rgba(0,0,0,0.12)",
         }}
         style={{
-          width: category.position.width,
+          "--mobile-width": category.position.width,
           height: "14px",
           background:
             "linear-gradient(180deg, #c8a97e 0%, #a0784c 50%, #8b6340 100%)",

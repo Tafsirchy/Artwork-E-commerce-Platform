@@ -143,6 +143,7 @@ export default function ArtShelfSection() {
             ...layout,
             name: catName,
             artworks: categoryProducts.map(p => ({
+              _id: p._id,
               id: p._id,
               title: p.title,
               artist: p.creator,
@@ -187,8 +188,8 @@ export default function ArtShelfSection() {
       {/* Weather System */}
       <WeatherSystem active={isRaining} />
 
-      {/* 🚀 Mobile-First Fix: Accessible Weather Toggle (Bottom-Right on mobile) */}
-      <div className="fixed md:absolute bottom-8 right-6 md:top-32 md:bottom-auto z-[100] md:z-40 flex flex-col items-end gap-3">
+      {/* 🚀 Mobile-First Fix: Accessible Weather Toggle (Top-Right on mobile) */}
+      <div className="absolute top-8 right-6 md:top-32 z-[100] md:z-40 flex flex-col items-end gap-3">
         <button
           onClick={() => setIsRaining(!isRaining)}
           aria-label={isRaining ? "Clear Skies" : "Summon Storm"}

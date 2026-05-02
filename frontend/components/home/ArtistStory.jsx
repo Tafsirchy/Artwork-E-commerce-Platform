@@ -81,7 +81,7 @@ export default function ArtistStory() {
                     transition={{ duration: 1.2, delay: i * 0.1 }}
                     className="w-full h-full relative overflow-hidden shadow-2xl rounded-[2px] bg-gallery-border/10"
                   >
-                    <div 
+                    <div
                       className="absolute inset-y-0 w-[300%] h-full"
                       style={{ left: `-${i * 100}%` }}
                     >
@@ -113,7 +113,7 @@ export default function ArtistStory() {
 
           {/* Manifesto Content (Centered) */}
           <div className="max-w-3xl mx-auto px-4">
-            <div className="relative mb-16">
+            <div className="relative mb-5">
               {/* 🚀 Mobile-First Glow: Scroll-Reactive Spotlight */}
               <motion.div
                 style={{ left: glowX, opacity: glowOpacity }}
