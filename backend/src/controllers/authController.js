@@ -3,7 +3,7 @@ const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 const crypto = require("crypto");
 const axios = require("axios");
-const { sendResetPasswordEmail } = require("../services/mailService");
+const { sendResetPasswordEmail, sendWelcomeEmail } = require("../services/mailService");
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -76,6 +76,9 @@ const registerUser = async (req, res, next) => {
     });
 
     if (user) {
+      // Send welcome email (non-blocking)
+      sendWelcomeEmail(user.email, user.name).catch(err => console.error("Welcome email failed:", err));
+
       res.status(201).json({
         _id: user._id,
         name: user.name,
