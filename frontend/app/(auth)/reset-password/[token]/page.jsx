@@ -53,8 +53,8 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gallery-bg p-4 overflow-hidden">
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="fixed top-8 left-8 flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gallery-muted hover:text-gallery-gold transition-all z-50 group"
       >
         <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
@@ -63,8 +63,8 @@ export default function ResetPasswordPage() {
 
       <div className="w-full max-w-sm bg-white p-8 border border-gallery-border shadow-2xl relative">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-light text-gallery-text tracking-tight uppercase mb-1">New <span className="font-serif italic text-gallery-gold">Password</span></h2>
-          <p className="text-gallery-muted text-[8px] tracking-[0.3em] uppercase">Choose a strong new password</p>
+          <h2 className="text-3xl font-light text-gallery-text tracking-tight uppercase mb-1">New <span className="font-serif text-gallery-gold">Password</span></h2>
+          <p className="text-gallery-muted text-[8px] tracking-[0.3em] uppercase">Choose a strong password</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

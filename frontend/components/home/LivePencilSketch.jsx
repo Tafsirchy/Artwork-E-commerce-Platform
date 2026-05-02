@@ -65,7 +65,6 @@ const LivePencilSketch = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [activeColor, setActiveColor] = useState(PALETTE[0]);
   const [activeBrush, setActiveBrush] = useState(BRUSHES[0]);
-  const [isPaintingActive, setIsPaintingActive] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
@@ -189,7 +188,7 @@ const LivePencilSketch = () => {
 
     setMousePos({ x: viewX, y: viewY });
     
-    if (isPaintingActive || isMouseDown) {
+    if (isMouseDown) {
       for (let i = 0; i < activeBrush.density; i++) {
         shadingRef.current.push({
           x: x + (Math.random() - 0.5) * activeBrush.scatter / scale,
@@ -250,14 +249,6 @@ const LivePencilSketch = () => {
                 <span className="text-[10px] tracking-[0.4em] uppercase text-gallery-muted/60">Live Sketching</span>
                 <span className="text-[10px] font-signature text-gallery-text">Series 0.4: "The Observant"</span>
               </div>
-
-              {/* Toggle Paint Button (Mobile-First UI) */}
-              <button 
-                onClick={() => setIsPaintingActive(!isPaintingActive)}
-                className={`absolute bottom-6 right-6 px-6 py-3 rounded-full text-[9px] tracking-[0.3em] uppercase font-bold transition-all duration-500 z-30 shadow-2xl lg:hidden ${isPaintingActive ? 'bg-gallery-gold text-white scale-110' : 'bg-white text-gallery-text'}`}
-              >
-                {isPaintingActive ? 'Stop Painting' : 'Start Painting'}
-              </button>
             </div>
 
             {/* Mobile Artist's Toolbox (Visible on < LG) */}

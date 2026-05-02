@@ -160,11 +160,11 @@ const downloadInvoice = async (req, res, next) => {
       throw new Error("Not authorized");
     }
     
-    let invoicePath = path.join(__dirname, "../../invoices", `invoice-${order._id}.pdf`);
+    const { generateInvoice, getInvoicesDir } = require("../utils/invoiceGenerator");
+    let invoicePath = path.join(getInvoicesDir(), `invoice-${order._id}.pdf`);
     
     if (!fs.existsSync(invoicePath)) {
       // Generate it on demand if it wasn't created by the email service
-      const { generateInvoice } = require("../utils/invoiceGenerator");
       try {
         invoicePath = await generateInvoice(order);
       } catch (err) {

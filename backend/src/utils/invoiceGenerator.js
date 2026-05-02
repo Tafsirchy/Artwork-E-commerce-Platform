@@ -1,6 +1,15 @@
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
+
+const getInvoicesDir = () => {
+  const dir = path.join(os.tmpdir(), "bristiii-invoices");
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  return dir;
+};
 
 const generateInvoice = (order) => {
   return new Promise((resolve, reject) => {
@@ -10,11 +19,7 @@ const generateInvoice = (order) => {
         size: 'A4'
       });
       
-      const invoicesDir = path.join(__dirname, "../../invoices");
-      if (!fs.existsSync(invoicesDir)) {
-        fs.mkdirSync(invoicesDir, { recursive: true });
-      }
-
+      const invoicesDir = getInvoicesDir();
       const invoicePath = path.join(invoicesDir, `invoice-${order._id}.pdf`);
       const stream = fs.createWriteStream(invoicePath);
       doc.pipe(stream);
@@ -128,4 +133,4 @@ const generateInvoice = (order) => {
   });
 };
 
-module.exports = { generateInvoice };
+module.exports = { generateInvoice, getInvoicesDir };

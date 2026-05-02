@@ -90,7 +90,7 @@ export default function ForgotPasswordPage() {
             <p className="text-sm text-gallery-muted leading-relaxed mb-8 font-light">
               A password reset link has been sent to <span className="text-gallery-text font-black">{email}</span>. Please check your inbox and follow the instructions.
             </p>
-            <Link href="/login" className="inline-block h-14 px-10 border border-gallery-border text-[10px] uppercase tracking-widest font-black flex items-center justify-center gap-3 hover:bg-gallery-soft/30 transition-all active:scale-95 mx-auto">
+            <Link href="/login" className="w-full h-16 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black flex items-center justify-center gap-3 hover:bg-black transition-all shadow-xl active:scale-95 mt-4">
               Back to Login
             </Link>
           </div>
