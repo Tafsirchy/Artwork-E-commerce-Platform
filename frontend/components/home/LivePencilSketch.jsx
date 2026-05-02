@@ -210,10 +210,13 @@ const LivePencilSketch = () => {
           <div className="w-full lg:w-[65%] flex flex-col gap-6">
             <div
               className="relative w-full aspect-square md:aspect-auto md:h-[70vh] cursor-crosshair group/canvas bg-gallery-soft/10 rounded-2xl md:rounded-[40px] border border-black/5 overflow-hidden shadow-inner"
+              style={{ touchAction: 'none' }}
               onMouseMove={(e) => handlePointerMove(e.clientX, e.clientY)}
               onTouchMove={(e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY)}
               onMouseDown={() => setIsMouseDown(true)}
               onMouseUp={() => setIsMouseDown(false)}
+              onTouchStart={() => setIsMouseDown(true)}
+              onTouchEnd={() => setIsMouseDown(false)}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => { setIsHovered(false); setIsMouseDown(false); }}
             >
