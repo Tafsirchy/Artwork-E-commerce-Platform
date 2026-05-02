@@ -386,19 +386,19 @@ export default function Hero() {
             <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 p-4 flex items-center justify-center">
                 <div className="relative w-full h-full aspect-square flex items-center justify-center">
-                  {shards.map((shard, i) => (
-                    <div
-                      key={i}
-                      className={`modal-target-shard modal-target-shard-${i} absolute overflow-hidden transition-opacity duration-300`}
-                      style={{
-                        top: shard.top,
-                        left: shard.left,
-                        width: shard.width,
-                        height: shard.height,
-                        clipPath: shard.clip,
-                        opacity: collectedShards.includes(i) ? 1 : 0
-                      }}
-                    >
+                      {shards.map((shard, i) => (
+                        <div
+                          key={i}
+                          className={`modal-target-shard modal-target-shard-${i} absolute overflow-hidden transition-opacity duration-300`}
+                          style={{
+                            top: shard.top,
+                            left: shard.left,
+                            width: shard.width,
+                            height: shard.height,
+                            clipPath: shard.clip || "none",
+                            opacity: collectedShards.includes(i) ? 1 : 0
+                          }}
+                        >
                       <div className="absolute w-[300%] h-[300%] flex items-center justify-center" style={{ left: `-${(i % 3) * 100}%`, top: `-${Math.floor(i / 3) * 100}%` }}>
                         <Image
                           src={targetImage}

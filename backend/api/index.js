@@ -10,10 +10,14 @@ const path = require("path");
 dotenv.config();
 
 const connectDB = require("../src/config/db");
-// 🚀 Vercel optimization: Connect to DB immediately
-connectDB();
 
 const app = express();
+
+// 🚀 Database connection middleware
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 // Security Middlewares
 app.use(helmet());
