@@ -24,7 +24,7 @@ export default function RegisterPage() {
   const handleGoogleSuccess = async (tokenId) => {
     try {
       await googleLogin(tokenId);
-      toast.success("Identity established", {
+      toast.success("Account created with Google!", {
         style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
       });
       router.push("/");
@@ -50,7 +50,7 @@ export default function RegisterPage() {
     }
     try {
       await register(name, email, password, phone);
-      toast.success("Identity inscribed into history", {
+      toast.success("Account created successfully!", {
         style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
       });
       router.push("/");
@@ -87,11 +87,11 @@ export default function RegisterPage() {
         className="w-full max-w-[600px] bg-white p-8 sm:p-14 lg:p-8 border border-gallery-border shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative my-12 lg:my-4"
       >
         <div className="text-center mb-10 sm:mb-12 lg:mb-4">
-          <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-3 font-black">Membership Invitation</p>
+          <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-3 font-black">Create Account</p>
           <h2 className="text-3xl sm:text-4xl lg:text-2xl font-extralight text-gallery-text tracking-tighter uppercase mb-2">
-            Create <span className="font-serif text-gallery-gold">Identity</span>
+            Sign <span className="font-serif text-gallery-gold">Up</span>
           </h2>
-          <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Join the collective of curated excellence</p>
+          <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Create your free account today</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 lg:space-y-2">
@@ -132,7 +132,7 @@ export default function RegisterPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-3">
             <div className="space-y-2 lg:space-y-1">
               <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
-                <Lock size={14} className="text-gallery-gold" /> Keyphrase
+                <Lock size={14} className="text-gallery-gold" /> Password
               </label>
               <div className="relative">
                 <input
@@ -159,7 +159,7 @@ export default function RegisterPage() {
             </div>
             <div className="space-y-2 lg:space-y-1">
               <label className="text-xs uppercase tracking-widest font-black text-gallery-muted flex items-center gap-3">
-                <ShieldCheck size={14} className="text-gallery-gold" /> Validation
+                <ShieldCheck size={14} className="text-gallery-gold" /> Confirm Password
               </label>
               <div className="relative">
                 <input
@@ -184,12 +184,12 @@ export default function RegisterPage() {
               type="submit" disabled={isLoading}
               className="w-full h-16 lg:h-14 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all shadow-xl disabled:opacity-50 active:scale-95 flex items-center justify-center gap-3"
             >
-              {isLoading ? "Inscribing..." : "Publish Identity"}
+              {isLoading ? "Creating account..." : "Create Account"}
             </button>
 
             <div className="relative py-4 lg:py-1">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gallery-border"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase tracking-[0.3em] font-black"><span className="bg-white px-6 text-gallery-muted">Social Integration</span></div>
+              <div className="relative flex justify-center text-[10px] uppercase tracking-[0.3em] font-black"><span className="bg-white px-6 text-gallery-muted">Or continue with</span></div>
             </div>
 
             <div className="flex justify-center relative min-h-[40px]">
@@ -197,7 +197,7 @@ export default function RegisterPage() {
                 <div className="absolute inset-0 z-10 bg-white/80 backdrop-blur-[1px] flex items-center justify-center pointer-events-none transition-all">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-gallery-gold border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-[10px] uppercase tracking-widest font-black text-gallery-gold">Inscribing Identity</span>
+                    <span className="text-[10px] uppercase tracking-widest font-black text-gallery-gold">Creating account...</span>
                   </div>
                 </div>
               )}
@@ -218,9 +218,9 @@ export default function RegisterPage() {
         </form>
 
         <p className="mt-12 lg:mt-4 text-center text-xs tracking-widest uppercase text-gallery-muted font-bold">
-          Already a curator?{" "}
+          Already have an account?{" "}
           <Link href="/login" className="text-gallery-gold hover:text-gallery-text transition-colors font-black border-b border-gallery-gold pb-0.5">
-            Authenticate
+            Sign In
           </Link>
         </p>
       </motion.div>

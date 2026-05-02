@@ -19,7 +19,7 @@ export default function LoginPage() {
   const handleGoogleSuccess = async (tokenId) => {
     try {
       await googleLogin(tokenId);
-      toast.success("Welcome back, Curator", {
+      toast.success("Logged in with Google!", {
         style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
       });
       router.push("/");
@@ -32,7 +32,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await login(email, password);
-      toast.success("Identity verified", {
+      toast.success("Logged in successfully!", {
         style: { backgroundColor: "#1a1a1a", color: "#fff", fontSize: "14px", fontWeight: "bold" }
       });
       router.push("/");
@@ -62,11 +62,11 @@ export default function LoginPage() {
         className="w-full max-w-[440px] bg-white p-8 sm:p-12 lg:p-8 border border-gallery-border shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative"
       >
         <div className="text-center mb-10 sm:mb-12 lg:mb-4">
-          <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-3 font-black">Authorized Access</p>
+          <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-3 font-black">Welcome Back</p>
           <h2 className="text-3xl sm:text-4xl lg:text-2xl font-extralight text-gallery-text tracking-tighter uppercase mb-2">
-            Welcome <span className="font-serif text-gallery-gold">Back</span>
+            Sign <span className="font-serif text-gallery-gold">In</span>
           </h2>
-          <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Sign in to your curator collection</p>
+          <p className="text-gallery-muted text-xs tracking-widest uppercase font-bold">Log in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 lg:space-y-2">
@@ -112,12 +112,12 @@ export default function LoginPage() {
               type="submit" disabled={isLoading}
               className="w-full h-16 lg:h-14 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
             >
-              {isLoading ? "Verifying..." : <><LogIn size={18} /> Access Gallery</>}
+              {isLoading ? "Signing in..." : <><LogIn size={18} /> Sign In</>}
             </button>
 
             <div className="relative py-2 lg:py-1">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gallery-border"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase tracking-[0.3em] font-black"><span className="bg-white px-6 text-gallery-muted">Social Integration</span></div>
+              <div className="relative flex justify-center text-[10px] uppercase tracking-[0.3em] font-black"><span className="bg-white px-6 text-gallery-muted">Or continue with</span></div>
             </div>
 
             <div className="flex justify-center relative min-h-[40px]">
@@ -125,7 +125,7 @@ export default function LoginPage() {
                 <div className="absolute inset-0 z-10 bg-white/80 backdrop-blur-[1px] flex items-center justify-center pointer-events-none transition-all">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-gallery-gold border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-[10px] uppercase tracking-widest font-black text-gallery-gold">Authenticating</span>
+                    <span className="text-[10px] uppercase tracking-widest font-black text-gallery-gold">Signing in...</span>
                   </div>
                 </div>
               )}
@@ -146,9 +146,9 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-12 lg:mt-4 text-center text-xs tracking-widest uppercase text-gallery-muted font-bold">
-          New to the gallery?{" "}
+          Don't have an account?{" "}
           <Link href="/register" className="text-gallery-gold hover:text-gallery-text transition-colors font-black border-b border-gallery-gold pb-0.5">
-            Create Identity
+            Sign Up
           </Link>
         </p>
       </motion.div>

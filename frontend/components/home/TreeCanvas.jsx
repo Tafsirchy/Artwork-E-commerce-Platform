@@ -216,8 +216,6 @@ export default function TreeCanvas() {
   const [positions, setPositions] = useState([]);
   const [hoveredCardId, setHoveredCardId] = useState(null);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [lastTap, setLastTap] = useState(0);
-  const [doubleTapActive, setDoubleTapActive] = useState(false);
 
   useEffect(() => {
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
@@ -385,19 +383,6 @@ export default function TreeCanvas() {
     hoverRef.current = true;
   }, []);
 
-  const handleTouchStart = (e) => {
-    if (!isTouchDevice) return;
-    const now = Date.now();
-    const DOUBLE_TAP_DELAY = 300;
-    
-    if (now - lastTap < DOUBLE_TAP_DELAY) {
-      // Double tap detected
-      setDoubleTapActive(!doubleTapActive);
-      hoverRef.current = !doubleTapActive;
-    }
-    setLastTap(now);
-  };
-
   const onLeave = useCallback(() => {
     hoverRef.current = false;
     mouseRef.current = { x: null, y: null };
@@ -433,30 +418,13 @@ export default function TreeCanvas() {
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1.5 }}
           className="relative w-full h-[450px] md:h-[750px] touch-none"
           onMouseMove={onMove}
-          onTouchMove={(e) => {
-            if (doubleTapActive) onMove(e);
-          }}
+          onTouchMove={onMove}
           onMouseEnter={() => { if (!isTouchDevice) hoverRef.current = true; }}
           onMouseLeave={onLeave}
-          onTouchStart={handleTouchStart}
+          onTouchStart={() => { hoverRef.current = true; }}
           onTouchEnd={onLeave}
         >
           <canvas ref={canvasRef} className="w-full h-full" />
-
-          {/* 📱 Mobile Double-Tap Instruction Popup */}
-          {isTouchDevice && (
-            <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-50">
-               <motion.div 
-                 initial={{ opacity: 0, scale: 0.9 }}
-                 animate={{ opacity: 1, scale: 1 }}
-                 className="bg-black/60 backdrop-blur-xl px-8 py-4 rounded-full border border-white/20 shadow-2xl"
-               >
-                 <span className="text-[10px] tracking-[0.4em] uppercase font-black text-white whitespace-nowrap">
-                   {doubleTapActive ? "Double Click to Stop" : "Double Click to Art"}
-                 </span>
-               </motion.div>
-            </div>
-          )}
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none">
             <motion.p animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ repeat: Infinity, duration: 3.5 }}
