@@ -122,7 +122,7 @@ export default function BlogListClient({ initialPosts }) {
             </button>
           </div>
         </div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20rem] font-serif text-white/5 pointer-events-none italic select-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20rem] font-serif text-white/5 pointer-events-none  select-none">
           Arts
         </div>
       </section>

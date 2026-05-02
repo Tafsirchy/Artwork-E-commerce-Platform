@@ -106,7 +106,7 @@ export default function WishlistPage() {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-2xl mx-auto text-center py-20 sm:py-32 bg-white border border-gallery-border px-8 sm:px-10 relative overflow-hidden shadow-2xl"
           >
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none text-[20vw] font-serif flex items-center justify-center italic">
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none text-[20vw] font-serif flex items-center justify-center ">
               Souls
             </div>
             <Heart size={48} className="mx-auto text-gallery-gold/30 mb-8 animate-pulse" />

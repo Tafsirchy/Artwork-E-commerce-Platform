@@ -31,7 +31,7 @@ export default function ProfileAside() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       updateUser(data);
-      toast.success("Profile appearance updated");
+      toast.success("Profile photo updated");
     } catch (error) {
       toast.error("Avatar upload failed");
     } finally {
@@ -40,13 +40,13 @@ export default function ProfileAside() {
   };
 
   const handleRemoveAvatar = async () => {
-    if (!window.confirm("Restore default identity portrait?")) return;
+    if (!window.confirm("Use default profile photo?")) return;
     
     setLoading(true);
     try {
       const { data } = await api.put("/auth/profile", { removeAvatar: true });
       updateUser(data);
-      toast.success("Default appearance restored");
+      toast.success("Profile photo removed");
     } catch (error) {
       toast.error("Removal failed");
     } finally {
@@ -59,7 +59,7 @@ export default function ProfileAside() {
     try {
       const { data } = await api.put("/auth/profile", { name });
       updateUser(data);
-      toast.success("Identity records updated");
+      toast.success("Profile updated");
       setIsEditing(false);
     } catch (error) {
       toast.error("Update failed");
@@ -113,7 +113,7 @@ export default function ProfileAside() {
               {isEditing ? (
                 <div className="space-y-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase tracking-[0.2em] font-black text-gallery-muted block">Identity Records</label>
+                    <label className="text-[10px] uppercase tracking-[0.2em] font-black text-gallery-muted block">Profile Info</label>
                     <input 
                       type="text" 
                       value={name} 
@@ -129,7 +129,7 @@ export default function ProfileAside() {
                       disabled={loading}
                       className="flex-1 h-12 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.3em] font-black disabled:opacity-50 active:scale-95 shadow-lg"
                     >
-                      {loading ? "..." : "Commit"}
+                      {loading ? "..." : "Save"}
                     </button>
                     <button 
                       onClick={() => { setIsEditing(false); setName(user.name); }}
@@ -150,7 +150,7 @@ export default function ProfileAside() {
                   <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-gallery-soft/30 border border-gallery-border rounded-full">
                     <Shield size={10} className="text-gallery-gold" />
                     <p className="text-[10px] tracking-[0.3em] uppercase text-gallery-gold font-black">
-                      {user.role === 'admin' ? 'Head Curator' : 'Collector'}
+                      {user.role === 'admin' ? 'Admin' : 'Customer'}
                     </p>
                   </div>
                 </div>
@@ -171,7 +171,7 @@ export default function ProfileAside() {
         {/* Dashboard Navigation */}
         <div className="bg-white border border-gallery-border shadow-sm overflow-hidden">
           <div className="px-6 py-4 bg-gallery-soft/30 border-b border-gallery-border">
-            <p className="text-[10px] uppercase tracking-[0.4em] font-black text-gallery-muted">Administrative Access</p>
+            <p className="text-[10px] uppercase tracking-[0.4em] font-black text-gallery-muted">Admin Menu</p>
           </div>
           <div className="divide-y divide-gallery-border">
             <Link href={user.role === 'admin' ? "/admin/dashboard" : "/dashboard"} 
@@ -180,7 +180,7 @@ export default function ProfileAside() {
                 <div className="w-8 h-8 flex items-center justify-center text-gallery-muted group-hover:text-gallery-primary transition-colors">
                   <Home size={18} strokeWidth={1.5} />
                 </div>
-                <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Command Overview</span>
+                <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Dashboard</span>
               </div>
               <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
             </Link>
@@ -192,7 +192,7 @@ export default function ProfileAside() {
                     <div className="w-8 h-8 flex items-center justify-center text-gallery-muted group-hover:text-gallery-primary transition-colors">
                       <Edit3 size={18} strokeWidth={1.5} />
                     </div>
-                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Artworks Gallery</span>
+                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Manage Art</span>
                   </div>
                   <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
                 </Link>
@@ -201,7 +201,7 @@ export default function ProfileAside() {
                     <div className="w-8 h-8 flex items-center justify-center text-gallery-muted group-hover:text-gallery-primary transition-colors">
                       <Save size={18} strokeWidth={1.5} />
                     </div>
-                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Order Archives</span>
+                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Orders</span>
                   </div>
                   <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
                 </Link>
@@ -210,7 +210,7 @@ export default function ProfileAside() {
                     <div className="w-8 h-8 flex items-center justify-center text-gallery-muted group-hover:text-gallery-primary transition-colors">
                       <Camera size={18} strokeWidth={1.5} />
                     </div>
-                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Home Curation</span>
+                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Manage Home</span>
                   </div>
                   <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
                 </Link>
@@ -219,7 +219,7 @@ export default function ProfileAside() {
                     <div className="w-8 h-8 flex items-center justify-center text-gallery-muted group-hover:text-gallery-primary transition-colors">
                       <Mail size={18} strokeWidth={1.5} />
                     </div>
-                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Inquiry Center</span>
+                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Messages</span>
                   </div>
                   <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
                 </Link>
@@ -240,7 +240,7 @@ export default function ProfileAside() {
                     <div className="w-8 h-8 flex items-center justify-center text-gallery-muted group-hover:text-gallery-primary transition-colors">
                       <Save size={18} strokeWidth={1.5} />
                     </div>
-                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Acquisitions</span>
+                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">My Orders</span>
                   </div>
                   <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
                 </Link>
@@ -249,7 +249,7 @@ export default function ProfileAside() {
                     <div className="w-8 h-8 flex items-center justify-center text-gallery-muted group-hover:text-gallery-primary transition-colors">
                       <Edit3 size={18} strokeWidth={1.5} />
                     </div>
-                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Curation List</span>
+                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Wishlist</span>
                   </div>
                   <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
                 </Link>
@@ -263,7 +263,7 @@ export default function ProfileAside() {
                 <div className="w-8 h-8 flex items-center justify-center">
                   <LogOut size={18} strokeWidth={2} />
                 </div>
-                <span className="text-xs tracking-[0.15em] uppercase font-black">Exit System</span>
+                <span className="text-xs tracking-[0.15em] uppercase font-black">Log Out</span>
               </div>
               <div className="w-1.5 h-1.5 rounded-full bg-red-500 opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
             </button>

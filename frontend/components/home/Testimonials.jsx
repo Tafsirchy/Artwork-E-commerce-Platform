@@ -36,7 +36,7 @@ const TestimonialCard = memo(({ item, onSelect }) => (
             <Eye size={10} /> View Art
           </motion.div>
         </div>
-        <p className="text-gallery-text text-sm sm:text-base font-light italic leading-relaxed mb-4 line-clamp-4 sm:line-clamp-3">
+        <p className="text-gallery-text text-sm sm:text-base font-light  leading-relaxed mb-4 line-clamp-4 sm:line-clamp-3">
           "{item.content}"
         </p>
       </div>
@@ -57,10 +57,9 @@ const MarqueeRow = memo(({ items, direction = "left", onSelect, isActive }) => {
 
   return (
     <div className="flex overflow-hidden py-4 select-none">
-      <div 
-        className={`flex whitespace-nowrap will-change-transform ${
-          direction === "left" ? "animate-marquee-left" : "animate-marquee-right"
-        } ${!isActive ? "[animation-play-state:paused]" : ""}`}
+      <div
+        className={`flex whitespace-nowrap will-change-transform ${direction === "left" ? "animate-marquee-left" : "animate-marquee-right"
+          } ${!isActive ? "[animation-play-state:paused]" : ""}`}
         style={{
           // Use a CSS variable to control speed based on item count for consistency
           "--marquee-duration": `${items.length * 8}s`,
@@ -130,7 +129,7 @@ export default function Testimonials() {
   if (!hasMounted || reviews.length === 0) return <TestimonialsSkeleton />;
 
   return (
-    <section 
+    <section
       ref={sectionRef}
       className={`py-20 sm:py-28 bg-gallery-soft/30 relative overflow-hidden transition-opacity duration-700 opacity-100`}
     >
@@ -146,7 +145,7 @@ export default function Testimonials() {
               onClick={() => setHoveredArt(null)}
               className="fixed inset-0 bg-black/60 z-[90] md:z-50 backdrop-blur-sm md:pointer-events-none md:opacity-40"
             />
-            
+
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -156,13 +155,13 @@ export default function Testimonials() {
             >
               <div className="relative p-3 md:p-4 bg-white shadow-2xl border-4 md:border-8 border-white group mx-auto md:max-w-none rounded-none">
                 {/* Close Button for mobile */}
-                <button 
+                <button
                   onClick={() => setHoveredArt(null)}
                   className="absolute -top-10 right-0 text-white md:hidden p-2 text-[10px] tracking-widest uppercase font-bold"
                 >
                   Close [×]
                 </button>
-                
+
                 <motion.img
                   src={hoveredArt.artImage}
                   alt="Acquired Art"
@@ -171,7 +170,7 @@ export default function Testimonials() {
                 <div className="absolute inset-0 bg-black/20 pointer-events-none" />
                 <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 text-white">
                   <p className="text-[8px] md:text-[10px] tracking-[0.4em] uppercase opacity-80 mb-1">Acquired Original</p>
-                  <p className="text-lg md:text-xl font-serif italic">{hoveredArt.name}'s Collection</p>
+                  <p className="text-lg md:text-xl font-serif ">{hoveredArt.name}'s Collection</p>
                 </div>
               </div>
             </motion.div>

@@ -29,7 +29,7 @@ export default function ProductDetailsClient({ product }) {
     return (
       <div className="min-h-screen bg-gallery-bg flex justify-center items-center p-6 text-center">
         <div>
-          <p className="text-xl text-gallery-muted mb-4 font-serif italic">Art not found.</p>
+          <p className="text-xl text-gallery-muted mb-4 font-serif ">Art not found.</p>
           <button onClick={() => window.history.back()} className="text-[10px] tracking-[0.3em] uppercase font-bold text-gallery-gold">Go Back to Gallery</button>
         </div>
       </div>
@@ -76,7 +76,7 @@ export default function ProductDetailsClient({ product }) {
                 </span>
               </div>
             </div>
-            
+
             {colors.length > 0 && (
               <div className="w-full px-8 py-10 border-t border-gallery-border/30 bg-gallery-surface/30">
                 <div className="flex items-center gap-3 mb-6">
@@ -110,7 +110,7 @@ export default function ProductDetailsClient({ product }) {
 
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-10 h-[1px] bg-gallery-gold/50"></div>
-                <p className="text-lg md:text-xl text-gallery-muted italic font-serif">by {product.creator}</p>
+                <p className="text-lg md:text-xl text-gallery-muted  font-serif">by {product.creator}</p>
               </div>
 
               <div className="flex items-baseline gap-3 md:hidden mb-10">
@@ -137,7 +137,7 @@ export default function ProductDetailsClient({ product }) {
                 animate={{ height: isDescExpanded ? "auto" : "100px", opacity: 1 }}
                 className="overflow-hidden mt-6 relative"
               >
-                <p className="text-gallery-muted leading-relaxed text-base font-light italic">
+                <p className="text-gallery-muted leading-relaxed text-base font-light ">
                   {product.description}
                 </p>
                 {!isDescExpanded && (

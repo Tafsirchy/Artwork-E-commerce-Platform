@@ -156,7 +156,7 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-3xl sm:text-5xl font-extralight tracking-[0.15em] sm:tracking-[0.2em] uppercase mb-10 sm:mb-12">
-              Ready to <span className="font-serif italic text-gallery-gold">Explore?</span>
+              Ready to <span className="font-serif  text-gallery-gold">Explore?</span>
             </h2>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
               <Link

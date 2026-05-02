@@ -30,20 +30,20 @@ export default function AdminBlogsPage() {
       const res = await api.get("/blogs");
       setBlogs(res.data.data);
     } catch (error) {
-      toast.error("Failed to load journals.");
+      toast.error("Failed to load blog posts.");
     } finally {
       setLoading(false);
     }
   };
 
   const deleteBlog = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this journal entry?")) return;
+    if (!window.confirm("Are you sure you want to delete this blog post?")) return;
     try {
       await api.delete(`/blogs/${id}`);
-      toast.success("Journal deleted successfully.");
+      toast.success("Blog post deleted successfully.");
       setBlogs(blogs.filter((blog) => blog._id !== id));
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to delete journal.");
+      toast.error(error.response?.data?.message || "Failed to delete blog post.");
     }
   };
 
@@ -58,16 +58,16 @@ export default function AdminBlogsPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 border-b border-gallery-border pb-8 gap-8">
             <div>
               <Link href="/admin/dashboard" className="text-xs uppercase tracking-[0.3em] text-gallery-muted hover:text-gallery-text transition-colors flex items-center gap-3 mb-6 font-black">
-                <ArrowLeft size={16} /> Command Center
+                <ArrowLeft size={16} /> Dashboard
               </Link>
-              <h1 className="text-2xl sm:text-3xl font-extralight text-gallery-text tracking-tighter uppercase leading-tight">Chronicle Records</h1>
-              <p className="text-gallery-muted text-[10px] sm:text-sm mt-2 uppercase tracking-[0.2em] font-bold">Manage all journal and blog entries.</p>
+              <h1 className="text-2xl sm:text-3xl font-extralight text-gallery-text tracking-tighter uppercase leading-tight">Blog Posts</h1>
+              <p className="text-gallery-muted text-[10px] sm:text-sm mt-2 uppercase tracking-[0.2em] font-bold">Manage all your blog posts.</p>
             </div>
             <Link
               href="/admin/blogs/new"
               className="w-full sm:w-auto h-14 px-8 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-black flex items-center justify-center gap-3 hover:bg-black transition-all shadow-xl active:scale-95"
             >
-              <Plus size={18} /> New Entry
+              <Plus size={18} /> New Post
             </Link>
           </div>
 
@@ -107,7 +107,7 @@ export default function AdminBlogsPage() {
                           href={`/admin/blogs/edit/${blog._id}`} 
                           className="flex-1 h-14 flex items-center justify-center gap-3 border border-gallery-border text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-soft transition-all active:scale-95 shadow-sm"
                         >
-                          <Edit size={16} /> Edit Records
+                          <Edit size={16} /> Edit Post
                         </Link>
                         <button 
                           onClick={() => deleteBlog(blog._id)} 
@@ -126,7 +126,7 @@ export default function AdminBlogsPage() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-gallery-border bg-gallery-soft/30 text-[10px] tracking-widest uppercase font-black text-gallery-text">
-                      <th className="px-8 py-5">Journal Title</th>
+                      <th className="px-8 py-5">Post Title</th>
                       <th className="px-8 py-5">Author</th>
                       <th className="px-8 py-5">Date Published</th>
                       <th className="px-8 py-5 text-right">Actions</th>

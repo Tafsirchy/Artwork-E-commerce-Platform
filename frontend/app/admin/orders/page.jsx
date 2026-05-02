@@ -30,7 +30,7 @@ export default function AdminOrders() {
       setOrders(data);
     } catch (error) {
       console.error("Failed to fetch orders", error);
-      const msg = error.response?.data?.message || "Failed to fetch order archive";
+      const msg = error.response?.data?.message || "Failed to load orders";
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -38,7 +38,7 @@ export default function AdminOrders() {
   };
 
   const handleTransit = async (orderId) => {
-    if (!window.confirm("Mark this acquisition as in transit?")) return;
+    if (!window.confirm("Mark this order as in transit?")) return;
     try {
       await api.put(`/orders/${orderId}/transit`);
       toast.success("Order status updated to In Transit");
@@ -49,7 +49,7 @@ export default function AdminOrders() {
   };
 
   const handleDeliver = async (orderId) => {
-    if (!window.confirm("Mark this acquisition as delivered?")) return;
+    if (!window.confirm("Mark this order as delivered?")) return;
     try {
       await api.put(`/orders/${orderId}/deliver`);
       toast.success("Order status updated to Delivered");
@@ -72,7 +72,7 @@ export default function AdminOrders() {
       link.click();
       link.remove();
     } catch (error) {
-      toast.error("Invoice documentation not available");
+      toast.error("Invoice not available");
     }
   };
 
@@ -92,15 +92,15 @@ export default function AdminOrders() {
             animate={{ opacity: 1, x: 0 }}
             className="mb-8 sm:mb-10"
           >
-            <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text tracking-tighter uppercase leading-tight">Order Archives</h1>
+            <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text tracking-tighter uppercase leading-tight">Order List</h1>
             <p className="text-gallery-muted text-[10px] sm:text-sm tracking-[0.2em] sm:tracking-widest uppercase font-black mt-2">
-              Logistics & Acquisitions • Global Registry
+              Order Management • All Records
             </p>
           </motion.div>
           
           <div className="bg-white border border-gallery-border shadow-sm overflow-hidden">
             {loading ? (
-               <div className="p-20 text-center uppercase tracking-[0.4em] text-gallery-muted text-xs">Accessing Records...</div>
+                <div className="p-20 text-center uppercase tracking-[0.4em] text-gallery-muted text-xs">Loading Orders...</div>
             ) : (
               <div className="space-y-0">
                 {/* Mobile Card Layout */}
@@ -189,12 +189,12 @@ export default function AdminOrders() {
                   <table className="w-full text-left min-w-[800px]">
                     <thead className="bg-gallery-soft/30 border-b border-gallery-border">
                       <tr>
-                        <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Acquisition ID</th>
-                        <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Collector</th>
+                        <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Order ID</th>
+                        <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Customer</th>
                         <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Date</th>
-                        <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Total Value</th>
+                        <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Total Price</th>
                         <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Payment</th>
-                        <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Delivery Status</th>
+                        <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Status</th>
                         <th className="px-6 py-4 text-right text-[10px] tracking-widest uppercase font-black text-gallery-text">Actions</th>
                       </tr>
                     </thead>
@@ -224,7 +224,7 @@ export default function AdminOrders() {
                           <td className="px-6 py-4">
                             {order.isDelivered ? (
                               <span className="inline-flex items-center gap-1.5 text-blue-600 border border-blue-100 bg-blue-50 px-3 py-1 text-[9px] uppercase font-black tracking-widest">
-                                <PackageCheck size={12} /> Received
+                                <PackageCheck size={12} /> Delivered
                               </span>
                             ) : order.isTransit ? (
                               <span className="inline-flex items-center gap-1.5 text-amber-600 border border-amber-100 bg-amber-50 px-3 py-1 text-[9px] uppercase font-black tracking-widest">

@@ -70,15 +70,15 @@ export default function BlogDetailsPage() {
             <h1 className="text-4xl sm:text-7xl font-extralight text-gallery-text tracking-tighter leading-[1.1] sm:leading-none mb-8 sm:mb-10">
               {post.title}
             </h1>
-            <p className="text-lg sm:text-xl font-light text-gallery-muted leading-relaxed mb-10 sm:mb-12 italic border-l-2 border-gallery-gold/20 pl-6 sm:pl-8">
+            <p className="text-lg sm:text-xl font-light text-gallery-muted leading-relaxed mb-10 sm:mb-12  border-l-2 border-gallery-gold/20 pl-6 sm:pl-8">
               {post.subtitle}
             </p>
 
             <div className="flex items-center gap-4 sm:gap-6 border-y border-gallery-border py-6 sm:py-8">
               <div className="relative w-10 h-10 sm:w-12 sm:h-12 bg-gallery-soft rounded-none flex items-center justify-center border border-gallery-border overflow-hidden">
-                <Image 
-                  src={`https://ui-avatars.com/api/?name=${post.author}&background=f8f8f8&color=1a1a1a`} 
-                  alt={post.author} 
+                <Image
+                  src={`https://ui-avatars.com/api/?name=${post.author}&background=f8f8f8&color=1a1a1a`}
+                  alt={post.author}
                   fill
                   className="object-cover"
                   sizes="(max-width: 640px) 40px, 48px"
@@ -109,21 +109,21 @@ export default function BlogDetailsPage() {
           {post.image2 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="relative aspect-[4/5] overflow-hidden grayscale hover:grayscale-0 border border-gallery-border transition-all duration-700 group shadow-sm">
-                <Image 
-                  src={post.image} 
-                  alt={post.title} 
+                <Image
+                  src={post.image}
+                  alt={post.title}
                   fill
-                  className="object-cover transition-transform duration-[2s] group-hover:scale-110" 
+                  className="object-cover transition-transform duration-[2s] group-hover:scale-110"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-700" />
               </div>
               <div className="relative aspect-[4/5] overflow-hidden grayscale hover:grayscale-0 border border-gallery-border transition-all duration-700 group mt-10 md:mt-24 shadow-sm">
-                <Image 
-                  src={post.image2} 
-                  alt={post.title} 
+                <Image
+                  src={post.image2}
+                  alt={post.title}
                   fill
-                  className="object-cover transition-transform duration-[2s] group-hover:scale-110" 
+                  className="object-cover transition-transform duration-[2s] group-hover:scale-110"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-700" />
@@ -131,11 +131,11 @@ export default function BlogDetailsPage() {
             </div>
           ) : (
             <div className="relative aspect-[16/10] sm:aspect-video overflow-hidden grayscale hover:grayscale-0 border border-gallery-border transition-all duration-700 group shadow-sm">
-              <Image 
-                src={post.image} 
-                alt={post.title} 
+              <Image
+                src={post.image}
+                alt={post.title}
                 fill
-                className="object-cover transition-transform duration-[2s] group-hover:scale-110" 
+                className="object-cover transition-transform duration-[2s] group-hover:scale-110"
                 sizes="100vw"
                 priority
               />
@@ -159,7 +159,7 @@ export default function BlogDetailsPage() {
             if (block.type === "quote") {
               return (
                 <blockquote key={i} className="py-8 sm:py-12 px-8 sm:px-12 bg-gallery-soft/30 border-l-4 border-gallery-gold">
-                  <p className="text-xl sm:text-2xl font-serif italic text-gallery-text leading-snug">
+                  <p className="text-xl sm:text-2xl font-serif  text-gallery-text leading-snug">
                     "{block.text}"
                   </p>
                 </blockquote>
@@ -178,7 +178,7 @@ export default function BlogDetailsPage() {
                   <div className="relative aspect-[16/9] overflow-hidden border border-gallery-border grayscale hover:grayscale-0 transition-all duration-700 shadow-sm">
                     <Image src={block.url} alt={block.caption} fill className="object-cover" sizes="(max-width: 640px) 100vw, 600px" />
                   </div>
-                  <p className="text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-gallery-muted text-center italic">
+                  <p className="text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-gallery-muted text-center ">
                     {block.caption}
                   </p>
                 </div>

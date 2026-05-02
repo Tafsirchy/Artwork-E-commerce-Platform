@@ -219,7 +219,7 @@ export default function TreeCanvas() {
 
   useEffect(() => {
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    
+
     import("@/lib/api").then(({ default: api }) => {
       api.get("/products")
         .then(({ data }) => {
@@ -285,20 +285,20 @@ export default function TreeCanvas() {
 
     const matched = artworks.filter(a => idSet.has(a._id)).slice(0, 4);
     setCards(matched);
-    
+
     // Stabilize mobile positions
     if (isTouchDevice) {
-        const mobilePositions = [
-            { x: "5%", y: "15%" },
-            { x: "55%", y: "15%" },
-            { x: "5%", y: "55%" },
-            { x: "55%", y: "55%" },
-        ];
-        setPositions(mobilePositions.slice(0, matched.length));
+      const mobilePositions = [
+        { x: "5%", y: "15%" },
+        { x: "55%", y: "15%" },
+        { x: "5%", y: "55%" },
+        { x: "55%", y: "55%" },
+      ];
+      setPositions(mobilePositions.slice(0, matched.length));
     } else {
-        setPositions(randomPositions(matched.length));
+      setPositions(randomPositions(matched.length));
     }
-    
+
     setShowCards(true);
 
     clearTimeout(timerRef.current);
@@ -402,7 +402,7 @@ export default function TreeCanvas() {
         </motion.p>
         <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-3xl md:text-5xl font-serif text-black tracking-tight italic">
+          className="text-3xl md:text-5xl font-serif text-black tracking-tight ">
           The Moving Tree
         </motion.h2>
         <motion.div initial={{ width: 0 }} whileInView={{ width: 60 }}
@@ -469,7 +469,7 @@ export default function TreeCanvas() {
                     </div>
                     <div className="px-1 pb-1">
                       <p className="text-[10px] font-bold tracking-widest uppercase text-black truncate">{art.title}</p>
-                      <p className="text-[8px] italic text-black/40 font-serif truncate mt-1">View Art →</p>
+                      <p className="text-[8px]  text-black/40 font-serif truncate mt-1">View Art →</p>
                     </div>
                   </div>
                 </Link>
@@ -480,7 +480,7 @@ export default function TreeCanvas() {
       </div>
 
       <div className="max-w-xl text-center px-6 mt-12 md:mt-16">
-        <p className="text-[10px] md:text-[11px] tracking-[0.3em] text-black/30 uppercase leading-relaxed italic font-medium">
+        <p className="text-[10px] md:text-[11px] tracking-[0.3em] text-black/30 uppercase leading-relaxed  font-medium">
           "A painting that moves and reacts to you while staying true to its art."
         </p>
       </div>

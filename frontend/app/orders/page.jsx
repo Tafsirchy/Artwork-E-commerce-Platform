@@ -41,17 +41,17 @@ export default function UserOrdersPage() {
   const handleDownloadInvoice = async (orderId) => {
     try {
       const response = await api.get(`/orders/${orderId}/invoice`, { responseType: 'blob' });
-      
+
       // Ensure the browser knows this is a PDF, otherwise it might fail to load.
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
-      
+
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `invoice-${orderId}.pdf`);
       document.body.appendChild(link);
       link.click();
-      
+
       // Cleanup
       document.body.removeChild(link);
       setTimeout(() => window.URL.revokeObjectURL(url), 100);
@@ -78,7 +78,7 @@ export default function UserOrdersPage() {
     if (filter === "delivered") {
       return order.isDelivered;
     }
-    
+
     if (searchId && !order._id.toLowerCase().includes(searchId.toLowerCase())) return false;
     return true;
   });
@@ -97,8 +97,8 @@ export default function UserOrdersPage() {
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="mb-16">
-          <Link 
-            href="/dashboard" 
+          <Link
+            href="/dashboard"
             className="text-[9px] tracking-[0.4em] uppercase text-gallery-gold mb-4 inline-block font-bold"
           >
             ← Back to Dashboard
@@ -110,26 +110,26 @@ export default function UserOrdersPage() {
         {/* Filter Bar */}
         <div className="flex justify-between items-center mb-8 border-b border-gallery-border pb-6">
           <div className="flex gap-8">
-            <button 
-              onClick={() => setFilter("all")} 
+            <button
+              onClick={() => setFilter("all")}
               className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${filter === "all" ? "text-gallery-accent border-b border-gallery-accent pb-1" : "text-gallery-muted hover:text-gallery-text"}`}
             >
               All Orders
             </button>
-            <button 
-              onClick={() => setFilter("processing")} 
+            <button
+              onClick={() => setFilter("processing")}
               className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${filter === "processing" ? "text-gallery-accent border-b border-gallery-accent pb-1" : "text-gallery-muted hover:text-gallery-text"}`}
             >
               Processing
             </button>
-            <button 
-              onClick={() => setFilter("transit")} 
+            <button
+              onClick={() => setFilter("transit")}
               className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${filter === "transit" ? "text-gallery-accent border-b border-gallery-accent pb-1" : "text-gallery-muted hover:text-gallery-text"}`}
             >
               In Transit
             </button>
-            <button 
-              onClick={() => setFilter("delivered")} 
+            <button
+              onClick={() => setFilter("delivered")}
               className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${filter === "delivered" ? "text-gallery-accent border-b border-gallery-accent pb-1" : "text-gallery-muted hover:text-gallery-text"}`}
             >
               Delivered
@@ -137,9 +137,9 @@ export default function UserOrdersPage() {
           </div>
           <div className="relative hidden md:block">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gallery-muted" />
-            <input 
-              type="text" 
-              placeholder="Search ID..." 
+            <input
+              type="text"
+              placeholder="Search ID..."
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
               className="pl-10 pr-4 py-2 bg-white border border-gallery-border text-[10px] tracking-widest uppercase focus:outline-none focus:border-gallery-gold w-64"
@@ -153,7 +153,7 @@ export default function UserOrdersPage() {
             <div className="py-20 text-center uppercase tracking-[0.5em] text-gallery-muted text-xs">Loading...</div>
           ) : filteredOrders.length > 0 ? (
             paginatedOrders.map((order) => (
-              <motion.div 
+              <motion.div
                 key={order._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -200,9 +200,9 @@ export default function UserOrdersPage() {
                         {order.isPaid ? 'Payment Confirmed' : 'Payment Required'}
                       </span>
                     </div>
-                    
+
                     <div className="flex gap-4 w-full md:w-auto">
-                      <button 
+                      <button
                         onClick={() => handleDownloadInvoice(order._id)}
                         className="flex-1 md:flex-none px-6 py-3 border border-gallery-border text-[9px] tracking-[0.2em] uppercase font-bold hover:bg-gallery-soft transition-all flex items-center justify-center gap-2"
                       >
@@ -220,7 +220,7 @@ export default function UserOrdersPage() {
             <div className="py-32 bg-white border border-gallery-border text-center">
               <Package size={48} className="mx-auto text-gallery-soft mb-6" />
               <h2 className="text-xl font-light text-gallery-text uppercase tracking-widest mb-2">No Orders Found</h2>
-              <p className="text-gallery-muted text-sm font-light mb-8 italic">We couldn't find any orders with these filters.</p>
+              <p className="text-gallery-muted text-sm font-light mb-8 ">We couldn't find any orders with these filters.</p>
               <Link href="/products" className="inline-block px-12 py-4 border border-gallery-gold text-gallery-gold text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-gallery-gold hover:text-white transition-all">
                 Browse Art
               </Link>

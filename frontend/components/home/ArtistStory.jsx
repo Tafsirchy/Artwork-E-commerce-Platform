@@ -106,7 +106,7 @@ export default function ArtistStory() {
                 className="absolute -bottom-6 md:-bottom-10 left-[5%] md:left-[10%] bg-white py-3 px-6 md:py-4 md:px-8 shadow-2xl z-20 border-l-4 border-gallery-gold"
               >
                 <p className="text-[8px] md:text-[9px] tracking-[0.4em] uppercase text-gallery-muted mb-1">Real</p>
-                <p className="text-base md:text-xl font-light italic text-gallery-text">Best Art</p>
+                <p className="text-base md:text-xl font-light  text-gallery-text">Best Art</p>
               </motion.div>
             </div>
           </div>
@@ -122,14 +122,14 @@ export default function ArtistStory() {
 
               <div className="relative inline-block mb-12">
                 <Quote size={60} className="text-gallery-gold/10 absolute -top-10 -left-10 rotate-12" />
-                <p className="text-2xl md:text-4xl text-gallery-text font-light italic leading-relaxed px-4 md:px-12 relative z-10">
+                <p className="text-2xl md:text-4xl text-gallery-text font-light  leading-relaxed px-4 md:px-12 relative z-10">
                   "We don't just sell art; we sell <span className="text-gallery-gold">windows</span> into the mind. Each piece is a door to the soul."
                 </p>
               </div>
 
               <div className="space-y-8 md:space-y-12 text-gallery-muted text-lg md:text-xl font-light leading-relaxed mb-16">
                 <p>
-                  Bristiii was started with one idea: that real art is <span className="text-gallery-text font-normal italic">alive</span>. It changes as you change. It looks different in every light and mood.
+                  Bristiii was started with one idea: that real art is <span className="text-gallery-text font-normal ">alive</span>. It changes as you change. It looks different in every light and mood.
                 </p>
                 <p>
                   We pick our art with love. We look for special works that have a heartbeat and a whisper, and a door that opens when you look closely.

@@ -33,7 +33,7 @@ export default function Newsletter() {
           transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-gallery-accent/5 rounded-full"
         />
-        
+
         {/* Soft Glows */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-gallery-gold/5 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gallery-accent/5 rounded-full blur-[120px]" />
@@ -48,7 +48,7 @@ export default function Newsletter() {
         >
           <div className="flex justify-center mb-10">
             <motion.div
-              animate={{ 
+              animate={{
                 scale: [1, 1.1, 1],
                 opacity: [0.5, 1, 0.5]
               }}
@@ -66,7 +66,7 @@ export default function Newsletter() {
 
           <h2 className="text-3xl sm:text-5xl lg:text-7xl font-light text-gallery-text tracking-[0.1em] sm:tracking-widest uppercase mb-6 sm:mb-8 leading-none">
             Join Our <br />
-            <span className="font-serif text-gallery-gold italic font-light lowercase sm:uppercase">
+            <span className="font-serif text-gallery-gold font-light lowercase sm:uppercase">
               Newsletter
             </span>
           </h2>
@@ -76,7 +76,7 @@ export default function Newsletter() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1.5, delay: 0.4 }}
-            className="text-gallery-muted text-sm sm:text-lg max-w-xl mx-auto mb-16 leading-relaxed font-light italic"
+            className="text-gallery-muted text-sm sm:text-lg max-w-xl mx-auto mb-16 leading-relaxed font-light "
           >
             Join our community. Get early access to new art, expert tips, and private viewings.
           </motion.p>
@@ -87,7 +87,7 @@ export default function Newsletter() {
           >
             {/* Input Glow Effect */}
             <div className="absolute -inset-1 bg-gradient-to-r from-gallery-gold/0 via-gallery-gold/20 to-gallery-gold/0 opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-700" />
-            
+
             <div className="relative flex flex-col sm:flex-row shadow-2xl">
               <input
                 type="email"

@@ -167,12 +167,12 @@ export default function AdminProductsPage() {
         {/* Main Content Area */}
         <div className="flex-1 w-full">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 sm:mb-10 gap-6">
-            <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text tracking-tighter uppercase">Gallery Management</h1>
+            <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text tracking-tighter uppercase">Manage Art</h1>
             <button
               onClick={() => { resetForm(); setShowModal(true); }}
               className="w-full sm:w-auto h-14 px-8 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-gold transition-all shadow-xl active:scale-95"
             >
-              Add New Piece
+              Add New Art
             </button>
           </div>
 
@@ -180,9 +180,9 @@ export default function AdminProductsPage() {
             {/* List View */}
             <div className="w-full">
               <div className="flex items-center justify-between mb-6 sm:mb-8 border-b border-gallery-border pb-4">
-                <h2 className="text-xs tracking-[0.4em] uppercase text-gallery-gold font-black">Active Collection</h2>
+                <h2 className="text-xs tracking-[0.4em] uppercase text-gallery-gold font-black">Current Art List</h2>
                 <div className="text-xs tracking-[0.2em] uppercase text-gallery-muted font-black">
-                  {products.length} Masterpieces
+                  {products.length} Artworks
                 </div>
               </div>
               
@@ -210,7 +210,7 @@ export default function AdminProductsPage() {
                         </div>
                         <div className="flex justify-between items-end border-t border-gallery-soft pt-4">
                           <div>
-                            <p className="text-[10px] text-gallery-muted uppercase tracking-widest font-bold mb-1">Valuation</p>
+                            <p className="text-[10px] text-gallery-muted uppercase tracking-widest font-bold mb-1">Price</p>
                             <p className="text-lg font-black text-gallery-accent">${p.price.toFixed(2)}</p>
                           </div>
                           <div className="flex gap-2">
@@ -238,7 +238,7 @@ export default function AdminProductsPage() {
                       <table className="w-full text-left min-w-[600px]">
                         <thead className="bg-gallery-soft/30 border-b border-gallery-border">
                           <tr>
-                            <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Artwork</th>
+                            <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Art</th>
                             <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Artist</th>
                             <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Price</th>
                             <th className="px-6 py-4 text-[10px] tracking-widest uppercase font-black text-gallery-text">Stock</th>
@@ -332,7 +332,7 @@ export default function AdminProductsPage() {
             {/* Modal Header */}
             <div className="px-6 sm:px-8 py-6 border-b border-gallery-border flex items-center justify-between bg-gallery-soft/30">
               <h2 className="text-xs tracking-[0.4em] uppercase text-gallery-gold font-black">
-                {isEditing ? "Edit Masterpiece" : "Register New Artwork"}
+                {isEditing ? "Edit Art" : "Add New Art"}
               </h2>
               <button onClick={() => { resetForm(); setShowModal(false); }} className="w-10 h-10 flex items-center justify-center text-gallery-muted hover:text-gallery-text transition-colors">
                 <X size={24} />
@@ -353,7 +353,7 @@ export default function AdminProductsPage() {
                   ) : (
                     <div className="flex flex-col items-center gap-4 text-gallery-muted group-hover:text-gallery-gold transition-colors py-4">
                       <Upload size={40} strokeWidth={1} />
-                      <p className="text-[10px] uppercase tracking-widest font-black">Select Artwork Image</p>
+                      <p className="text-[10px] uppercase tracking-widest font-black">Select Art Image</p>
                     </div>
                   )}
                   <input id="image-input" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
@@ -374,7 +374,7 @@ export default function AdminProductsPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <label className="block text-xs uppercase tracking-widest text-gallery-muted font-black">Base Price ($)</label>
+                    <label className="block text-xs uppercase tracking-widest text-gallery-muted font-black">Price ($)</label>
                     <input type="number" required min="0.01" step="0.01" value={price} onChange={e => setPrice(e.target.value)}
                       className="w-full h-14 px-6 border border-gallery-border focus:outline-none focus:border-gallery-gold text-sm font-light" />
                   </div>
@@ -405,7 +405,7 @@ export default function AdminProductsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-xs uppercase tracking-widest text-gallery-muted font-black">Color Concept</label>
+                    <label className="block text-xs uppercase tracking-widest text-gallery-muted font-black">Colors</label>
                     <input type="text" value={colorConcept} onChange={e => setColorConcept(e.target.value)}
                       placeholder="#000000, #FFFFFF"
                       className="w-full h-14 px-6 border border-gallery-border focus:outline-none focus:border-gallery-gold text-sm font-light" />
@@ -413,7 +413,7 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-widest text-gallery-muted font-black">Narrative Description</label>
+                  <label className="block text-xs uppercase tracking-widest text-gallery-muted font-black">Description</label>
                   <textarea required rows={4} value={description} onChange={e => setDescription(e.target.value)}
                     className="w-full p-6 border border-gallery-border focus:outline-none focus:border-gallery-gold text-sm font-light resize-none bg-gallery-soft/5" />
                 </div>
@@ -428,7 +428,7 @@ export default function AdminProductsPage() {
                 disabled={loading}
                 className="flex-1 h-16 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-gold transition-all disabled:opacity-50 shadow-xl active:scale-95"
               >
-                {loading ? "Synchronizing..." : (isEditing ? "Save Masterpiece" : "Add to Collection")}
+                {loading ? "Saving..." : (isEditing ? "Save Art" : "Add Art")}
               </button>
               <button
                 onClick={() => { resetForm(); setShowModal(false); }}

@@ -43,7 +43,7 @@ export default function OfferSlider() {
   }, [copiedCoupon]);
 
   if (!isSliderVisible) return null;
-  
+
   if (offers.length === 0) {
     return (
       <div className="bg-gallery-primary py-4 relative animate-pulse">
@@ -193,7 +193,7 @@ export default function OfferSlider() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <h2 className="text-4xl font-black italic tracking-tighter uppercase mb-2 bg-gradient-to-r from-gallery-accent via-gallery-gold to-gallery-accent bg-clip-text text-transparent">
+                <h2 className="text-4xl font-black  tracking-tighter uppercase mb-2 bg-gradient-to-r from-gallery-accent via-gallery-gold to-gallery-accent bg-clip-text text-transparent">
                   Boom!
                 </h2>
                 <p className="text-[10px] tracking-[0.5em] uppercase text-white/60 font-bold mb-8">
@@ -337,7 +337,7 @@ function SurpriseBox({ welcomeModal }) {
           >
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex flex-col items-center min-w-[180px]">
               <span className="text-[8px] text-[#E8A6A6] uppercase tracking-[0.6em] font-black mb-2 opacity-60">Coupon Code</span>
-              <h3 className="text-3xl font-black text-[#E8A6A6] tracking-widest uppercase italic mb-2">
+              <h3 className="text-3xl font-black text-[#E8A6A6] tracking-widest uppercase  mb-2">
                 {welcomeModal.data.code}
               </h3>
               <div className="w-8 h-[1px] bg-[#FF8C00]/30 mb-2" />

@@ -52,8 +52,7 @@ export default function AdminHomeManagement() {
       setProducts(prodRes.data);
       setFeaturedIds(featRes.data.productIds.map(p => p._id));
     } catch (error) {
-      console.error("Failed to fetch gallery records", error);
-      const msg = error.response?.data?.message || "Failed to fetch gallery records";
+      const msg = error.response?.data?.message || "Failed to load site data";
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -88,10 +87,10 @@ export default function AdminHomeManagement() {
     try {
       if (editingReview) {
         await api.put(`/reviews/${editingReview._id}`, formData);
-        toast.success("Collector chronicle updated");
+        toast.success("Review updated");
       } else {
         await api.post("/reviews", formData);
-        toast.success("New chronicle added to history");
+        toast.success("New review added");
       }
       setIsModalOpen(false);
       fetchData();
@@ -101,10 +100,10 @@ export default function AdminHomeManagement() {
   };
 
   const handleDeleteReview = async (id) => {
-    if (window.confirm("Are you sure you want to strike this chronicle from history?")) {
+    if (window.confirm("Are you sure you want to delete this review?")) {
       try {
         await api.delete(`/reviews/${id}`);
-        toast.success("Chronicle removed");
+        toast.success("Review removed");
         fetchData();
       } catch (error) {
         toast.error("Deletion failed");
@@ -118,7 +117,7 @@ export default function AdminHomeManagement() {
         return prev.filter(id => id !== productId);
       }
       if (prev.length >= 4) {
-        toast.info("The Curator's Eye is limited to 4 masterpieces");
+        toast.info("You can only select 4 artworks");
         return prev;
       }
       return [...prev, productId];
@@ -154,7 +153,7 @@ export default function AdminHomeManagement() {
               <div>
                 <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-2 font-black">Home Content Management</p>
                 <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text tracking-tight uppercase leading-tight">
-                  Curatorial <span className="font-serif italic text-gallery-gold">Dashboard</span>
+                  Admin <span className="font-serif italic text-gallery-gold">Dashboard</span>
                 </h1>
               </div>
 
@@ -163,13 +162,13 @@ export default function AdminHomeManagement() {
                   onClick={() => setActiveTab("reviews")}
                   className={`flex-1 md:flex-none h-12 px-6 text-[10px] uppercase tracking-widest font-black transition-all active:scale-95 ${activeTab === "reviews" ? "bg-gallery-primary text-white" : "text-gallery-muted hover:text-gallery-text"}`}
                 >
-                  Collector Reviews
+                  Customer Reviews
                 </button>
                 <button
                   onClick={() => setActiveTab("featured")}
                   className={`flex-1 md:flex-none h-12 px-6 text-[10px] uppercase tracking-widest font-black transition-all active:scale-95 ${activeTab === "featured" ? "bg-gallery-primary text-white" : "text-gallery-muted hover:text-gallery-text"}`}
                 >
-                  Featured Selection
+                  Featured Art
                 </button>
               </div>
             </div>
@@ -179,13 +178,13 @@ export default function AdminHomeManagement() {
                 <div className="flex flex-col sm:flex-row justify-between items-center bg-white p-6 border border-gallery-border gap-6">
                   <div className="flex items-center gap-3 w-full sm:w-auto">
                     <Quote className="text-gallery-gold" size={20} />
-                    <span className="text-xs tracking-widest uppercase font-black">Chronicles ({reviews.length})</span>
+                    <span className="text-xs tracking-widest uppercase font-black">Reviews ({reviews.length})</span>
                   </div>
                   <button
                     onClick={() => handleOpenModal()}
                     className="w-full sm:w-auto h-12 px-8 bg-gallery-primary text-white text-[10px] uppercase tracking-widest font-black hover:bg-black transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3"
                   >
-                    <Plus size={14} /> New Chronicle
+                    <Plus size={14} /> New Review
                   </button>
                 </div>
 
@@ -233,7 +232,7 @@ export default function AdminHomeManagement() {
                     {totalReviewsPages > 1 && (
                       <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-gallery-border">
                         <p className="text-xs tracking-widest uppercase text-gallery-muted font-black">
-                          Chronicle Page {reviewsPage} of {totalReviewsPages}
+                          Review Page {reviewsPage} of {totalReviewsPages}
                         </p>
                         <div className="flex gap-2 w-full sm:w-auto">
                           <button
@@ -262,7 +261,7 @@ export default function AdminHomeManagement() {
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <div className="flex items-center gap-3">
                       <Layout className="text-gallery-gold" size={20} />
-                      <span className="text-xs tracking-widest uppercase font-black">Curator's Eye Selection</span>
+                      <span className="text-xs tracking-widest uppercase font-black">Featured Art Selection</span>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto">
                       <span className={`text-[10px] tracking-[0.2em] uppercase font-black ${featuredIds.length === 4 ? 'text-green-600' : 'text-gallery-gold'}`}>
@@ -273,7 +272,7 @@ export default function AdminHomeManagement() {
                         disabled={featuredIds.length !== 4}
                         className="w-full sm:w-auto h-12 px-8 bg-gallery-primary text-white text-[10px] uppercase tracking-widest font-black hover:bg-black transition-all disabled:opacity-50 shadow-xl active:scale-95"
                       >
-                        Publish Selection
+                        Save Changes
                       </button>
                     </div>
                   </div>
@@ -310,7 +309,7 @@ export default function AdminHomeManagement() {
                   {totalProductsPages > 1 && (
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-gallery-border">
                       <p className="text-xs tracking-widest uppercase text-gallery-muted font-black">
-                        Masterpiece Page {productsPage} of {totalProductsPages}
+                        Art Page {productsPage} of {totalProductsPages}
                       </p>
                       <div className="flex gap-2 w-full sm:w-auto">
                         <button
@@ -352,7 +351,7 @@ export default function AdminHomeManagement() {
             >
               <div className="flex justify-between items-start mb-8">
                 <h2 className="text-xl sm:text-2xl font-extralight text-gallery-text uppercase tracking-widest">
-                  {editingReview ? "Edit Chronicle" : "Draft New Chronicle"}
+                  {editingReview ? "Edit Review" : "Add New Review"}
                 </h2>
                 <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 flex items-center justify-center text-gallery-muted hover:text-gallery-text transition-colors">
                   <X size={24} />
@@ -362,14 +361,14 @@ export default function AdminHomeManagement() {
               <form onSubmit={handleSubmitReview} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Collector Name</label>
+                    <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Customer Name</label>
                     <input
                       required type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full h-14 px-6 bg-gallery-soft/30 border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light transition-colors"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Profession/Role</label>
+                    <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Job/Role</label>
                     <input
                       required type="text" value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                       className="w-full h-14 px-6 bg-gallery-soft/30 border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light transition-colors"
@@ -378,7 +377,7 @@ export default function AdminHomeManagement() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Testimonial Content</label>
+                  <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Review Text</label>
                   <textarea
                     required rows={5} value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                     className="w-full p-6 bg-gallery-soft/30 border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light resize-none transition-colors"
@@ -386,7 +385,7 @@ export default function AdminHomeManagement() {
                 </div>
 
                 <div className="space-y-4">
-                  <label className="text-xs uppercase tracking-widest font-black text-gallery-muted block">Select Acquired Artwork</label>
+                  <label className="text-xs uppercase tracking-widest font-black text-gallery-muted block">Select Artwork</label>
                   <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 max-h-56 overflow-y-auto p-3 border border-gallery-border no-scrollbar bg-gallery-soft/10">
                     {products.map(p => (
                       <div
@@ -407,10 +406,10 @@ export default function AdminHomeManagement() {
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-8 pb-8 sm:pb-0">
                   <button type="submit" className="flex-1 h-16 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all shadow-xl active:scale-95">
-                    {editingReview ? "Commit Changes" : "Inscribe Chronicle"}
+                    {editingReview ? "Save Changes" : "Add Review"}
                   </button>
                   <button type="button" onClick={() => setIsModalOpen(false)} className="h-16 px-10 border border-gallery-border text-[10px] uppercase tracking-[0.4em] font-black hover:bg-gallery-soft transition-all active:scale-95">
-                    Discard
+                    Cancel
                   </button>
                 </div>
               </form>

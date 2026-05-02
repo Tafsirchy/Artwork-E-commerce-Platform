@@ -137,7 +137,7 @@ const sendWelcomeEmail = async (userEmail, userName) => {
         <a href="${frontendUrl}/products" style="display:inline-block;background:#8B4513;color:#ffffff;padding:16px 40px;text-decoration:none;font-size:11px;letter-spacing:3px;text-transform:uppercase;font-family:'Helvetica Neue',sans-serif;font-weight:bold;">Explore the Gallery</a>
       </div>
 
-      <p style="color:#bbb;font-size:12px;text-align:center;margin:24px 0 0;font-family:'Helvetica Neue',sans-serif;font-style:italic;">
+      <p style="color:#bbb;font-size:12px;text-align:center;margin:24px 0 0;font-family:'Helvetica Neue',sans-serif;font-style:;">
         "Art enables us to find ourselves and lose ourselves at the same time."
       </p>
     `;

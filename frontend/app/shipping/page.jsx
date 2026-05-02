@@ -5,9 +5,9 @@ export default function ShippingPage() {
     <div className="min-h-screen bg-gallery-bg pt-32 pb-20 px-6 sm:px-12">
       <div className="max-w-4xl mx-auto bg-white p-10 md:p-16 border border-gallery-border shadow-sm">
         <h1 className="text-3xl md:text-5xl font-extralight text-gallery-text tracking-widest uppercase mb-12 text-center">
-          Shipping <span className="font-serif italic text-gallery-gold">& Delivery</span>
+          Shipping <span className="font-serif text-gallery-gold">& Delivery</span>
         </h1>
-        
+
         <div className="space-y-12 text-gallery-muted font-light leading-relaxed">
           <section>
             <h2 className="text-sm tracking-[0.3em] uppercase text-gallery-text font-bold mb-4">Domestic Shipping</h2>

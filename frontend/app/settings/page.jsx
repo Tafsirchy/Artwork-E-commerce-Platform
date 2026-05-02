@@ -56,7 +56,7 @@ export default function SettingsPage() {
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
-    
+
     if (formData.password && formData.password !== formData.confirmPassword) {
       toast.error("Access keyphrases do not match");
       return;
@@ -71,7 +71,7 @@ export default function SettingsPage() {
         addresses: formData.addresses,
         preferences: formData.preferences,
       });
-      
+
       updateUser(data);
       toast.success("Archive records synchronized successfully");
       setFormData(prev => ({ ...prev, password: "", confirmPassword: "" }));
@@ -87,16 +87,16 @@ export default function SettingsPage() {
       toast.error("Please provide essential location markers");
       return;
     }
-    
+
     const updatedAddresses = [...formData.addresses, { ...newAddress, _id: Date.now().toString() }];
     if (newAddress.isDefault) {
-      updatedAddresses.forEach(addr => { if (addr._id !== updatedAddresses[updatedAddresses.length-1]._id) addr.isDefault = false; });
+      updatedAddresses.forEach(addr => { if (addr._id !== updatedAddresses[updatedAddresses.length - 1]._id) addr.isDefault = false; });
     }
-    
+
     setFormData({ ...formData, addresses: updatedAddresses });
     setShowAddressForm(false);
     setNewAddress({ street: "", city: "", state: "", zipCode: "", country: "", isDefault: false });
-    
+
     // Auto-save
     setTimeout(() => handleSubmit(), 0);
   };
@@ -117,7 +117,7 @@ export default function SettingsPage() {
     if (!window.confirm("Are you absolutely sure you want to permanently delete your account and all collections?")) {
       return;
     }
-    
+
     setLoading(true);
     try {
       await api.delete("/auth/profile");
@@ -150,8 +150,8 @@ export default function SettingsPage() {
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="mb-10 sm:mb-16">
-          <Link 
-            href="/dashboard" 
+          <Link
+            href="/dashboard"
             className="text-[10px] tracking-[0.4em] uppercase text-gallery-gold mb-4 inline-block font-black hover:gap-2 transition-all flex items-center gap-2"
           >
             <ArrowRight size={12} className="rotate-180" /> Back to Archive
@@ -167,11 +167,10 @@ export default function SettingsPage() {
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`flex-shrink-0 flex items-center gap-4 px-6 py-4 text-[10px] tracking-[0.2em] sm:tracking-[0.3em] uppercase font-black transition-all border-b-2 lg:border-b-0 lg:border-l-2 ${
-                  activeSection === section.id 
-                    ? "bg-white border-gallery-gold text-gallery-text shadow-sm" 
+                className={`flex-shrink-0 flex items-center gap-4 px-6 py-4 text-[10px] tracking-[0.2em] sm:tracking-[0.3em] uppercase font-black transition-all border-b-2 lg:border-b-0 lg:border-l-2 ${activeSection === section.id
+                    ? "bg-white border-gallery-gold text-gallery-text shadow-sm"
                     : "border-transparent text-gallery-muted hover:bg-gallery-soft/50 hover:text-gallery-text bg-white/50 lg:bg-transparent"
-                }`}
+                  }`}
               >
                 <span className="shrink-0">{section.icon}</span>
                 <span className="whitespace-nowrap">{section.label}</span>
@@ -193,18 +192,18 @@ export default function SettingsPage() {
                   className="max-w-xl relative z-10"
                 >
                   <h2 className="text-lg sm:text-xl font-extralight text-gallery-text uppercase tracking-widest mb-8 sm:mb-10 border-b border-gallery-border pb-6">Account Identity</h2>
-                  
+
                   <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
                     <div className="space-y-5 sm:space-y-6">
                       <div className="relative group">
                         <label className="block text-[10px] tracking-[0.2em] uppercase text-gallery-muted font-black mb-3">Display Name</label>
                         <div className="flex items-center border border-gallery-border focus-within:border-gallery-gold transition-colors bg-gallery-soft/10">
                           <div className="px-4 text-gallery-soft border-r border-gallery-border shrink-0"><User size={16} /></div>
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             required
                             value={formData.name}
-                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             className="w-full px-6 h-14 bg-transparent text-sm font-light focus:outline-none"
                             placeholder="Enter full name"
                           />
@@ -215,19 +214,19 @@ export default function SettingsPage() {
                         <label className="block text-[10px] tracking-[0.2em] uppercase text-gallery-muted font-black mb-3">Electronic Mail</label>
                         <div className="flex items-center border border-gallery-border focus-within:border-gallery-gold transition-colors opacity-50 bg-gallery-soft/10">
                           <div className="px-4 text-gallery-soft border-r border-gallery-border shrink-0"><Mail size={16} /></div>
-                          <input 
-                            type="email" 
+                          <input
+                            type="email"
                             readOnly
                             value={formData.email}
                             className="w-full px-6 h-14 bg-transparent text-sm font-light focus:outline-none cursor-not-allowed"
                           />
                         </div>
-                        <p className="mt-2 text-[9px] text-gallery-muted uppercase tracking-widest italic font-bold">Email cannot be changed after registration.</p>
+                        <p className="mt-2 text-[9px] text-gallery-muted uppercase tracking-widest  font-bold">Email cannot be changed after registration.</p>
                       </div>
                     </div>
 
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       disabled={loading}
                       className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-12 h-14 bg-gallery-primary text-white text-[10px] tracking-[0.4em] uppercase font-black hover:bg-gallery-gold transition-all shadow-xl disabled:opacity-50 active:scale-95"
                     >
@@ -245,9 +244,9 @@ export default function SettingsPage() {
                 >
                   <div>
                     <h2 className="text-lg sm:text-xl font-extralight text-gallery-text uppercase tracking-widest mb-8 sm:mb-10 border-b border-gallery-border pb-6">Secure Access</h2>
-                    
+
                     <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
-                      <p className="text-xs text-gallery-muted font-light leading-relaxed mb-6 sm:mb-8 italic uppercase tracking-widest">
+                      <p className="text-xs text-gallery-muted font-light leading-relaxed mb-6 sm:mb-8  uppercase tracking-widest">
                         Enhance your vault protection by rotating your access credentials periodically. Leave blank if you don't wish to change.
                       </p>
 
@@ -255,15 +254,15 @@ export default function SettingsPage() {
                         <div className="relative group">
                           <label className="block text-[10px] tracking-[0.2em] uppercase text-gallery-muted font-black mb-3">New Keyphrase</label>
                           <div className="flex items-center border border-gallery-border focus-within:border-gallery-gold transition-colors bg-gallery-soft/10">
-                            <input 
-                              type={showPassword ? "text" : "password"} 
+                            <input
+                              type={showPassword ? "text" : "password"}
                               value={formData.password}
-                              onChange={(e) => setFormData({...formData, password: e.target.value})}
+                              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                               className="w-full px-6 h-14 bg-transparent text-sm font-light focus:outline-none"
                               placeholder="Minimum 6 characters"
                             />
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               onClick={() => setShowPassword(!showPassword)}
                               className="px-4 text-gallery-soft hover:text-gallery-gold shrink-0"
                             >
@@ -274,17 +273,17 @@ export default function SettingsPage() {
 
                         <div className="relative group">
                           <label className="block text-[10px] tracking-[0.2em] uppercase text-gallery-muted font-black mb-3">Confirm New Keyphrase</label>
-                          <input 
-                            type="password" 
+                          <input
+                            type="password"
                             value={formData.confirmPassword}
-                            onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                             className="w-full px-6 h-14 bg-transparent border border-gallery-border focus:border-gallery-gold text-sm font-light focus:outline-none bg-gallery-soft/10"
                             placeholder="Re-type keyphrase"
                           />
                         </div>
                       </div>
 
-                      <button 
+                      <button
                         type="submit"
                         disabled={loading || !formData.password}
                         className="w-full sm:w-auto px-10 h-14 border border-gallery-text text-gallery-text text-[10px] tracking-[0.4em] uppercase font-black hover:bg-gallery-primary hover:text-white transition-all shadow-sm disabled:opacity-50 active:scale-95"
@@ -299,7 +298,7 @@ export default function SettingsPage() {
                     <p className="text-xs text-gallery-muted font-light leading-relaxed mb-6 uppercase tracking-widest">
                       Permanently erase your identity and collection records from the BRISTIII archives. This action cannot be undone.
                     </p>
-                    <button 
+                    <button
                       onClick={handleDeleteAccount}
                       disabled={loading}
                       className="w-full sm:w-auto px-10 h-14 border border-red-200 text-red-600 text-[10px] tracking-[0.4em] uppercase font-black hover:bg-red-50 transition-all disabled:opacity-50 active:scale-95 shadow-sm"
@@ -318,7 +317,7 @@ export default function SettingsPage() {
                 >
                   <div className="flex justify-between items-end mb-8 sm:mb-10 border-b border-gallery-border pb-6">
                     <h2 className="text-lg sm:text-xl font-extralight text-gallery-text uppercase tracking-widest">Shipment Registry</h2>
-                    <button 
+                    <button
                       onClick={() => setShowAddressForm(!showAddressForm)}
                       className="text-[10px] tracking-[0.2em] uppercase text-gallery-gold font-black hover:underline"
                     >
@@ -331,43 +330,43 @@ export default function SettingsPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                         <div className="sm:col-span-2">
                           <label className="block text-[10px] tracking-[0.2em] uppercase text-gallery-muted font-black mb-2">Street Address</label>
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             className="w-full h-12 px-4 bg-white border border-gallery-border focus:border-gallery-gold text-sm font-light focus:outline-none"
                             value={newAddress.street}
-                            onChange={(e) => setNewAddress({...newAddress, street: e.target.value})}
+                            onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
                           />
                         </div>
                         <div>
                           <label className="block text-[10px] tracking-[0.2em] uppercase text-gallery-muted font-black mb-2">City</label>
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             className="w-full h-12 px-4 bg-white border border-gallery-border focus:border-gallery-gold text-sm font-light focus:outline-none"
                             value={newAddress.city}
-                            onChange={(e) => setNewAddress({...newAddress, city: e.target.value})}
+                            onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
                           />
                         </div>
                         <div>
                           <label className="block text-[10px] tracking-[0.2em] uppercase text-gallery-muted font-black mb-2">Postal Code</label>
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             className="w-full h-12 px-4 bg-white border border-gallery-border focus:border-gallery-gold text-sm font-light focus:outline-none"
                             value={newAddress.zipCode}
-                            onChange={(e) => setNewAddress({...newAddress, zipCode: e.target.value})}
+                            onChange={(e) => setNewAddress({ ...newAddress, zipCode: e.target.value })}
                           />
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <input 
-                          type="checkbox" 
-                          id="default-addr" 
+                        <input
+                          type="checkbox"
+                          id="default-addr"
                           checked={newAddress.isDefault}
-                          onChange={(e) => setNewAddress({...newAddress, isDefault: e.target.checked})}
+                          onChange={(e) => setNewAddress({ ...newAddress, isDefault: e.target.checked })}
                           className="w-5 h-5 accent-gallery-gold"
                         />
                         <label htmlFor="default-addr" className="text-[10px] tracking-widest uppercase font-black text-gallery-muted">Primary Point</label>
                       </div>
-                      <button 
+                      <button
                         onClick={handleAddAddress}
                         className="w-full h-14 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-gold transition-all active:scale-95 shadow-xl"
                       >
@@ -385,14 +384,14 @@ export default function SettingsPage() {
                         <p className="text-sm font-black text-gallery-text mb-2 uppercase tracking-tight">{addr.street}</p>
                         <p className="text-xs text-gallery-muted font-light mb-4 uppercase tracking-wider">{addr.city}, {addr.state} {addr.zipCode}</p>
                         <div className="flex justify-between items-center pt-2 border-t border-gallery-border/50">
-                          <button 
+                          <button
                             onClick={() => removeAddress(addr._id)}
                             className="text-[9px] tracking-widest uppercase text-red-400 hover:text-red-600 font-black transition-colors"
                           >
                             Erase
                           </button>
                           {!addr.isDefault && (
-                            <button 
+                            <button
                               onClick={() => {
                                 const updated = formData.addresses.map(a => ({ ...a, isDefault: a._id === addr._id }));
                                 setFormData({ ...formData, addresses: updated });
@@ -408,7 +407,7 @@ export default function SettingsPage() {
                     ))}
                     {formData.addresses.length === 0 && !showAddressForm && (
                       <div className="col-span-2 p-12 text-center border border-dashed border-gallery-border bg-gallery-soft/5">
-                        <p className="text-xs tracking-[0.4em] uppercase text-gallery-muted italic">No shipment markers recorded.</p>
+                        <p className="text-xs tracking-[0.4em] uppercase text-gallery-muted ">No shipment markers recorded.</p>
                       </div>
                     )}
                   </div>
@@ -428,8 +427,8 @@ export default function SettingsPage() {
                       { key: 'receipts', label: 'Certificates', desc: 'Digital acquisition records.' },
                       { key: 'curated', label: 'Curated Picks', desc: 'Monthly arrival digest.' }
                     ].map((pref) => (
-                      <div 
-                        key={pref.key} 
+                      <div
+                        key={pref.key}
                         className="flex items-center justify-between p-6 border border-gallery-border hover:border-gallery-gold transition-colors cursor-pointer group bg-gallery-soft/5 shadow-sm"
                         onClick={() => togglePreference(pref.key)}
                       >
@@ -442,7 +441,7 @@ export default function SettingsPage() {
                         </div>
                       </div>
                     ))}
-                    <p className="text-[10px] text-gallery-muted italic uppercase tracking-widest pt-4 font-bold">Your preferences are synchronized in real-time.</p>
+                    <p className="text-[10px] text-gallery-muted  uppercase tracking-widest pt-4 font-bold">Your preferences are synchronized in real-time.</p>
                   </div>
                 </motion.div>
               )}
@@ -466,11 +465,11 @@ export default function SettingsPage() {
                       <p className="font-mono text-xl sm:text-2xl tracking-widest mb-4 text-gallery-text">**** **** **** 4242</p>
                       <p className="text-xs text-gallery-muted uppercase tracking-widest font-bold">Expires 12/28</p>
                     </div>
-                    
+
                     <button className="h-16 px-10 border border-gallery-text text-gallery-text text-[10px] tracking-[0.4em] uppercase font-black hover:bg-gallery-primary hover:text-white transition-all w-full text-center active:scale-95 shadow-sm">
                       + Add Payment Method
                     </button>
-                    <p className="text-center text-[10px] text-gallery-muted uppercase tracking-[0.3em] italic font-bold">Payments are secured via AES-256 encryption.</p>
+                    <p className="text-center text-[10px] text-gallery-muted uppercase tracking-[0.3em]  font-bold">Payments are secured via AES-256 encryption.</p>
                   </div>
                 </motion.div>
               )}

@@ -115,7 +115,7 @@ const WelcomingDoraemon = () => {
         {/* Large Iconic Eyes */}
         <circle cx="82" cy="85" r="14" fill="#fff" fillOpacity="0.7" stroke="#fff" strokeWidth="0.5" strokeOpacity="0.4" />
         <circle cx="118" cy="85" r="14" fill="#fff" fillOpacity="0.7" stroke="#fff" strokeWidth="0.5" strokeOpacity="0.4" />
-        
+
         {/* Pupils with reflections */}
         <g opacity="0.6">
           <circle cx="85" cy="88" r="2.5" fill="#000" />
@@ -392,7 +392,7 @@ export default function CTA() {
 
       {/* Bottom Quote */}
       <div className="absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 text-center w-full px-6">
-        <p className="text-[8px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase text-white/20 italic">
+        <p className="text-[8px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase text-white/20 ">
           "Find art that speaks to you"
         </p>
       </div>

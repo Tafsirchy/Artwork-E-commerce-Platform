@@ -70,7 +70,7 @@ export default function ArtworkModal({ artwork, onClose }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="text-sm italic text-white/50 mb-10"
+              className="text-sm  text-white/50 mb-10"
             >
               By {artwork.artist}
             </motion.p>
@@ -90,7 +90,7 @@ export default function ArtworkModal({ artwork, onClose }) {
               transition={{ delay: 0.35 }}
               className="space-y-3"
             >
-              <button 
+              <button
                 onClick={() => {
                   router.push(`/products/${artwork._id || artwork.id}`);
                   onClose();

@@ -98,7 +98,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-xs text-gallery-muted uppercase tracking-widest">
                   <span>Shipping</span>
-                  <span className="italic">Calculated at checkout</span>
+                  <span className="font-serif">Calculated at checkout</span>
                 </div>
               </div>
 

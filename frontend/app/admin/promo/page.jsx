@@ -41,7 +41,7 @@ export default function AdminPromoManagement() {
       const { data } = await api.get("/promotions/all");
       setPromos(data);
     } catch (error) {
-      toast.error("Failed to fetch campaign records");
+      toast.error("Failed to load promotions");
     } finally {
       setLoading(false);
     }
@@ -78,10 +78,10 @@ export default function AdminPromoManagement() {
     try {
       if (editingPromo) {
         await api.put(`/promotions/${editingPromo._id}`, formData);
-        toast.success("Campaign record updated");
+        toast.success("Promotion updated");
       } else {
         await api.post("/promotions", formData);
-        toast.success("New promotion inscribed into history");
+        toast.success("New promotion added");
       }
       setIsModalOpen(false);
       fetchPromos();
@@ -93,7 +93,7 @@ export default function AdminPromoManagement() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to strike this promotion from history?")) {
+    if (window.confirm("Are you sure you want to delete this promotion?")) {
       try {
         await api.delete(`/promotions/${id}`);
         toast.success("Promotion removed");
@@ -107,7 +107,7 @@ export default function AdminPromoManagement() {
   const toggleStatus = async (promo) => {
     try {
       await api.put(`/promotions/${promo._id}`, { isActive: !promo.isActive });
-      toast.success(`Campaign ${!promo.isActive ? 'activated' : 'deactivated'}`);
+      toast.success(`Promotion ${!promo.isActive ? 'activated' : 'deactivated'}`);
       fetchPromos();
     } catch (error) {
       toast.error("Status update failed");
@@ -125,34 +125,34 @@ export default function AdminPromoManagement() {
           <main className="flex-1 w-full">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-12 gap-8">
               <div>
-                <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-2 font-black">Campaign Management</p>
+                <p className="text-gallery-gold text-[10px] tracking-[0.5em] uppercase mb-2 font-black">Promotion Management</p>
                 <h1 className="text-2xl sm:text-4xl font-extralight text-gallery-text tracking-tight uppercase leading-tight">
-                  Promo <span className="font-serif italic text-gallery-gold">Records</span>
+                  Promotions
                 </h1>
               </div>
-              
-              <button 
+
+              <button
                 onClick={() => handleOpenModal()}
                 className="w-full sm:w-auto h-14 px-8 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-gold transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95"
               >
-                <Plus size={16} /> New Promo Code
+                <Plus size={16} /> Add Promo
               </button>
             </div>
 
             <div className="bg-white border border-gallery-border shadow-sm overflow-hidden">
               {loading ? (
-                <div className="p-20 text-center text-gallery-muted uppercase tracking-widest text-xs">Accessing Records...</div>
+                <div className="p-20 text-center text-gallery-muted uppercase tracking-widest text-xs">Loading...</div>
               ) : promos.length === 0 ? (
                 <div className="p-20 text-center space-y-6">
                   <Tag className="mx-auto text-gallery-soft" size={64} strokeWidth={1} />
-                  <p className="text-gallery-muted uppercase tracking-widest text-xs font-black">No active campaigns found</p>
+                  <p className="text-gallery-muted uppercase tracking-widest text-xs font-black">No promotions found</p>
                 </div>
               ) : (
                 <div className="space-y-0">
                   {/* Mobile Card Layout */}
                   <div className="grid grid-cols-1 divide-y divide-gallery-border sm:hidden">
                     {promos.map((promo) => (
-                      <motion.div 
+                      <motion.div
                         key={promo._id}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -165,22 +165,22 @@ export default function AdminPromoManagement() {
                               {promo.code}
                             </code>
                           </div>
-                          <button 
+                          <button
                             onClick={() => toggleStatus(promo)}
                             className={`flex items-center gap-2 px-3 py-1 rounded-full text-[9px] uppercase tracking-widest font-black transition-all ${promo.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
                           >
                             <div className={`w-2 h-2 rounded-full ${promo.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
-                            {promo.isActive ? 'Active' : 'Suspended'}
+                            {promo.isActive ? 'Active' : 'Inactive'}
                           </button>
                         </div>
 
                         <div className="flex justify-between items-center bg-gallery-soft/20 p-4 rounded-lg">
                           <div>
-                            <p className="text-[10px] text-gallery-muted uppercase tracking-widest font-black mb-1">Benefit</p>
+                            <p className="text-[10px] text-gallery-muted uppercase tracking-widest font-black mb-1">Discount</p>
                             <p className="text-base font-black text-gallery-accent uppercase">{promo.discount}</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-[10px] text-gallery-muted uppercase tracking-widest font-black mb-1">Scope</p>
+                            <p className="text-[10px] text-gallery-muted uppercase tracking-widest font-black mb-1">Type</p>
                             <p className="text-xs text-gallery-text uppercase tracking-widest font-black">{promo.type}</p>
                           </div>
                         </div>
@@ -210,9 +210,9 @@ export default function AdminPromoManagement() {
                     <table className="w-full text-left">
                       <thead className="bg-gallery-soft/30 border-b border-gallery-border">
                         <tr>
-                          <th className="px-8 py-5 text-[10px] tracking-widest uppercase font-black text-gallery-text">Campaign & Code</th>
-                          <th className="px-8 py-5 text-[10px] tracking-widest uppercase font-black text-gallery-text">Benefit</th>
-                          <th className="px-8 py-5 text-[10px] tracking-widest uppercase font-black text-gallery-text">Expiry</th>
+                          <th className="px-8 py-5 text-[10px] tracking-widest uppercase font-black text-gallery-text">Promotion & Code</th>
+                          <th className="px-8 py-5 text-[10px] tracking-widest uppercase font-black text-gallery-text">Discount</th>
+                          <th className="px-8 py-5 text-[10px] tracking-widest uppercase font-black text-gallery-text">Expires</th>
                           <th className="px-8 py-5 text-[10px] tracking-widest uppercase font-black text-gallery-text">Status</th>
                           <th className="px-8 py-5 text-right text-[10px] tracking-widest uppercase font-black text-gallery-text">Actions</th>
                         </tr>
@@ -236,12 +236,12 @@ export default function AdminPromoManagement() {
                               <div className="flex items-center gap-2 text-gallery-muted">
                                 <Calendar size={12} />
                                 <span className="text-[10px] uppercase tracking-widest font-black">
-                                  {promo.expiryDate ? new Date(promo.expiryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "Perpetual"}
+                                  {promo.expiryDate ? new Date(promo.expiryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "Never"}
                                 </span>
                               </div>
                             </td>
                             <td className="px-8 py-6">
-                              <button 
+                              <button
                                 onClick={() => toggleStatus(promo)}
                                 className={`flex items-center gap-2 px-3 py-1 rounded-full text-[9px] uppercase tracking-[0.2em] font-black transition-all ${promo.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
                               >
@@ -275,12 +275,12 @@ export default function AdminPromoManagement() {
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
               className="absolute inset-0 bg-gallery-primary/60 backdrop-blur-md"
             />
-            <motion.div 
+            <motion.div
               initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }}
               className="relative w-full max-w-xl bg-white shadow-2xl border-t sm:border border-gallery-border overflow-hidden rounded-t-3xl sm:rounded-none max-h-[95vh] flex flex-col"
             >
@@ -288,9 +288,9 @@ export default function AdminPromoManagement() {
               <div className="px-6 sm:px-10 py-6 border-b border-gallery-border bg-gallery-soft/30 flex justify-between items-center">
                 <div>
                   <h2 className="text-xs tracking-[0.4em] uppercase text-gallery-gold font-black mb-1">
-                    {editingPromo ? "Edit Campaign" : "New Promotion"}
+                    {editingPromo ? "Edit Promotion" : "New Promotion"}
                   </h2>
-                  <p className="text-[10px] text-gallery-muted uppercase tracking-widest font-bold">Inscribe discount records</p>
+                  <p className="text-[10px] text-gallery-muted uppercase tracking-widest font-bold">Add promotion details</p>
                 </div>
                 <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 flex items-center justify-center text-gallery-muted hover:text-gallery-text transition-colors">
                   <X size={24} />
@@ -301,31 +301,31 @@ export default function AdminPromoManagement() {
               <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 space-y-6 no-scrollbar">
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Campaign Title</label>
-                    <input 
-                      required type="text" value={formData.title} 
+                    <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Title</label>
+                    <input
+                      required type="text" value={formData.title}
                       placeholder="e.g. Grand Spring Opening"
-                      onChange={(e) => setFormData({...formData, title: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       className="w-full h-14 px-6 bg-gallery-soft/10 border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light transition-colors"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Access Code</label>
-                      <input 
-                        required type="text" value={formData.code} 
+                      <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Code</label>
+                      <input
+                        required type="text" value={formData.code}
                         placeholder="SPRING20"
-                        onChange={(e) => setFormData({...formData, code: e.target.value.toUpperCase()})}
+                        onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                         className="w-full h-14 px-6 bg-gallery-soft/10 border border-gallery-border focus:border-gallery-gold outline-none text-sm font-black tracking-widest"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Benefit Value</label>
-                      <input 
-                        required type="text" value={formData.discount} 
+                      <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Discount</label>
+                      <input
+                        required type="text" value={formData.discount}
                         placeholder="e.g. 20% OFF or $50 OFF"
-                        onChange={(e) => setFormData({...formData, discount: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, discount: e.target.value })}
                         className="w-full h-14 px-6 bg-gallery-soft/10 border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light"
                       />
                     </div>
@@ -333,17 +333,17 @@ export default function AdminPromoManagement() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Campaign Scope</label>
+                      <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Type</label>
                       <div className="relative">
-                        <select 
-                          value={formData.type} 
-                          onChange={(e) => setFormData({...formData, type: e.target.value})}
+                        <select
+                          value={formData.type}
+                          onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                           className="w-full h-14 px-6 bg-white border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light appearance-none cursor-pointer"
                         >
-                          <option value="Global">Global Reach</option>
-                          <option value="New Member">New Acquisition</option>
-                          <option value="Category">Targeted Medium</option>
-                          <option value="Flash Sale">Ephemeral Sale</option>
+                          <option value="Global">All Items</option>
+                          <option value="New Member">New Users</option>
+                          <option value="Category">Specific Art</option>
+                          <option value="Flash Sale">Flash Sale</option>
                         </select>
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gallery-muted">
                           <Plus size={14} className="rotate-45" />
@@ -352,45 +352,45 @@ export default function AdminPromoManagement() {
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Expiry Date</label>
-                      <input 
-                        type="date" value={formData.expiryDate} 
-                        onChange={(e) => setFormData({...formData, expiryDate: e.target.value})}
+                      <input
+                        type="date" value={formData.expiryDate}
+                        onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
                         className="w-full h-14 px-6 bg-gallery-soft/10 border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light"
                       />
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4 pt-2">
-                    <button 
+                    <button
                       type="button"
-                      onClick={() => setFormData({...formData, isActive: !formData.isActive})}
+                      onClick={() => setFormData({ ...formData, isActive: !formData.isActive })}
                       className={`w-14 h-7 flex items-center transition-all px-1 rounded-full ${formData.isActive ? 'bg-gallery-primary shadow-inner' : 'bg-gallery-soft'}`}
                     >
-                      <motion.div 
+                      <motion.div
                         animate={{ x: formData.isActive ? 28 : 0 }}
-                        className="w-5 h-5 bg-white shadow-lg rounded-full" 
+                        className="w-5 h-5 bg-white shadow-lg rounded-full"
                       />
                     </button>
                     <span className="text-xs uppercase tracking-widest font-black text-gallery-muted">
-                      {formData.isActive ? 'Campaign Active' : 'Campaign Suspended'}
+                      {formData.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-4 pb-8 sm:pb-0">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     disabled={actionLoading}
                     className="flex-1 h-16 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all disabled:opacity-50 shadow-xl active:scale-95"
                   >
-                    {actionLoading ? "Synchronizing..." : (editingPromo ? "Commit Changes" : "Publish Campaign")}
+                    {actionLoading ? "Saving..." : (editingPromo ? "Save Changes" : "Add Promotion")}
                   </button>
-                  <button 
-                    type="button" 
-                    onClick={() => setIsModalOpen(false)} 
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
                     className="h-16 px-10 border border-gallery-border text-[10px] uppercase tracking-[0.4em] font-black hover:bg-gallery-soft transition-all active:scale-95"
                   >
-                    Discard
+                    Cancel
                   </button>
                 </div>
               </form>

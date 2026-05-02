@@ -215,7 +215,7 @@ export default function ProductReviewSection({ productId }) {
                 <div className="space-y-4">
                   <p className="text-[11px] text-gallery-muted tracking-wider">You reviewed this piece on {new Date(myReview.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                   <StarDisplay rating={myReview.rating} size={16} />
-                  <p className="text-sm font-light italic text-gallery-text leading-relaxed">"{myReview.comment}"</p>
+                  <p className="text-sm font-light  text-gallery-text leading-relaxed">"{myReview.comment}"</p>
                   <div className="flex gap-3 pt-2">
                     <button
                       onClick={() => handleEditOpen(myReview)}
@@ -336,7 +336,7 @@ export default function ProductReviewSection({ productId }) {
                             <StarDisplay rating={review.rating} size={11} />
                           </div>
 
-                          <p className="text-sm font-light text-gallery-text leading-relaxed italic">"{review.comment}"</p>
+                          <p className="text-sm font-light text-gallery-text leading-relaxed ">"{review.comment}"</p>
 
                           {/* Owner actions */}
                           {isOwner && (
