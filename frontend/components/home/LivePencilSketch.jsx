@@ -67,11 +67,16 @@ const LivePencilSketch = () => {
   const [activeBrush, setActiveBrush] = useState(BRUSHES[0]);
   const [isPaintingActive, setIsPaintingActive] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [lastTap, setLastTap] = useState(0);
+  const [showTapHint, setShowTapHint] = useState(true);
+  const [doubleTapActive, setDoubleTapActive] = useState(false);
 
   const shadingRef = useRef([]);
 
   useEffect(() => {
     setHasMounted(true);
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -188,7 +193,10 @@ const LivePencilSketch = () => {
     setMousePos({ x: viewX, y: viewY });
     
     // 🚀 RESTORED: Draw if toggle is ON (mobile) OR mouse is DOWN (desktop)
-    if (isPaintingActive || isMouseDown) {
+    // 📱 Mobile Double-Tap Guard: Only paint if double-tap active OR it's a desktop hover
+    const canPaint = (!isTouchDevice && (isPaintingActive || isMouseDown)) || (isTouchDevice && doubleTapActive && isPaintingActive);
+
+    if (canPaint) {
       for (let i = 0; i < activeBrush.density; i++) {
         shadingRef.current.push({
           x: x + (Math.random() - 0.5) * activeBrush.scatter / scale,
@@ -199,6 +207,21 @@ const LivePencilSketch = () => {
       }
       if (shadingRef.current.length > 5000) shadingRef.current.shift();
     }
+  };
+
+  const handleTouchStart = (e) => {
+    if (!isTouchDevice) return;
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
+    
+    if (now - lastTap < DOUBLE_TAP_DELAY) {
+      // Double tap detected
+      setDoubleTapActive(!doubleTapActive);
+      setShowTapHint(false);
+      setIsPaintingActive(true);
+    }
+    setLastTap(now);
+    setIsMouseDown(true);
   };
 
   return (
@@ -215,12 +238,27 @@ const LivePencilSketch = () => {
               onTouchMove={(e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY)}
               onMouseDown={() => setIsMouseDown(true)}
               onMouseUp={() => setIsMouseDown(false)}
-              onTouchStart={() => setIsMouseDown(true)}
+              onTouchStart={handleTouchStart}
               onTouchEnd={() => setIsMouseDown(false)}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => { setIsHovered(false); setIsMouseDown(false); }}
             >
               <canvas ref={canvasRef} className="w-full h-full" style={{ touchAction: 'none' }} />
+
+              {/* 📱 Mobile Double-Tap Instruction Popup */}
+              {isTouchDevice && (
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-50">
+                   <motion.div 
+                     initial={{ opacity: 0, scale: 0.9 }}
+                     animate={{ opacity: 1, scale: 1 }}
+                     className="bg-black/60 backdrop-blur-xl px-8 py-4 rounded-full border border-white/20 shadow-2xl"
+                   >
+                     <span className="text-[10px] tracking-[0.4em] uppercase font-black text-white whitespace-nowrap">
+                       {doubleTapActive ? "Double Click to Stop" : "Double Click to Art"}
+                     </span>
+                   </motion.div>
+                </div>
+              )}
               
               {/* Desktop Sidebars (LG+) */}
               <div className="hidden lg:block">

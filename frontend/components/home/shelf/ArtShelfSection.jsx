@@ -176,7 +176,7 @@ export default function ArtShelfSection() {
   const handleShelfEnter = useCallback((cat) => {
     cancelClose();
     // 🚀 Mobile-First Fix: Instant interaction on touch, meditative delay on desktop
-    const delay = isTouchDevice ? 0 : 1200;
+    const delay = isTouchDevice ? 0 : 2000;
     openTimer.current = setTimeout(() => {
       setActiveCategory(cat);
     }, delay);
