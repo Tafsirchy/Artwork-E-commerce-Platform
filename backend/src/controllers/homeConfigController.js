@@ -7,7 +7,7 @@ const Product = require("../models/Product"); // Ensure Product model is registe
 exports.getConfig = async (req, res) => {
   try {
     const config = await HomeConfig.findOne({ section: req.params.section }).populate("productIds");
-    if (!config) return res.status(404).json({ message: "Config not found" });
+    if (!config) return res.json({ section: req.params.section, productIds: [] });
     res.json(config);
   } catch (error) {
     res.status(500).json({ message: error.message });
