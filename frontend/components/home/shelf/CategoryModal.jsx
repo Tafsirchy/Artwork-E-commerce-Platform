@@ -98,7 +98,14 @@ export default function CategoryModal({ category, onClose, onMouseEnter, onMouse
                         <div key={idx} className="flex flex-col items-center group cursor-pointer" onClick={() => onSelectArtwork(artwork)}>
                            <div className="relative w-[85%] aspect-[4/5] bg-white shadow-[0_15px_35px_-10px_rgba(0,0,0,0.2)] p-2.5 border border-black/5 mb-6">
                               <div className="relative w-full h-full overflow-hidden bg-gray-50">
-                                 <Image src={artwork.image} alt={artwork.title} fill className="object-cover" />
+                  <Image
+                     src={artwork.fullImage || artwork.image}
+                     alt={artwork.title}
+                     fill
+                     priority
+                     onLoadingComplete={(img) => img.classList.remove('opacity-0')}
+                     className="object-cover transition-all duration-1000 group-hover:scale-110 opacity-0"
+                  />
                               </div>
                            </div>
                            <div className="text-center">
@@ -370,7 +377,7 @@ function PageContent({ data, side, categoryColor, onSelect }) {
             <div className="relative w-[55%] aspect-[4/5] md:aspect-[3/4] bg-white shadow-[0_20px_40px_-12px_rgba(0,0,0,0.25)] p-2.5 md:p-3.5 border border-black/5 transition-all duration-700">
                <div className="relative w-full h-full overflow-hidden bg-gray-50">
                   <Image
-                     src={artwork.image}
+                     src={artwork.fullImage || artwork.image}
                      alt={artwork.title}
                      fill
                      priority

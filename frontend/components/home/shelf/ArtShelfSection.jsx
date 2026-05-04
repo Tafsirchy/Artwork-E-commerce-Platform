@@ -149,8 +149,9 @@ export default function ArtShelfSection() {
               title: p.title,
               artist: p.creator,
               price: `$${p.price.toLocaleString()}`,
-              image: p.imageUrl,
-              description: p.description
+              image: p.thumbnailUrl || p.imageUrl,
+              fullImage: p.imageUrl,
+              description: p.description || ""
             }))
           };
         });

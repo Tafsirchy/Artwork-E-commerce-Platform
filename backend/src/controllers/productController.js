@@ -6,7 +6,9 @@ const axios = require("axios");
 // @access  Public
 const getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({})
+      .select("-stock -colorConcept -__v")
+      .lean();
     res.json(products);
   } catch (error) {
     console.error("Database error, serving mock products:", error.message);

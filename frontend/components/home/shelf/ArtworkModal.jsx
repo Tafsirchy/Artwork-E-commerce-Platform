@@ -38,7 +38,7 @@ export default function ArtworkModal({ artwork, onClose }) {
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
               <Image
-                src={artwork.image}
+                src={artwork.fullImage || artwork.image}
                 alt={artwork.title}
                 fill
                 className="object-contain p-6 md:p-10"
