@@ -182,6 +182,11 @@ export default function ArtShelfSection() {
     }, delay);
   }, [cancelClose, isTouchDevice]);
 
+  const handleShelfClick = useCallback((cat) => {
+    cancelClose();
+    setActiveCategory(cat);
+  }, [cancelClose]);
+
   const containerRef = useRef(null);
 
   if (shelfCategories.length === 0) return <ArtShelfSkeleton />;
@@ -265,7 +270,7 @@ export default function ArtShelfSection() {
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(200,169,126,0.08) 0%, transparent 70%)" }} />
 
         {shelfCategories.map((cat) => (
-          <Shelf key={cat.name} category={cat} onSelect={handleShelfEnter} onDeselect={scheduleClose} />
+          <Shelf key={cat.name} category={cat} onSelect={handleShelfEnter} onClick={handleShelfClick} onDeselect={scheduleClose} />
         ))}
       </motion.div>
 

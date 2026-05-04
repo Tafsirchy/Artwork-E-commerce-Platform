@@ -32,7 +32,7 @@ function Leaf({ i }) {
   );
 }
 
-export default function Shelf({ category, onSelect, onDeselect }) {
+export default function Shelf({ category, onSelect, onClick, onDeselect }) {
   const [hovered, setHovered] = useState(false);
   const [labelHovered, setLabelHovered] = useState(false);
 
@@ -46,7 +46,7 @@ export default function Shelf({ category, onSelect, onDeselect }) {
       <motion.div
         onMouseEnter={(e) => { e.stopPropagation(); setLabelHovered(true); }}
         onMouseLeave={(e) => { e.stopPropagation(); setLabelHovered(false); }}
-        onClick={() => onSelect(category)}
+        onClick={() => onClick(category)}
         initial={false}
         animate={{ 
           opacity: (hovered || labelHovered) ? 1 : 0.65, 
@@ -80,7 +80,7 @@ export default function Shelf({ category, onSelect, onDeselect }) {
           setHovered(false);
           if (onDeselect) onDeselect();
         }}
-        onClick={() => onSelect(category)}
+        onClick={() => onClick(category)}
         className="flex flex-col items-center cursor-pointer relative"
         whileHover={{ y: -6, scale: 1.03 }}
         animate={{ y: 0, scale: 1 }}
