@@ -124,6 +124,7 @@ function TreeSVG() {
 export default function ArtShelfSection() {
   const [shelfCategories, setShelfCategories] = useState(initialShelfData);
   const [activeCategory, setActiveCategory] = useState(null);
+  const [hoveredCategory, setHoveredCategory] = useState(null);
   const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [isRaining, setIsRaining] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -170,12 +171,14 @@ export default function ArtShelfSection() {
 
   const scheduleClose = useCallback(() => {
     cancelClose();
+    setHoveredCategory(null);
     if (selectedArtwork) return;
     closeTimer.current = setTimeout(() => setActiveCategory(null), 100);
   }, [cancelClose, selectedArtwork]);
 
   const handleShelfEnter = useCallback((cat) => {
     cancelClose();
+    setHoveredCategory(cat.name);
     // 🚀 Mobile-First Fix: Instant interaction on touch, meditative delay on desktop
     const delay = isTouchDevice ? 0 : 2000;
     openTimer.current = setTimeout(() => {
@@ -189,6 +192,13 @@ export default function ArtShelfSection() {
   }, [cancelClose]);
 
   const containerRef = useRef(null);
+
+  // 🌲 Meditative Tree Sway Logic
+  const swayTransition = {
+    duration: 6,
+    repeat: Infinity,
+    ease: "easeInOut"
+  };
 
   if (shelfCategories.length === 0) return <ArtShelfSkeleton />;
 
@@ -267,7 +277,18 @@ export default function ArtShelfSection() {
           height: isTouchDevice ? "640px" : "860px",
         }}
       >
-        <TreeSVG />
+        {/* SVG Tree with Swaying Animation */}
+        <motion.div 
+          className="absolute inset-0 z-0 pointer-events-none"
+          animate={{ 
+            rotate: hoveredCategory ? [0, -0.5, 0.5, 0] : [0, -0.2, 0.2, 0],
+            x: hoveredCategory ? [0, -2, 2, 0] : [0, -1, 1, 0]
+          }}
+          transition={{ duration: hoveredCategory ? 3 : 6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <TreeSVG />
+        </motion.div>
+
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(200,169,126,0.08) 0%, transparent 70%)" }} />
 
         {shelfCategories.map((cat) => (
