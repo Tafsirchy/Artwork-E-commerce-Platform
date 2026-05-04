@@ -40,12 +40,12 @@ export default function Shelf({ category, onSelect, onClick, onDeselect }) {
     /* ── Outer wrapper: pure CSS positioning (never touched by GSAP/Framer) ── */
     <div
       className="absolute"
-      style={{ ...category.position, zIndex: hovered || labelHovered ? 50 : 10 }}
+      style={category.position}
     >
       {/* Category Label (Directional) - SIBLING to prevent modal trigger */}
       <motion.div
-        onMouseEnter={(e) => { e.stopPropagation(); setLabelHovered(true); onSelect(category); }}
-        onMouseLeave={(e) => { e.stopPropagation(); setLabelHovered(false); if (onDeselect) onDeselect(); }}
+        onMouseEnter={(e) => { e.stopPropagation(); setLabelHovered(true); }}
+        onMouseLeave={(e) => { e.stopPropagation(); setLabelHovered(false); }}
         onClick={() => onClick(category)}
         initial={false}
         animate={{ 
