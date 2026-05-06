@@ -385,14 +385,14 @@ export default function AdminPromoManagement() {
                   <button
                     type="submit"
                     disabled={actionLoading}
-                    className="flex-1 h-16 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all disabled:opacity-50 shadow-xl active:scale-95 flex items-center justify-center"
+                    className="w-full sm:flex-1 h-16 bg-gallery-primary text-white text-[11px] sm:text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all disabled:opacity-50 shadow-xl active:scale-95 flex items-center justify-center"
                   >
                     {actionLoading ? "Saving..." : (editingPromo ? "Save Changes" : "Add Promotion")}
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="h-16 px-10 border border-gallery-border text-[10px] uppercase tracking-[0.4em] font-black hover:bg-gallery-soft transition-all active:scale-95 flex items-center justify-center"
+                    className="w-full sm:w-auto sm:px-10 h-16 border border-gallery-border text-[11px] sm:text-[10px] uppercase tracking-[0.4em] font-black hover:bg-gallery-soft transition-all active:scale-95 flex items-center justify-center"
                   >
                     Cancel
                   </button>

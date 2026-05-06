@@ -429,13 +429,13 @@ export default function AdminProductsPage() {
                 type="submit"
                 form="artwork-form"
                 disabled={loading}
-                className="flex-1 h-16 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-gold transition-all disabled:opacity-50 shadow-xl active:scale-95 flex items-center justify-center"
+                className="w-full sm:flex-1 h-16 bg-gallery-primary text-white text-[11px] sm:text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-gold transition-all disabled:opacity-50 shadow-xl active:scale-95 flex items-center justify-center"
               >
                 {loading ? "Saving..." : (isEditing ? "Save Art" : "Add Art")}
               </button>
               <button
                 onClick={() => { resetForm(); setShowModal(false); }}
-                className="h-16 px-10 border border-gallery-border text-[10px] tracking-[0.3em] uppercase font-black hover:bg-white transition-all active:scale-95 flex items-center justify-center"
+                className="w-full sm:w-auto sm:px-10 h-16 border border-gallery-border text-[11px] sm:text-[10px] tracking-[0.3em] uppercase font-black hover:bg-white transition-all active:scale-95 flex items-center justify-center"
               >
                 Cancel
               </button>
