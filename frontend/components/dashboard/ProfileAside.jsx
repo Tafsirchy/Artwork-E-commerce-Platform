@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { User, Mail, Shield, Save, Edit3, LogOut, Camera, Home, Tag, Trash2 } from "lucide-react";
+import { User, Mail, Shield, Save, Edit3, LogOut, Camera, Home, Tag, Trash2, Users } from "lucide-react";
 import useAuthStore from "@/store/authStore";
 import api from "@/lib/api";
 import { toast } from "react-toastify";
@@ -211,6 +211,15 @@ export default function ProfileAside() {
                       <Camera size={18} strokeWidth={1.5} />
                     </div>
                     <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Manage Home</span>
+                  </div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
+                </Link>
+                <Link href="/admin/users" className="flex items-center justify-between px-6 h-16 hover:bg-gallery-soft transition-all group active:px-8">
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 flex items-center justify-center text-gallery-muted group-hover:text-gallery-primary transition-colors">
+                      <Users size={18} strokeWidth={1.5} />
+                    </div>
+                    <span className="text-xs tracking-[0.15em] uppercase font-black text-gallery-text">Manage Users</span>
                   </div>
                   <div className="w-1.5 h-1.5 rounded-full bg-gallery-gold opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-100" />
                 </Link>

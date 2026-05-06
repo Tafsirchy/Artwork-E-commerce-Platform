@@ -36,17 +36,18 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [productsRes, ordersRes] = await Promise.all([
+      const [productsRes, ordersRes, usersRes] = await Promise.all([
         api.get("/products"),
         api.get("/orders"),
+        api.get("/users"),
       ]);
-
+      
       const revenue = ordersRes.data.reduce((acc, order) => acc + (order.isPaid ? order.totalPrice : 0), 0);
 
       setStats({
         products: productsRes.data.length,
         orders: ordersRes.data.length,
-        users: 10, // Mock for now
+        users: usersRes.data.length,
         revenue: revenue,
       });
     } catch (error) {
@@ -112,6 +113,7 @@ export default function AdminDashboard() {
             {[
               { title: "Order Records", desc: "View and update order statuses, generate invoices.", href: "/admin/orders" },
               { title: "Manage Art", desc: "Add new artwork, edit details, and track stock.", href: "/admin/products" },
+              { title: "User Records", desc: "Manage system users, roles, and access.", href: "/admin/users" },
               { title: "Blog Posts", desc: "Manage blog posts and news.", href: "/admin/blogs" },
               { title: "Messages", desc: "Respond to customer questions and inquiries.", href: "/admin/messages" }
             ].map((card, i) => (

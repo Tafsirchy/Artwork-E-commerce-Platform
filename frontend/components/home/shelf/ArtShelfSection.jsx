@@ -170,7 +170,7 @@ export default function ArtShelfSection() {
   const scheduleClose = useCallback(() => {
     cancelClose();
     if (selectedArtwork) return;
-    closeTimer.current = setTimeout(() => setActiveCategory(null), 100);
+    closeTimer.current = setTimeout(() => setActiveCategory(null), 2000);
   }, [cancelClose, selectedArtwork]);
 
   const handleShelfEnter = useCallback((cat) => {

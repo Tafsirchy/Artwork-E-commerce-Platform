@@ -135,7 +135,7 @@ export default function LoginPage() {
                 useOneTap
                 theme="outline"
                 shape="square"
-                width="350"
+                width={typeof window !== "undefined" && window.innerWidth < 400 ? "280" : "350"}
               />
             </div>
           </div>

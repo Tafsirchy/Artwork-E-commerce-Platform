@@ -187,7 +187,7 @@ const LivePencilSketch = () => {
     const y = (viewY - offsetY) / scale;
 
     setMousePos({ x: viewX, y: viewY });
-    
+
     if (isMouseDown) {
       for (let i = 0; i < activeBrush.density; i++) {
         shadingRef.current.push({
@@ -221,7 +221,7 @@ const LivePencilSketch = () => {
               onMouseLeave={() => { setIsHovered(false); setIsMouseDown(false); }}
             >
               <canvas ref={canvasRef} className="w-full h-full" style={{ touchAction: 'none' }} />
-              
+
               {/* Desktop Sidebars (LG+) */}
               <div className="hidden lg:block">
                 <div className="absolute left-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 bg-white/80 backdrop-blur-xl p-4 rounded-2xl border border-black/5 z-20 shadow-xl">
@@ -277,16 +277,17 @@ const LivePencilSketch = () => {
           </div>
 
           {/* RIGHT: CONTENT */}
-          <div className="w-full lg:w-[35%] flex flex-col justify-center">
+          <div className="w-full lg:w-[35%] flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center lg:justify-start gap-3 mb-6">
                 <Sparkles size={16} className="text-gallery-gold" />
-                <span className="text-[10px] tracking-[0.6em] uppercase text-gallery-accent font-medium">Living Art</span>
+                <span className="text-[10px] tracking-[0.6em] uppercase text-gallery-accent font-medium">Interactive Studio</span>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-6 leading-tight">
-                Art that is <br /> <span className="font-serif text-gallery-gold">Alive</span>
+                Art that is <br />
+                <span className="font-serif text-gallery-gold">Alive</span>
               </h1>
-              <p className="text-gallery-muted text-base md:text-lg font-light leading-relaxed mb-10 border-l-2 border-gallery-gold/20 pl-8">
+              <p className="text-gallery-muted text-base md:text-lg font-light leading-relaxed mb-10 border-l-2 lg:border-l-2 border-gallery-gold/20 pl-8 text-center lg:text-left mx-auto lg:mx-0 max-w-sm md:max-w-none">
                 Draw and see your art move. This drawing changes as you move.
               </p>
               <button className="w-full md:w-auto group flex items-center justify-center gap-6 bg-gallery-text text-white px-10 py-5 rounded-none hover:bg-gallery-primary transition-all shadow-xl active:scale-95">

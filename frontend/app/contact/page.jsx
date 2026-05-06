@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Phone, MessageSquare, Send } from "lucide-react";
+import { Mail, MapPin, Phone, MessageSquare, Send, ChevronDown } from "lucide-react";
 import api from "@/lib/api";
 import { toast } from "react-toastify";
 import Image from "next/image";
@@ -173,12 +173,12 @@ export default function ContactPage() {
 
                 <div className="space-y-2">
                   <label className="text-[10px] tracking-[0.2em] uppercase text-gallery-muted font-black">Subject</label>
-                  <div className="relative">
+                  <div className="relative group">
                     <select 
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      className="w-full bg-gallery-soft/30 border border-gallery-border px-4 py-4 focus:outline-none focus:border-gallery-gold transition-colors rounded-none font-light appearance-none h-14"
+                      className="w-full bg-gallery-soft/30 border border-gallery-border px-6 h-16 text-base sm:text-sm font-light appearance-none focus:outline-none focus:border-gallery-gold transition-all"
                     >
                       <option value="General Inquiry">General Question</option>
                       <option value="Art Consultation">Art Advice</option>
@@ -186,8 +186,8 @@ export default function ContactPage() {
                       <option value="Shipping & Logistics">Shipping Help</option>
                       <option value="Other">Other</option>
                     </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
-                      <MessageSquare size={14} />
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gallery-muted group-focus-within:text-gallery-gold transition-colors">
+                      <ChevronDown size={18} strokeWidth={1.5} />
                     </div>
                   </div>
                 </div>

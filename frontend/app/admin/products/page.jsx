@@ -6,7 +6,7 @@ import Image from "next/image";
 import useAuthStore from "@/store/authStore";
 import api, { setAuthToken } from "@/lib/api";
 import { toast } from "react-toastify";
-import { Upload, Edit2, Trash2, X } from "lucide-react";
+import { Upload, Edit2, Trash2, X, ChevronDown } from "lucide-react";
 import ProfileAside from "@/components/dashboard/ProfileAside";
 import { motion } from "framer-motion";
 import AdminTableSkeleton from "@/components/ui/AdminTableSkeleton";
@@ -397,13 +397,13 @@ export default function AdminProductsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="block text-xs uppercase tracking-widest text-gallery-muted font-black">Category</label>
-                    <div className="relative">
+                    <div className="relative group">
                       <select value={category} onChange={e => setCategory(e.target.value)}
-                        className="w-full h-14 px-6 border border-gallery-border bg-white focus:outline-none focus:border-gallery-gold text-sm font-light appearance-none cursor-pointer">
+                        className="w-full h-16 sm:h-14 px-6 border border-gallery-border bg-white focus:outline-none focus:border-gallery-gold text-base sm:text-sm font-light appearance-none cursor-pointer transition-all">
                         {categories.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gallery-muted">
-                        <Upload size={14} className="rotate-180" />
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gallery-muted group-focus-within:text-gallery-gold transition-colors">
+                        <ChevronDown size={18} strokeWidth={1.5} />
                       </div>
                     </div>
                   </div>
@@ -429,13 +429,13 @@ export default function AdminProductsPage() {
                 type="submit"
                 form="artwork-form"
                 disabled={loading}
-                className="flex-1 h-16 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-gold transition-all disabled:opacity-50 shadow-xl active:scale-95"
+                className="flex-1 h-16 bg-gallery-primary text-white text-[10px] tracking-[0.3em] uppercase font-black hover:bg-gallery-gold transition-all disabled:opacity-50 shadow-xl active:scale-95 flex items-center justify-center"
               >
                 {loading ? "Saving..." : (isEditing ? "Save Art" : "Add Art")}
               </button>
               <button
                 onClick={() => { resetForm(); setShowModal(false); }}
-                className="h-16 px-10 border border-gallery-border text-[10px] tracking-[0.3em] uppercase font-black hover:bg-white transition-all active:scale-95"
+                className="h-16 px-10 border border-gallery-border text-[10px] tracking-[0.3em] uppercase font-black hover:bg-white transition-all active:scale-95 flex items-center justify-center"
               >
                 Cancel
               </button>

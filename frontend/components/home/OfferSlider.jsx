@@ -171,7 +171,7 @@ export default function OfferSlider() {
               }}
               exit={{ scale: 1.2, opacity: 0, filter: "blur(20px)" }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="w-full max-w-sm bg-white/10 backdrop-blur-3xl border border-white/20 p-10 text-center shadow-[0_0_100px_rgba(255,105,180,0.3)] relative pointer-events-auto"
+              className="w-[90%] max-w-sm bg-white/10 backdrop-blur-3xl border border-white/20 p-6 sm:p-10 text-center shadow-[0_0_100px_rgba(255,105,180,0.3)] relative pointer-events-auto"
             >
               {/* Central Popper Icon */}
               <motion.div
@@ -180,11 +180,11 @@ export default function OfferSlider() {
                   rotate: [0, 15, -15, 0]
                 }}
                 transition={{ duration: 0.5 }}
-                className="w-24 h-24 mx-auto mb-6 relative"
+                className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 relative"
               >
                 <div className="absolute inset-0 bg-gradient-to-tr from-gallery-accent via-gallery-gold to-gallery-accent rounded-full blur-2xl opacity-50 animate-pulse" />
                 <div className="relative flex items-center justify-center w-full h-full text-white drop-shadow-2xl">
-                  <Sparkles size={64} strokeWidth={1} className="animate-spin-slow" />
+                  <Sparkles size={isSliderVisible ? 48 : 64} strokeWidth={1} className="animate-spin-slow w-full h-full p-2" />
                 </div>
               </motion.div>
 
@@ -193,18 +193,18 @@ export default function OfferSlider() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <h2 className="text-4xl font-black  tracking-tighter uppercase mb-2 bg-gradient-to-r from-gallery-accent via-gallery-gold to-gallery-accent bg-clip-text text-transparent">
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tighter uppercase mb-2 bg-gradient-to-r from-gallery-accent via-gallery-gold to-gallery-accent bg-clip-text text-transparent">
                   Boom!
                 </h2>
-                <p className="text-[10px] tracking-[0.5em] uppercase text-white/60 font-bold mb-8">
+                <p className="text-[8px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.5em] uppercase text-white/60 font-bold mb-6 sm:mb-8">
                   Discovery Acquired
                 </p>
 
                 <div className="space-y-1">
-                  <span className="text-3xl font-black text-white tracking-widest block font-serif">
+                  <span className="text-2xl sm:text-3xl font-black text-white tracking-widest block font-serif">
                     {copiedCoupon.code}
                   </span>
-                  <p className="text-gallery-accent text-sm font-bold uppercase tracking-widest animate-pulse">
+                  <p className="text-gallery-accent text-xs sm:text-sm font-bold uppercase tracking-widest animate-pulse">
                     {copiedCoupon.discount} OFF YOUR COLLECTION
                   </p>
                 </div>

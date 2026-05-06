@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Trash2, Edit2, X, Tag, Calendar, Check, AlertCircle } from "lucide-react";
+import { Plus, Trash2, Edit2, X, Tag, Calendar, Check, AlertCircle, ChevronDown } from "lucide-react";
 import api from "@/lib/api";
 import { toast } from "react-toastify";
 import ProfileAside from "@/components/dashboard/ProfileAside";
@@ -338,19 +338,19 @@ export default function AdminPromoManagement() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-xs uppercase tracking-widest font-black text-gallery-muted">Type</label>
-                      <div className="relative">
+                      <div className="relative group">
                         <select
                           value={formData.type}
                           onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                          className="w-full h-14 px-6 bg-white border border-gallery-border focus:border-gallery-gold outline-none text-sm font-light appearance-none cursor-pointer"
+                          className="w-full h-16 sm:h-14 px-6 bg-white border border-gallery-border focus:border-gallery-gold outline-none text-base sm:text-sm font-light appearance-none cursor-pointer transition-all"
                         >
                           <option value="Global">All Items</option>
                           <option value="New Member">New Users</option>
                           <option value="Category">Specific Art</option>
                           <option value="Flash Sale">Flash Sale</option>
                         </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gallery-muted">
-                          <Plus size={14} className="rotate-45" />
+                        <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gallery-muted group-focus-within:text-gallery-gold transition-colors">
+                          <ChevronDown size={18} strokeWidth={1.5} />
                         </div>
                       </div>
                     </div>
@@ -385,14 +385,14 @@ export default function AdminPromoManagement() {
                   <button
                     type="submit"
                     disabled={actionLoading}
-                    className="flex-1 h-16 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all disabled:opacity-50 shadow-xl active:scale-95"
+                    className="flex-1 h-16 bg-gallery-primary text-white text-[10px] uppercase tracking-[0.4em] font-black hover:bg-black transition-all disabled:opacity-50 shadow-xl active:scale-95 flex items-center justify-center"
                   >
                     {actionLoading ? "Saving..." : (editingPromo ? "Save Changes" : "Add Promotion")}
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="h-16 px-10 border border-gallery-border text-[10px] uppercase tracking-[0.4em] font-black hover:bg-gallery-soft transition-all active:scale-95"
+                    className="h-16 px-10 border border-gallery-border text-[10px] uppercase tracking-[0.4em] font-black hover:bg-gallery-soft transition-all active:scale-95 flex items-center justify-center"
                   >
                     Cancel
                   </button>

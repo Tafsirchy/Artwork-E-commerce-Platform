@@ -146,36 +146,34 @@ export default function FeaturedArtwork() {
         >
           <section className="py-28 bg-gallery-bg">
             <div className="container mx-auto px-6">
-              <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-10">
+              <div className="flex flex-col md:flex-row justify-between items-center md:items-start mb-20 gap-10">
                 <div className="overflow-hidden">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-center md:text-left"
                   >
                     <motion.p
                       initial={{ opacity: 0, letterSpacing: "0.1em" }}
                       whileInView={{ opacity: 1, letterSpacing: "0.5em" }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.8, ease: "easeOut" }}
-                      className="text-gallery-accent text-[10px] md:text-sm uppercase mb-6"
+                      className="text-gallery-accent text-[10px] md:text-sm uppercase mb-6 text-center md:text-left"
                     >
                       🧩 Our Best Picks
                     </motion.p>
-                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4 leading-tight">
-                      {"See Beautiful".split(" ").map((word, i) => (
-                        <motion.span
-                          key={i}
-                          initial={{ opacity: 0, y: 10 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.4, delay: i * 0.05 }}
-                          className="inline-block mr-4"
-                        >
-                          {word}
-                        </motion.span>
-                      ))}
+                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-light text-gallery-text tracking-widest uppercase mb-4 leading-tight text-center md:text-left">
+                      <motion.span
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="inline-block"
+                      >
+                        See Beautiful
+                      </motion.span>
                       <br />
                       <motion.span
                         initial={{ opacity: 0, x: -10 }}

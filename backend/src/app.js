@@ -63,6 +63,7 @@ app.use("/api/reviews", require("./routes/reviewRoutes"));
 app.use("/api/home-config", require("./routes/homeConfigRoutes"));
 app.use("/api/blogs", require("./routes/blogRoutes"));
 app.use("/api/contacts", require("./routes/contactRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
 
 // Serve static files (uploads)
 // 🚀 Vercel fix: Use absolute path and check existence

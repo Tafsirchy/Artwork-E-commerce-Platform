@@ -159,15 +159,20 @@ export default function ProductsPage() {
                     <SortAsc size={14} className="text-gallery-gold" />
                     <span className="text-[9px] tracking-[0.4em] uppercase text-gallery-muted font-black">Sort By</span>
                   </div>
-                  <select 
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full bg-gallery-soft/50 border border-gallery-border px-4 py-3 text-[10px] tracking-widest uppercase text-gallery-text focus:outline-none focus:border-gallery-gold transition-colors cursor-pointer appearance-none"
-                  >
-                    <option value="newest">Newest First</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                  </select>
+                  <div className="relative group">
+                    <select 
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="w-full bg-white border border-gallery-border px-6 h-14 text-base sm:text-[10px] tracking-widest uppercase text-gallery-text focus:outline-none focus:border-gallery-gold transition-colors cursor-pointer appearance-none"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="price-low">Price: Low to High</option>
+                      <option value="price-high">Price: High to Low</option>
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gallery-muted group-focus-within:text-gallery-gold transition-colors">
+                      <ChevronDown size={14} strokeWidth={2} />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Clear All Button */}

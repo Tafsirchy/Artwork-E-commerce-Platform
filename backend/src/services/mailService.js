@@ -157,7 +157,6 @@ const sendWelcomeEmail = async (userEmail, userName) => {
 // ─── 3. Order Confirmation Email — Premium, Invoice-Focused ──────────────────
 const sendOrderConfirmationEmail = async (order, userEmail) => {
   try {
-    const invoicePath = await generateInvoice(order);
     const frontendUrl = process.env.FRONTEND_URL || "https://bristiii-web.vercel.app";
 
     const itemRows = (order.orderItems || []).map(item => `
@@ -181,7 +180,7 @@ const sendOrderConfirmationEmail = async (order, userEmail) => {
       </div>
 
       <p style="color:#555;font-size:15px;line-height:1.8;margin:0 0 24px;font-family:'Helvetica Neue',sans-serif;">
-        Thank you for your order. We're preparing your artwork with the utmost care. Your invoice is attached to this email.
+        Thank you for your order. We're preparing your artwork with the utmost care. You can download your official invoice anytime from your dashboard.
       </p>
 
       <!-- Order Details -->
@@ -212,7 +211,7 @@ const sendOrderConfirmationEmail = async (order, userEmail) => {
       </div>
 
       <div style="background:#f9f8f6;padding:16px 20px;text-align:center;">
-        <p style="margin:0;color:#999;font-size:11px;font-family:'Helvetica Neue',sans-serif;">📎 Your invoice has been attached to this email.</p>
+        <p style="margin:0;color:#999;font-size:11px;font-family:'Helvetica Neue',sans-serif;">📎 Invoices are available for download in your collector's dashboard.</p>
         <p style="margin:6px 0 0;color:#bbb;font-size:11px;font-family:'Helvetica Neue',sans-serif;">Questions? Reply to this email and our team will help you.</p>
       </div>
     `;
@@ -222,12 +221,6 @@ const sendOrderConfirmationEmail = async (order, userEmail) => {
       to: userEmail,
       subject: `Order Confirmed ✅ — Your Artwork is on its Way`,
       html: emailWrapper(content, "#2C5F2E"),
-      attachments: [
-        {
-          filename: `invoice-${order._id}.pdf`,
-          path: invoicePath,
-        },
-      ],
     });
 
     console.log(`Order confirmation email sent to ${userEmail}`);

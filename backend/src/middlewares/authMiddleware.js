@@ -35,9 +35,11 @@ const admin = (req, res, next) => {
   if (req.user && req.user.role === "admin") {
     next();
   } else {
-    console.warn(`AUTH: User ${req.user?.email} attempted admin access but has role: ${req.user?.role}`);
-    res.status(401);
-    next(new Error("Not authorized as an admin"));
+    console.error(`AUTH DENIED: User ${req.user?.email || "Unknown"} with role ${req.user?.role || "None"} tried to access admin route ${req.originalUrl}`);
+    res.status(401).json({ 
+      message: "Not authorized as an admin",
+      debug: process.env.NODE_ENV === "development" ? `Role: ${req.user?.role}` : undefined
+    });
   }
 };
 
