@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { User, Mail, Shield, Bell, CreditCard, Save, Eye, EyeOff, Settings, MapPin, ArrowRight } from "lucide-react";
@@ -17,7 +17,7 @@ const SECTIONS = [
   { id: "billing", label: "Payments", icon: <CreditCard size={16} /> },
 ];
 
-export default function SettingsPage() {
+function SettingsContent() {
   const { user, updateUser, _hasHydrated } = useAuthStore();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -487,5 +487,13 @@ export default function SettingsPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={<main className="bg-gallery-bg min-h-screen py-20 pb-32 animate-pulse" />}>
+      <SettingsContent />
+    </Suspense>
   );
 }
