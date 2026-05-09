@@ -218,11 +218,11 @@ export default function CustomerDashboard() {
                   <Heart size={20} className="text-gallery-gold group-hover:text-white transition-colors" />
                   <span className="text-xs tracking-[0.3em] uppercase font-black">My Wishlist</span>
                 </Link>
-                <Link href="/settings" className="h-20 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group px-8 shadow-sm">
+                <Link href="/settings?section=security" className="h-20 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group px-8 shadow-sm">
                   <Settings size={20} className="text-gallery-gold group-hover:text-white transition-colors" />
                   <span className="text-xs tracking-[0.3em] uppercase font-black">Security Settings</span>
                 </Link>
-                <Link href="/contact" className="h-20 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group px-8 shadow-sm">
+                <Link href="/settings?section=addresses" className="h-20 bg-white border border-gallery-border hover:bg-gallery-primary hover:text-white transition-all flex items-center gap-6 group px-8 shadow-sm">
                   <MapPin size={20} className="text-gallery-gold group-hover:text-white transition-colors" />
                   <span className="text-xs tracking-[0.3em] uppercase font-black">Shipping Address</span>
                 </Link>

@@ -62,7 +62,7 @@ export default function AdminHomeManagement() {
       setProducts(prods.data);
       setFeaturedIds(feat.data.productIds || []);
     } catch (error) {
-      toast.error("Failed to fetch archive records");
+      toast.error(error.response?.data?.message || error.message || "Failed to fetch archive records");
     } finally {
       setLoading(false);
     }
@@ -104,7 +104,7 @@ export default function AdminHomeManagement() {
       setIsModalOpen(false);
       fetchInitialData();
     } catch (error) {
-      toast.error("Operation failed");
+      toast.error(error.response?.data?.message || error.message || "Operation failed");
     }
   };
 
@@ -115,7 +115,7 @@ export default function AdminHomeManagement() {
         toast.success("Review removed");
         fetchInitialData();
       } catch (error) {
-        toast.error("Deletion failed");
+        toast.error(error.response?.data?.message || error.message || "Deletion failed");
       }
     }
   };
@@ -145,7 +145,7 @@ export default function AdminHomeManagement() {
       });
       toast.success("Featured collection updated");
     } catch (error) {
-      toast.error("Failed to update featured selection");
+      toast.error(error.response?.data?.message || error.message || "Failed to update featured selection");
     }
   };
 

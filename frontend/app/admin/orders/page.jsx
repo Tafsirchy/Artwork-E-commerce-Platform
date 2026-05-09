@@ -30,8 +30,7 @@ export default function AdminOrders() {
       setOrders(data);
     } catch (error) {
       console.error("Failed to fetch orders", error);
-      const msg = error.response?.data?.message || "Failed to load orders";
-      toast.error(msg);
+      toast.error(error.response?.data?.message || error.message || "Failed to load orders");
     } finally {
       setLoading(false);
     }
@@ -44,7 +43,7 @@ export default function AdminOrders() {
       toast.success("Order status updated to In Transit");
       fetchOrders();
     } catch (error) {
-      toast.error("Failed to update status to Transit");
+      toast.error(error.response?.data?.message || error.message || "Failed to update status to Transit");
     }
   };
 
@@ -55,7 +54,7 @@ export default function AdminOrders() {
       toast.success("Order status updated to Delivered");
       fetchOrders();
     } catch (error) {
-      toast.error("Failed to update status to Delivered");
+      toast.error(error.response?.data?.message || error.message || "Failed to update status to Delivered");
     }
   };
 
@@ -72,7 +71,7 @@ export default function AdminOrders() {
       link.click();
       link.remove();
     } catch (error) {
-      toast.error("Invoice not available");
+      toast.error(error.response?.data?.message || error.message || "Invoice not available");
     }
   };
 

@@ -43,7 +43,7 @@ export default function BlogFormPage() {
       const res = await api.get(`/blogs/${params.id}`);
       setFormData(res.data.data);
     } catch (error) {
-      toast.error("Failed to fetch journal data.");
+      toast.error(error.response?.data?.message || error.message || "Failed to fetch journal data.");
       router.push("/admin/blogs");
     } finally {
       setLoading(false);
@@ -94,7 +94,7 @@ export default function BlogFormPage() {
       }
       router.push("/admin/blogs");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to save journal.");
+      toast.error(error.response?.data?.message || error.message || "Failed to save journal.");
     } finally {
       setSubmitting(false);
     }

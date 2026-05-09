@@ -31,7 +31,7 @@ export default function AdminMessagesPage() {
       const res = await api.get("/contacts");
       setMessages(res.data.data);
     } catch (error) {
-      toast.error("Failed to load messages.");
+      toast.error(error.response?.data?.message || error.message || "Failed to load messages.");
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ export default function AdminMessagesPage() {
       toast.success("Message removed.");
       setMessages(messages.filter((m) => m._id !== id));
     } catch (error) {
-      toast.error("Failed to delete message.");
+      toast.error(error.response?.data?.message || error.message || "Failed to delete message.");
     }
   };
 

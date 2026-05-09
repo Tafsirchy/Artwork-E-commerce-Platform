@@ -27,7 +27,7 @@ export default function RegisterPage() {
       toast.success("Account created with Google!");
       router.push("/");
     } catch (error) {
-      toast.error(error.message || "Google registration failed");
+      toast.error(error.response?.data?.message || error.message || "Google registration failed");
     }
   };
 
@@ -51,7 +51,7 @@ export default function RegisterPage() {
       toast.success("Account created successfully!");
       router.push("/");
     } catch (error) {
-      toast.error(error.message || "Registration failed");
+      toast.error(error.response?.data?.message || error.message || "Registration failed");
     }
   };
 

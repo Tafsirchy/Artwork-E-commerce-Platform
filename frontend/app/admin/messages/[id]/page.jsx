@@ -32,7 +32,7 @@ export default function MessageDetailsPage() {
       const res = await api.get(`/contacts/${params.id}`);
       setMessage(res.data.data);
     } catch (error) {
-      toast.error("Failed to load message.");
+      toast.error(error.response?.data?.message || error.message || "Failed to load message.");
       router.push("/admin/messages");
     } finally {
       setLoading(false);
@@ -45,7 +45,7 @@ export default function MessageDetailsPage() {
       setMessage({ ...message, status });
       toast.success(`Marked as ${status}`);
     } catch (error) {
-      toast.error("Failed to update status.");
+      toast.error(error.response?.data?.message || error.message || "Failed to update status.");
     }
   };
 
@@ -56,7 +56,7 @@ export default function MessageDetailsPage() {
       toast.success("Message deleted.");
       router.push("/admin/messages");
     } catch (error) {
-      toast.error("Deletion failed.");
+      toast.error(error.response?.data?.message || error.message || "Deletion failed.");
     }
   };
 

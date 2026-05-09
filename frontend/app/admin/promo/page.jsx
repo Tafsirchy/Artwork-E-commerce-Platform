@@ -45,7 +45,7 @@ export default function AdminPromoManagement() {
       const { data } = await api.get("/promotions/all");
       setPromos(data);
     } catch (error) {
-      toast.error("Failed to load promotions");
+      toast.error(error.response?.data?.message || error.message || "Failed to load promotions");
     } finally {
       setLoading(false);
     }
@@ -103,7 +103,7 @@ export default function AdminPromoManagement() {
         toast.success("Promotion removed");
         fetchPromos();
       } catch (error) {
-        toast.error("Deletion failed");
+        toast.error(error.response?.data?.message || error.message || "Deletion failed");
       }
     }
   };
@@ -114,7 +114,7 @@ export default function AdminPromoManagement() {
       toast.success(`Promotion ${!promo.isActive ? 'activated' : 'deactivated'}`);
       fetchPromos();
     } catch (error) {
-      toast.error("Status update failed");
+      toast.error(error.response?.data?.message || error.message || "Status update failed");
     }
   };
 

@@ -33,7 +33,7 @@ export default function ProfileAside() {
       updateUser(data);
       toast.success("Profile photo updated");
     } catch (error) {
-      toast.error("Avatar upload failed");
+      toast.error(error.response?.data?.message || error.message || "Avatar upload failed");
     } finally {
       setLoading(false);
     }
@@ -48,7 +48,7 @@ export default function ProfileAside() {
       updateUser(data);
       toast.success("Profile photo removed");
     } catch (error) {
-      toast.error("Removal failed");
+      toast.error(error.response?.data?.message || error.message || "Removal failed");
     } finally {
       setLoading(false);
     }
@@ -62,7 +62,7 @@ export default function ProfileAside() {
       toast.success("Profile updated");
       setIsEditing(false);
     } catch (error) {
-      toast.error("Update failed");
+      toast.error(error.response?.data?.message || error.message || "Update failed");
     } finally {
       setLoading(false);
     }

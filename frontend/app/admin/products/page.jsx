@@ -65,8 +65,7 @@ export default function AdminProductsPage() {
       setProducts(data);
     } catch (error) {
       console.error("Failed to fetch products", error);
-      const msg = error.response?.data?.message || "Failed to fetch products";
-      toast.error(msg);
+      toast.error(error.response?.data?.message || error.message || "Failed to fetch products");
     } finally {
       setFetchLoading(false);
     }
@@ -79,7 +78,7 @@ export default function AdminProductsPage() {
       toast.success("Artwork removed");
       fetchProducts();
     } catch (error) {
-      toast.error("Failed to delete artwork");
+      toast.error(error.response?.data?.message || error.message || "Failed to delete artwork");
     }
   };
 

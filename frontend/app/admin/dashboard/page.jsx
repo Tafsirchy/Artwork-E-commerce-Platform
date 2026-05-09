@@ -52,8 +52,7 @@ export default function AdminDashboard() {
       });
     } catch (error) {
       console.error("Failed to fetch admin stats", error);
-      const msg = error.response?.data?.message || "You do not have permission to view this page.";
-      toast.error(msg);
+      toast.error(error.response?.data?.message || error.message || "You do not have permission to view this page.");
     }
   };
 

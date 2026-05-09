@@ -22,7 +22,7 @@ export default function LoginPage() {
       toast.success("Logged in with Google!");
       router.push("/");
     } catch (error) {
-      toast.error(error.message || "Google verification failed");
+      toast.error(error.response?.data?.message || error.message || "Google verification failed");
     }
   };
 
@@ -33,7 +33,7 @@ export default function LoginPage() {
       toast.success("Logged in successfully!");
       router.push("/");
     } catch (error) {
-      toast.error(error.message || "Verification failed");
+      toast.error(error.response?.data?.message || error.message || "Verification failed");
     }
   };
 

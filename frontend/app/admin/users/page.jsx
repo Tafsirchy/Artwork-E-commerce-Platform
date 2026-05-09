@@ -53,8 +53,7 @@ export default function AdminUsersPage() {
       setUsers(data);
     } catch (error) {
       console.error("Failed to fetch users", error);
-      const msg = error.response?.data?.message || "Failed to fetch users";
-      toast.error(msg);
+      toast.error(error.response?.data?.message || error.message || "Failed to fetch users");
     } finally {
       setFetchLoading(false);
     }

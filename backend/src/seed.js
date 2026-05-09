@@ -33,7 +33,6 @@ const promotions = [
 // 1. USERS
 // ─────────────────────────────────────────────
 const users = [
-  { name: "Admin Gallery", email: "admin@bristiii.com", password: "admin1234", role: "admin" },
   { name: "Elena Marchetti", email: "elena@example.com", password: "password123", role: "customer" },
   { name: "James Okoye", email: "james@example.com", password: "password123", role: "customer" },
   { name: "Sofia Andreou", email: "sofia@example.com", password: "password123", role: "customer" },

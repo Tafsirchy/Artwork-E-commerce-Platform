@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { User, Mail, Shield, Bell, CreditCard, Save, Eye, EyeOff, Settings, MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -8,8 +9,17 @@ import useAuthStore from "@/store/authStore";
 import api from "@/lib/api";
 import { toast } from "react-toastify";
 
+const SECTIONS = [
+  { id: "profile", label: "Identity", icon: <User size={16} /> },
+  { id: "security", label: "Security", icon: <Shield size={16} /> },
+  { id: "addresses", label: "Shipment", icon: <MapPin size={16} /> },
+  { id: "notifications", label: "Journal", icon: <Bell size={16} /> },
+  { id: "billing", label: "Payments", icon: <CreditCard size={16} /> },
+];
+
 export default function SettingsPage() {
   const { user, updateUser, _hasHydrated } = useAuthStore();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -76,7 +86,7 @@ export default function SettingsPage() {
       toast.success("Archive records synchronized successfully");
       setFormData(prev => ({ ...prev, password: "", confirmPassword: "" }));
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to synchronize records");
+      toast.error(error.response?.data?.message || error.message || "Failed to synchronize records");
     } finally {
       setLoading(false);
     }
@@ -124,20 +134,19 @@ export default function SettingsPage() {
       toast.success("Account erased successfully.");
       useAuthStore.getState().logout();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to erase account");
+      toast.error(error.response?.data?.message || error.message || "Failed to erase account");
       setLoading(false);
     }
   };
 
-  const sections = [
-    { id: "profile", label: "Identity", icon: <User size={16} /> },
-    { id: "security", label: "Security", icon: <Shield size={16} /> },
-    { id: "addresses", label: "Shipment", icon: <MapPin size={16} /> },
-    { id: "notifications", label: "Journal", icon: <Bell size={16} /> },
-    { id: "billing", label: "Payments", icon: <CreditCard size={16} /> },
-  ];
-
   const [activeSection, setActiveSection] = useState("profile");
+
+  useEffect(() => {
+    const section = searchParams.get("section");
+    if (section && SECTIONS.some(s => s.id === section)) {
+      setActiveSection(section);
+    }
+  }, [searchParams]);
 
   if (!_hasHydrated) {
     return <main className="bg-gallery-bg min-h-screen py-20 pb-32 animate-pulse" />;
@@ -163,7 +172,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 items-start gap-8 sm:gap-12">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1 flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0 gap-2 lg:sticky lg:top-28 h-fit no-scrollbar">
-            {sections.map((section) => (
+            {SECTIONS.map((section) => (
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}

@@ -30,7 +30,7 @@ export default function AdminBlogsPage() {
       const res = await api.get("/blogs");
       setBlogs(res.data.data);
     } catch (error) {
-      toast.error("Failed to load blog posts.");
+      toast.error(error.response?.data?.message || error.message || "Failed to load blog posts.");
     } finally {
       setLoading(false);
     }

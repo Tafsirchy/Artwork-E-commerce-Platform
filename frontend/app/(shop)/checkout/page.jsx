@@ -32,7 +32,7 @@ const CheckoutForm = ({ clientSecret, onSuccess }) => {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(error.message || "Payment verification failed");
       setIsProcessing(false);
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
       onSuccess();
@@ -159,8 +159,7 @@ export default function CheckoutPage() {
         handleSuccess();
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.message || error.message || "Error placing order";
-      toast.error(errorMsg);
+      toast.error(error.response?.data?.message || error.message || "Error placing order");
       setIsSubmitting(false);
     }
   };
